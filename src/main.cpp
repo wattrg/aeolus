@@ -17,6 +17,5 @@ int main(int argc, char *argv[]) {
 
     FluidBlock fluid_block = FluidBlock("test_grid.su2");
 
-
     return 0;
 }
