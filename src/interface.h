@@ -6,25 +6,28 @@
 #include "vector.h"
 #include "conserved_quantities.h"
 #include "vertex.h"
+#include <vector>
 
 class Cell;
 
 class Interface {
 public:
-    Interface(Vertex & start, Vertex & end);
+    Interface(std::vector<Vertex> vertices);
 
     // return references to the start and end vertices
-    Vertex & get_start_vertex() const;
-    Vertex & get_end_vertex() const;
+    Vertex & get_start_vertex();
+    Vertex & get_end_vertex();
 
     // check if two vertices are the same
-    bool is_close(Interface other);
+    bool is_close(Interface & other);
+
+    bool is_close(std::vector<Vertex> & vertices);
 
     friend std::ostream& operator << (std::ostream& os, const Interface interface);
 
 private:
     //  Vertices on the end of the interface
-    Vertex * _vertices[2];
+    std::vector<Vertex> _vertices;
 
     //    position of the centre of the interface
     Vector2 _pos;

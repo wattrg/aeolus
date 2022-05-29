@@ -77,8 +77,10 @@ FluidBlock::FluidBlock(const char * file_name) {
 
         // make the interfaces for each cell
         std::vector<Interface> cell_interfaces;
+        std::vector<Vertex> interface_vertices;
         for ( int i_vertex=0; i_vertex < n_interfaces-1; i_vertex++) {
-            Interface interface = this->add_interface(cell_vertices[i_vertex], cell_vertices[i_vertex+1]);
+            interface_vertices = std::vector<Vertex>({cell_vertices[i_vertex], cell_vertices[i_vertex+1]});
+            Interface interface = this->add_interface(interface_vertices);
             cell_interfaces.push_back(
                 //Interface(cell_vertices[i_vertex], cell_vertices[i_vertex+1])
                 interface
@@ -86,8 +88,9 @@ FluidBlock::FluidBlock(const char * file_name) {
         }
         // the last interface wraps around, so we can't use the above pattern
         // instead we just hard code the closing interface
-        Interface interface = this->add_interface(cell_vertices[n_interfaces], cell_vertices[0]);
-        cell_interfaces.push_back(interface);
+        interface_vertices = std::vector<Vertex>({cell_vertices[n_interfaces], cell_vertices[0]});
+        Interface interface = this->add_interface(interface_vertices);
+        cell_interfaces.push_back(interface_vertices);
         _cells.push_back(Cell(cell_vertices, cell_interfaces));
     }
     // ignore the boundary conditions for the moment.
@@ -109,18 +112,19 @@ Vertex & FluidBlock::add_vertex(Vector2 pos){
     return *vertex;
 }
 
-Interface & FluidBlock::add_interface(Vertex & start, Vertex & end){
+Interface & FluidBlock::add_interface(std::vector<Vertex> vertices){
+    // loop through all the interfaces we have so far, checking
+    // if the this new one is already in our collection of them
     for (Interface & interface : this->_interfaces){
-        if (interface.get_start_vertex().is_close(start) &&
-            interface.get_end_vertex().is_close(end)) {
-            // the interface already exists, so we'll return
+        if (!interface.is_close(vertices)){
+            //  the interface already exists, so we'll return
             // a reference to the interface
             return interface;
         }
     }
     // the interface doesn't exist, so we'll create a new one,
     // add it to the list, and return a reference to it
-    Interface * interface = new Interface(start, end);
+    Interface * interface = new Interface(vertices);
     this->_interfaces.push_back(*interface);
     return * interface;
 }

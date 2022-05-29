@@ -19,9 +19,8 @@ public:
     // already exists, don't repeat it
     Vertex & add_vertex(Vector2 pos);
 
-    // add an interface from vertex `start` to `end` to the fluid block
-    // If the interface already exists, don't repeat it
-    Interface & add_interface(Vertex & start, Vertex & end);
+    // Add an interface to the fluid block if it doesn't already exist
+    Interface & add_interface(std::vector<Vertex> vertices);
 
 private:
     // Collection of cells
@@ -40,7 +39,6 @@ private:
     // check if the fluid block already has
     // a particular vertex
     bool _has_vertex(Vertex vertex);
-
 };
 
 
