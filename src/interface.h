@@ -14,10 +14,6 @@ class Interface {
 public:
     Interface(std::vector<Vertex> vertices);
 
-    // return references to the start and end vertices
-    Vertex & get_start_vertex();
-    Vertex & get_end_vertex();
-
     // check if two vertices are the same
     bool is_close(Interface & other);
 

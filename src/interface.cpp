@@ -3,19 +3,13 @@
 Interface::Interface(std::vector<Vertex> vertices) : _vertices(vertices) {
 }
 
-//std::ostream& operator << (std::ostream& os, const Interface interface){
-//    os << "Interface(";
-//    os << "start = " << interface.get_start_vertex().get_pos() << ", ";
-//    os << "end = " << interface.get_end_vertex().get_pos() << ")";
-//    return os;
-//}
-
-Vertex & Interface::get_start_vertex() {
-    return _vertices[0];
-}
-
-Vertex & Interface::get_end_vertex() {
-    return _vertices[1];
+std::ostream& operator << (std::ostream& os, const Interface interface){
+    os << "Interface(";
+    for (Vertex vertex : interface._vertices){
+        std::cout << vertex << ", ";
+    }
+    std::cout << ")";
+    return os;
 }
 
 bool Interface::is_close(Interface & other) {
