@@ -7,8 +7,11 @@
 #include "conserved_quantities.h"
 #include "vertex.h"
 #include <vector>
+#include <cmath>
 
 class Cell;
+
+enum Side { left, right, centre };
 
 class Interface {
 public:
@@ -22,6 +25,9 @@ public:
     // Check if `vertex` is in an interface
     bool has_vertex(Vertex & other_vertex);
 
+    // attach a cell to the interface. This deals with left vs right cells
+    void attach_cell(Cell & cell);
+
     friend std::ostream& operator << (std::ostream& os, const Interface interface);
 
 private:
@@ -34,14 +40,20 @@ private:
     // direction of the interface
     Vector2 _dir;
 
-    // cells to the left
-    Cell * _left[2];
+    // cell to the left
+    Cell * _left;
 
-    // cells to the right
-    Cell * _right[2];
+    // cell to the right
+    Cell * _right;
 
     // the flux on the cell
     ConservedQuantity _flux;
+
+    // Figure out if a cell is on the left or right of the interface
+    Side _compute_side(Cell & cell);
+
+    // Figure out if a point is on the left or right of the interface
+    Side _compute_side(Vector2 & point);
 };
 
 #endif // __INTERFACE_H_
