@@ -41,10 +41,10 @@ private:
     Vector2 _dir;
 
     // cell to the left
-    Cell * _left;
+    Cell * _left = nullptr;
 
     // cell to the right
-    Cell * _right;
+    Cell * _right = nullptr;
 
     // the flux on the cell
     ConservedQuantity _flux;
