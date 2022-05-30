@@ -13,7 +13,6 @@ int main(int argc, char *argv[]) {
     gas_state.T = 300;
     g_model.update_from_pT(gas_state);
 
-    std::cout << gas_state;
 
     FluidBlock fluid_block = FluidBlock("test_grid.su2");
 

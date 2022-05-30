@@ -15,9 +15,12 @@ public:
     Interface(std::vector<Vertex> vertices);
 
     // check if two vertices are the same
-    bool is_close(Interface & other);
+    bool is(Interface & other);
 
-    bool is_close(std::vector<Vertex> & vertices);
+    bool is(std::vector<Vertex> & vertices);
+
+    // Check if `vertex` is in an interface
+    bool has_vertex(Vertex & other_vertex);
 
     friend std::ostream& operator << (std::ostream& os, const Interface interface);
 

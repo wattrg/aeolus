@@ -15,12 +15,11 @@ class FluidBlock {
 public:
     FluidBlock(const char * file_name);
 
-    // add a vertex at position `pos` to the fluid block. In the vertex
-    // already exists, don't repeat it
-    Vertex & add_vertex(Vector2 pos);
-
     // Add an interface to the fluid block if it doesn't already exist
     Interface & add_interface(std::vector<Vertex> vertices);
+
+
+    friend std::ostream& operator << (std::ostream& os, const FluidBlock fluid_block);
 
 private:
     // Collection of cells
@@ -39,6 +38,8 @@ private:
     // check if the fluid block already has
     // a particular vertex
     bool _has_vertex(Vertex vertex);
+
+    void _print_interfaces();
 };
 
 

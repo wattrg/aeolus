@@ -34,14 +34,13 @@ FluidBlock::FluidBlock(const char * file_name) {
     // Read the number of points
     std::getline(su2_file, line);
     int n_points = read_integer(line);
-    for ( int index=0; index < n_points; index++ ){
+    for ( int vertex_id=0; vertex_id < n_points; vertex_id++ ){
         double x, y;
         std::getline(su2_file, line);
         int sep = line.find(" ");
         x = std::stod(line.substr(0, sep));
         y = std::stod(line.substr(sep));
-        //Vertex vertex = Vertex(Vector2(x, y));
-        this->add_vertex(Vector2(x,y));
+        this->_vertices.push_back(Vertex(Vector2(x,y), vertex_id));
     }
 
     // Read the cells
@@ -67,7 +66,7 @@ FluidBlock::FluidBlock(const char * file_name) {
 
         // read each vertex for this cell
         int vertex;
-        std::vector<Vertex> cell_vertices;
+        std::vector<Vertex> cell_vertices{};
         for (int i_vertex=0; i_vertex < n_interfaces; i_vertex++){
             pos = line.find(" ");
             vertex = std::stoi(line.substr(0, pos));
@@ -81,14 +80,11 @@ FluidBlock::FluidBlock(const char * file_name) {
         for ( int i_vertex=0; i_vertex < n_interfaces-1; i_vertex++) {
             interface_vertices = std::vector<Vertex>({cell_vertices[i_vertex], cell_vertices[i_vertex+1]});
             Interface interface = this->add_interface(interface_vertices);
-            cell_interfaces.push_back(
-                //Interface(cell_vertices[i_vertex], cell_vertices[i_vertex+1])
-                interface
-            );
+            cell_interfaces.push_back(interface);
         }
         // the last interface wraps around, so we can't use the above pattern
         // instead we just hard code the closing interface
-        interface_vertices = std::vector<Vertex>({cell_vertices[n_interfaces], cell_vertices[0]});
+        interface_vertices = std::vector<Vertex>({cell_vertices[n_interfaces-1], cell_vertices[0]});
         Interface interface = this->add_interface(interface_vertices);
         cell_interfaces.push_back(interface_vertices);
         _cells.push_back(Cell(cell_vertices, cell_interfaces));
@@ -97,26 +93,11 @@ FluidBlock::FluidBlock(const char * file_name) {
     su2_file.close();
 }
 
-Vertex & FluidBlock::add_vertex(Vector2 pos){
-    for (Vertex & vertex : this->_vertices){
-        if (vertex.get_pos().is_close(pos)) {
-            // the vertex already exists, so we'll return
-            // a reference to the vertex
-            return vertex;
-        }
-    }
-    // the vertex didn't already exist, so we'll create
-    // a new one, add to the list, and return a reference to it
-    Vertex * vertex = new Vertex(pos);
-    this->_vertices.push_back(*vertex);
-    return *vertex;
-}
-
 Interface & FluidBlock::add_interface(std::vector<Vertex> vertices){
     // loop through all the interfaces we have so far, checking
     // if the this new one is already in our collection of them
     for (Interface & interface : this->_interfaces){
-        if (!interface.is_close(vertices)){
+        if (interface.is(vertices)){
             //  the interface already exists, so we'll return
             // a reference to the interface
             return interface;
@@ -127,4 +108,20 @@ Interface & FluidBlock::add_interface(std::vector<Vertex> vertices){
     Interface * interface = new Interface(vertices);
     this->_interfaces.push_back(*interface);
     return * interface;
+}
+
+std::ostream& operator << (std::ostream& os, const FluidBlock fluid_block){
+    os << "FluidBlock(";
+    os << "n_interfaces = " << fluid_block._interfaces.size() << ", ";
+    for (Cell cell : fluid_block._cells){
+        os << cell << ", ";
+    }
+    std::cout << ")\n";
+    return os;
+}
+
+void FluidBlock::_print_interfaces(){
+    for (Interface interface : this->_interfaces){
+        std::cout << interface << "\n";
+    }
 }
