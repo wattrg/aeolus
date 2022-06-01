@@ -9,9 +9,11 @@
 
 class Interface;
 
-enum CellShape {
-    Quad
-};
+namespace CellShape {
+    enum CellShape {
+        Quad
+    };
+}
 
 class Cell {
 public:
@@ -36,7 +38,7 @@ private:
     Vector2 _pos;
 
     // Cell shape
-    CellShape _shape;
+    CellShape::CellShape _shape;
 };
 
 #endif // __CELL_H_

@@ -11,6 +11,10 @@
 #include "flow_state.h"
 #include "gas_model.h"
 
+namespace ElementShape {
+    enum ElementShape { Quad, Line, };
+}
+
 class FluidBlock {
 public:
     FluidBlock(const char * file_name);

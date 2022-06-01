@@ -53,6 +53,9 @@ private:
     // the flux on the cell
     ConservedQuantity _flux;
 
+    // store if the interface is on a boundary
+    bool _is_on_boundary = false;
+
     // Figure out if a cell is on the left or right of the interface
     Side _compute_side(Cell & cell);
 

@@ -1,5 +1,37 @@
 #include "fluid_block.h"
 
+struct Element {
+
+    ElementShape::ElementShape shape;
+    std::vector<int> vertices;
+
+    Element(ElementShape::ElementShape shape, std::vector<int> vertices)
+        : shape(shape), vertices(vertices)
+    {};
+};
+
+ElementShape::ElementShape int_to_element_shape(int shape){
+    switch (shape) {
+        case 3:
+            return ElementShape::Line;
+        case 9:
+            return ElementShape::Quad;
+        default:
+            throw std::runtime_error("Only Quads and Lines supported for the moment");
+    }
+}
+
+int element_shape_to_number_vertices(ElementShape::ElementShape shape){
+    switch (shape) {
+        case ElementShape::Line:
+            return 2;
+        case ElementShape::Quad:
+            return 4;
+        default:
+            throw std::runtime_error("Invalid ElementShape");
+    }
+}
+
 int read_integer(std::string str){
     // Read the integer from a string of the form:
     // "NAME = 51"
@@ -12,6 +44,27 @@ int read_integer(std::string str){
         substr = substr.substr(sep);
     }
     return std::stoi(substr);
+}
+
+Element read_element(std::string line) {
+    // read the element type
+    int pos = line.find(" ");
+    int elem_shape = std::stoi(line.substr(0, pos));
+    ElementShape::ElementShape shape = int_to_element_shape(elem_shape);
+    int n_vertices = element_shape_to_number_vertices(shape);
+    // discard the element type
+    line = line.substr(pos+1, std::string::npos);
+
+    // read the vertices
+    int vertex;
+    std::vector<int> element_vertices{};
+    for (int i_vertex=0; i_vertex < n_vertices; i_vertex++){
+        pos = line.find(" ");
+        vertex = std::stoi(line.substr(0, pos));
+        line = line.substr(pos+1, std::string::npos);
+        element_vertices.push_back(vertex);
+    }
+    return Element(shape, element_vertices);
 }
 
 FluidBlock::FluidBlock(const char * file_name) {
@@ -31,7 +84,7 @@ FluidBlock::FluidBlock(const char * file_name) {
         throw std::runtime_error("Only two dimensions implemented");
     }
 
-    // Read the number of points
+    // Read the vertices
     std::getline(su2_file, line);
     int n_points = read_integer(line);
     for ( int vertex_id=0; vertex_id < n_points; vertex_id++ ){
@@ -52,39 +105,27 @@ FluidBlock::FluidBlock(const char * file_name) {
     size_t pos;
     for ( int index=0; index < n_elems; index++ ) {
         std::getline(su2_file, line);
-        pos = line.find(" ");
-        int elem_type = std::stoi(line.substr(0, pos));
-        line = line.substr(pos+1, std::string::npos);
-        int n_interfaces;
-        switch (elem_type){
-            case 9:
-                n_interfaces = 4;
-                break;
-            default:
-                throw std::runtime_error("Only quads implemented for the moment");
-        }
+        Element element = read_element(line);
+        int n_vertices = element_shape_to_number_vertices(element.shape);
 
         // read each vertex for this cell
-        int vertex;
         std::vector<Vertex *> cell_vertices{};
-        for (int i_vertex=0; i_vertex < n_interfaces; i_vertex++){
-            pos = line.find(" ");
-            vertex = std::stoi(line.substr(0, pos));
-            line = line.substr(pos+1, std::string::npos);
+        for (int vertex : element.vertices){
             cell_vertices.push_back(_vertices[vertex]);
         }
 
         // make the interfaces for each cell
         std::vector<Interface *> cell_interfaces;
         std::vector<Vertex *> interface_vertices;
-        for ( int i_vertex=0; i_vertex < n_interfaces-1; i_vertex++) {
+
+        for ( int i_vertex=0; i_vertex < n_vertices-1; i_vertex++) {
             interface_vertices.assign({cell_vertices[i_vertex], cell_vertices[i_vertex+1]});
             Interface * interface = this->add_interface(interface_vertices);
             cell_interfaces.push_back(interface);
         }
         // the last interface wraps around, so we can't use the above pattern
         // instead we just hard code the closing interface
-        interface_vertices.assign({cell_vertices[n_interfaces-1], cell_vertices[0]});
+        interface_vertices.assign({cell_vertices[n_vertices-1], cell_vertices[0]});
         Interface * interface = this->add_interface(interface_vertices);
         cell_interfaces.push_back(interface);
         _cells.push_back(new Cell(cell_vertices, cell_interfaces));
@@ -92,8 +133,19 @@ FluidBlock::FluidBlock(const char * file_name) {
     for (Interface * interface : this->_interfaces){
         std::cout << interface->get_left_cell() << "\n";
     }
-    // ignore the boundary conditions for the moment.
+
+    // read the boundary conditions
+    std::getline(su2_file, line);
+    if (line.find("NMARK") != 0){
+        throw std::runtime_error("Could not find number of boundaries");
+    }
+    int n_boundaries = read_integer(line);
+    //for (int i_boundary = 0; i_boundary < n_boundaries; i_boundary++){
+    //    for
+    //}
+
     su2_file.close();
+
 }
 
 Interface * FluidBlock::add_interface(std::vector<Vertex *> vertices){
