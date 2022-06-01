@@ -40,7 +40,7 @@ FluidBlock::FluidBlock(const char * file_name) {
         int sep = line.find(" ");
         x = std::stod(line.substr(0, sep));
         y = std::stod(line.substr(sep));
-        this->_vertices.push_back(Vertex(Vector2(x,y), vertex_id));
+        this->_vertices.push_back(new Vertex(Vector2(x,y), vertex_id));
     }
 
     // Read the cells
@@ -66,7 +66,7 @@ FluidBlock::FluidBlock(const char * file_name) {
 
         // read each vertex for this cell
         int vertex;
-        std::vector<Vertex> cell_vertices{};
+        std::vector<Vertex *> cell_vertices{};
         for (int i_vertex=0; i_vertex < n_interfaces; i_vertex++){
             pos = line.find(" ");
             vertex = std::stoi(line.substr(0, pos));
@@ -75,29 +75,32 @@ FluidBlock::FluidBlock(const char * file_name) {
         }
 
         // make the interfaces for each cell
-        std::vector<Interface> cell_interfaces;
-        std::vector<Vertex> interface_vertices;
+        std::vector<Interface *> cell_interfaces;
+        std::vector<Vertex *> interface_vertices;
         for ( int i_vertex=0; i_vertex < n_interfaces-1; i_vertex++) {
-            interface_vertices = std::vector<Vertex>({cell_vertices[i_vertex], cell_vertices[i_vertex+1]});
-            Interface interface = this->add_interface(interface_vertices);
+            interface_vertices.assign({cell_vertices[i_vertex], cell_vertices[i_vertex+1]});
+            Interface * interface = this->add_interface(interface_vertices);
             cell_interfaces.push_back(interface);
         }
         // the last interface wraps around, so we can't use the above pattern
         // instead we just hard code the closing interface
-        interface_vertices = std::vector<Vertex>({cell_vertices[n_interfaces-1], cell_vertices[0]});
-        Interface interface = this->add_interface(interface_vertices);
-        cell_interfaces.push_back(interface_vertices);
-        _cells.push_back(Cell(cell_vertices, cell_interfaces));
+        interface_vertices.assign({cell_vertices[n_interfaces-1], cell_vertices[0]});
+        Interface * interface = this->add_interface(interface_vertices);
+        cell_interfaces.push_back(interface);
+        _cells.push_back(new Cell(cell_vertices, cell_interfaces));
+    }
+    for (Interface * interface : this->_interfaces){
+        std::cout << interface->get_left_cell() << "\n";
     }
     // ignore the boundary conditions for the moment.
     su2_file.close();
 }
 
-Interface & FluidBlock::add_interface(std::vector<Vertex> vertices){
+Interface * FluidBlock::add_interface(std::vector<Vertex *> vertices){
     // loop through all the interfaces we have so far, checking
     // if the this new one is already in our collection of them
-    for (Interface & interface : this->_interfaces){
-        if (interface.is(vertices)){
+    for (Interface * interface : this->_interfaces){
+        if (interface->is(vertices)){
             //  the interface already exists, so we'll return
             // a reference to the interface
             return interface;
@@ -106,22 +109,22 @@ Interface & FluidBlock::add_interface(std::vector<Vertex> vertices){
     // the interface doesn't exist, so we'll create a new one,
     // add it to the list, and return a reference to it
     Interface * interface = new Interface(vertices);
-    this->_interfaces.push_back(*interface);
-    return * interface;
+    this->_interfaces.push_back(interface);
+    return interface;
 }
 
 std::ostream& operator << (std::ostream& os, const FluidBlock fluid_block){
     os << "FluidBlock(";
     os << "n_interfaces = " << fluid_block._interfaces.size() << ", ";
-    for (Cell cell : fluid_block._cells){
-        os << cell << ", ";
+    for (Cell * cell : fluid_block._cells){
+        os << *cell << ", ";
     }
-    std::cout << ")\n";
+    os << ")\n";
     return os;
 }
 
 void FluidBlock::_print_interfaces(){
-    for (Interface interface : this->_interfaces){
-        std::cout << interface << "\n";
+    for (Interface * interface : this->_interfaces){
+        std::cout << *interface << "\n";
     }
 }

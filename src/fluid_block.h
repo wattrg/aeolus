@@ -16,20 +16,20 @@ public:
     FluidBlock(const char * file_name);
 
     // Add an interface to the fluid block if it doesn't already exist
-    Interface & add_interface(std::vector<Vertex> vertices);
+    Interface * add_interface(std::vector<Vertex *> vertices);
 
 
     friend std::ostream& operator << (std::ostream& os, const FluidBlock fluid_block);
 
 private:
     // Collection of cells
-    std::vector<Cell> _cells;
+    std::vector<Cell *> _cells;
 
     // Collection of interfaces
-    std::vector<Interface> _interfaces;
+    std::vector<Interface *> _interfaces;
 
     // Collection of vertices
-    std::vector<Vertex> _vertices;
+    std::vector<Vertex *> _vertices;
 
     // check if the fluid block already has
     // a particular interface

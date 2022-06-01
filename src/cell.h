@@ -15,7 +15,7 @@ enum CellShape {
 
 class Cell {
 public:
-    Cell(std::vector<Vertex> verticies, std::vector<Interface>);
+    Cell(std::vector<Vertex*> verticies, std::vector<Interface*>);
 
     // the flow state in the cell centre
     FlowState fs;
@@ -27,10 +27,10 @@ public:
 
 private:
     // the interfaces surrounding the cell
-    std::vector<Interface> _interfaces;
+    std::vector<Interface *> _interfaces;
 
     // the vertices of the cell
-    std::vector<Vertex> _vertices;
+    std::vector<Vertex *> _vertices;
 
     // position of the cell centre
     Vector2 _pos;

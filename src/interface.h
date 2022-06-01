@@ -15,12 +15,12 @@ enum Side { left, right, centre };
 
 class Interface {
 public:
-    Interface(std::vector<Vertex> vertices);
+    Interface(std::vector<Vertex *> vertices);
 
     // check if two vertices are the same
     bool is(Interface & other);
 
-    bool is(std::vector<Vertex> & vertices);
+    bool is(std::vector<Vertex *> & vertices);
 
     // Check if `vertex` is in an interface
     bool has_vertex(Vertex & other_vertex);
@@ -28,11 +28,15 @@ public:
     // attach a cell to the interface. This deals with left vs right cells
     void attach_cell(Cell & cell);
 
+    // Return reference to cells attached to the interface
+    Cell & get_left_cell();
+    Cell & get_right_cell();
+
     friend std::ostream& operator << (std::ostream& os, const Interface interface);
 
 private:
     //  Vertices on the end of the interface
-    std::vector<Vertex> _vertices;
+    std::vector<Vertex *> _vertices;
 
     //    position of the centre of the interface
     Vector2 _pos;
@@ -41,10 +45,10 @@ private:
     Vector2 _dir;
 
     // cell to the left
-    Cell * _left = nullptr;
+    Cell * _left_cell = nullptr;
 
     // cell to the right
-    Cell * _right = nullptr;
+    Cell * _right_cell = nullptr;
 
     // the flux on the cell
     ConservedQuantity _flux;
