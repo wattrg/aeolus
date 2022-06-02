@@ -20,13 +20,16 @@ std::ostream& operator << (std::ostream& os, const Interface interface){
 }
 
 Cell & Interface::get_left_cell() {
+    // return reference to the left cell
     return *this->_left_cell;
 }
 Cell & Interface::get_right_cell() {
+    // return reference to the right cell
     return *this->_right_cell;
 }
 
 bool Interface::is(Interface & other) {
+    // check if `other` is the same interface as this one
     bool is_same;
     for (Vertex * this_vertex : this->_vertices){
         is_same = true;
@@ -39,6 +42,7 @@ bool Interface::is(Interface & other) {
 }
 
 bool Interface::has_vertex(Vertex & other_vertex){
+    // check if `other_vertex` is in this interface
     bool is_in = false;
     for (Vertex * this_vertex : this->_vertices) {
         if (this_vertex->is(other_vertex)) is_in = true;
@@ -47,6 +51,7 @@ bool Interface::has_vertex(Vertex & other_vertex){
 }
 
 bool Interface::is(std::vector<Vertex *> & vertices){
+    // chceck `vertices` form this interface
     bool is_same = true;
     for (Vertex * other_vertex : vertices) {
         if (!this->has_vertex(*other_vertex)) is_same = false;
@@ -55,6 +60,7 @@ bool Interface::is(std::vector<Vertex *> & vertices){
 }
 
 void Interface::attach_cell(Cell & cell) {
+    // Attach this cell to the left or right of the interface
     Side side = this->_compute_side(cell);
     switch (side){
         case left:

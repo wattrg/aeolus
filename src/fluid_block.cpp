@@ -190,6 +190,7 @@ FluidBlock::FluidBlock(const char * file_name) {
 }
 
 Interface * FluidBlock::find_interface(std::vector<Vertex *> vertices){
+    // Return a pointer to the interface with verteices `vertices`
     for (Interface * interface : this->_interfaces){
         if (interface->is(vertices)) return interface;
     }
