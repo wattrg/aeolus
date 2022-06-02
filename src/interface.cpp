@@ -12,7 +12,8 @@ std::ostream& operator << (std::ostream& os, const Interface interface){
     }
     os << "], ";
     os << "left = " << interface._left_cell << ", ";
-    os << "right = " << interface._right_cell;
+    os << "right = " << interface._right_cell << ", ";
+    os << "on boundary = " << interface._is_on_boundary << ", ";
     os << ")";
 
     return os;
@@ -65,6 +66,11 @@ void Interface::attach_cell(Cell & cell) {
         case centre:
             throw std::runtime_error("Cell centre is on the interface");
     }
+}
+
+void Interface::mark_on_boundary(std::string tag) {
+    this->_is_on_boundary = true;
+    this->_boundary_tag = tag;
 }
 
 Side Interface::_compute_side(Cell & cell){

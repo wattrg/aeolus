@@ -19,7 +19,6 @@ public:
 
     // check if two vertices are the same
     bool is(Interface & other);
-
     bool is(std::vector<Vertex *> & vertices);
 
     // Check if `vertex` is in an interface
@@ -31,6 +30,9 @@ public:
     // Return reference to cells attached to the interface
     Cell & get_left_cell();
     Cell & get_right_cell();
+
+    // Mark the interface as being on the boundary
+    void mark_on_boundary(std::string tag);
 
     friend std::ostream& operator << (std::ostream& os, const Interface interface);
 
@@ -55,6 +57,7 @@ private:
 
     // store if the interface is on a boundary
     bool _is_on_boundary = false;
+    std::string _boundary_tag = "";
 
     // Figure out if a cell is on the left or right of the interface
     Side _compute_side(Cell & cell);

@@ -46,6 +46,16 @@ int read_integer(std::string str){
     return std::stoi(substr);
 }
 
+std::string read_string(std::string str){
+    size_t sep = str.find("=");
+    str = str.substr(sep+1);
+    sep = str.find(" ");
+    if (sep != std::string::npos){
+        str = str.substr(sep);
+    }
+    return str;
+}
+
 Element read_element(std::string line) {
     // read the element type
     int pos = line.find(" ");
@@ -102,10 +112,12 @@ FluidBlock::FluidBlock(const char * file_name) {
         throw std::runtime_error("Could not find number of cells");
     }
     int n_elems = read_integer(line);
-    size_t pos;
     for ( int index=0; index < n_elems; index++ ) {
         std::getline(su2_file, line);
         Element element = read_element(line);
+        if (element.shape == ElementShape::Line){
+            throw std::runtime_error("A cell cannot be a line");
+        }
         int n_vertices = element_shape_to_number_vertices(element.shape);
 
         // read each vertex for this cell
@@ -130,9 +142,6 @@ FluidBlock::FluidBlock(const char * file_name) {
         cell_interfaces.push_back(interface);
         _cells.push_back(new Cell(cell_vertices, cell_interfaces));
     }
-    for (Interface * interface : this->_interfaces){
-        std::cout << interface->get_left_cell() << "\n";
-    }
 
     // read the boundary conditions
     std::getline(su2_file, line);
@@ -140,12 +149,51 @@ FluidBlock::FluidBlock(const char * file_name) {
         throw std::runtime_error("Could not find number of boundaries");
     }
     int n_boundaries = read_integer(line);
-    //for (int i_boundary = 0; i_boundary < n_boundaries; i_boundary++){
-    //    for
-    //}
-
+    for (int i_boundary = 0; i_boundary < n_boundaries; i_boundary++){
+        std::getline(su2_file, line);
+        // first comes the tag
+        std::string tag = read_string(line);
+        // next comes the number of elements on this boundary
+        std::getline(su2_file, line);
+        if (line.find("MARKER_ELEMS") != 0){
+            throw std::runtime_error("Could not find the number of elements on boundary");
+        }
+        int n_elements = read_integer(line);
+        // finally, the actual elements
+        for (int i_element = 0; i_element < n_elements; i_element++){
+            std::getline(su2_file, line);
+            Element element = read_element(line);
+            if (element.shape != ElementShape::Line){
+                throw std::runtime_error("Boundary element should only be a line");
+            }
+            std::vector<Vertex *> boundary_vertices = {};
+            for (int vertex_indx : element.vertices){
+                boundary_vertices.push_back(this->_vertices[vertex_indx]);
+            }
+            Interface * interface = this->find_interface(boundary_vertices);
+            if (interface == nullptr) {
+                for (int vertex_indx : element.vertices) {
+                    std::cout << vertex_indx << ", ";
+                }
+                std::cout << "\n";
+                throw std::runtime_error("Could not find the interface on boundary");
+            }
+            interface->mark_on_boundary(tag);
+        }
+    }
+    for (Interface * interface : this->_interfaces){
+        std::cout << interface->get_left_cell() << "\n";
+    }
+    // All done
     su2_file.close();
 
+}
+
+Interface * FluidBlock::find_interface(std::vector<Vertex *> vertices){
+    for (Interface * interface : this->_interfaces){
+        if (interface->is(vertices)) return interface;
+    }
+    return nullptr;
 }
 
 Interface * FluidBlock::add_interface(std::vector<Vertex *> vertices){
