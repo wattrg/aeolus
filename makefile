@@ -11,6 +11,7 @@ SRCDIR      := src
 INCDIR      := inc
 BUILDDIR    := bin/obj
 TARGETDIR   := bin/target
+LIBDIR      := bin/lib
 RESDIR      := res
 SRCEXT      := cpp
 DEPEXT      := d
@@ -26,11 +27,15 @@ ifeq ($(flavour), debug)
 	TARGET = aeolus_debug
 endif
 
+SOURCES := cell.cpp, gas_state.cpp, flow_state.cpp, main.cpp, vertex.cpp, \
+		   gas_model.cpp, fluid_block.cpp
+
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
 SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
+LIBSOURCES  := $(shell find $(SRCDIR)/python_api -type f -name *.$(SRCEXT))
 
 #Default Make
 all: directories $(TARGET)
@@ -45,14 +50,15 @@ remake: cleaner all
 directories:
 	mkdir -p $(TARGETDIR)
 	mkdir -p $(BUILDDIR)
+	mkdir -p $(LIBDIR)
 
 #Clean only Objecst
 clean:
 	$(RM) -rf $(BUILDDIR)
 
 #Full Clean, Objects and Binaries
-cleaner: clean
-	$(RM) -rf $(TARGETDIR)
+cleaner:
+	$(RM) -rf bin
 
 #Pull in dependency info for *existing* .o files
 -include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
@@ -70,6 +76,10 @@ $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@sed -e 's|.*:|$(BUILDDIR)/$*.$(OBJEXT):|' < $(BUILDDIR)/$*.$(DEPEXT).tmp > $(BUILDDIR)/$*.$(DEPEXT)
 	@sed -e 's/.*://' -e 's/\\$$//' < $(BUILDDIR)/$*.$(DEPEXT).tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >> $(BUILDDIR)/$*.$(DEPEXT)
 	@rm -f $(BUILDDIR)/$*.$(DEPEXT).tmp
+
+# make the dynamic libraries
+lib: $(OBJECTS)
+	$(CC) -shared -Wl,-soname,libgas.so -o $(LIBDIR)/libgas.so bin/obj/python_api/libgas.o
 
 #Non-File Targets
 .PHONY: all remake clean cleaner resources
