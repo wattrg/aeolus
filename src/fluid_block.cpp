@@ -32,21 +32,10 @@ int element_shape_to_number_vertices(ElementShape::ElementShape shape){
     }
 }
 
-int read_integer(std::string str){
-    // Read the integer from a string of the form:
+std::string read_string(std::string str){
+    // Read a string value from a string of the form:
     // "NAME = 51"
     // Discard anything before the equal sign
-    size_t sep = str.find("=");
-    std::string substr = str.substr(sep+1);
-    // if there is leading whitespace, remove it
-    sep = substr.find(" ");
-    if (sep != std::string::npos){
-        substr = substr.substr(sep);
-    }
-    return std::stoi(substr);
-}
-
-std::string read_string(std::string str){
     size_t sep = str.find("=");
     str = str.substr(sep+1);
     sep = str.find(" ");
@@ -54,6 +43,10 @@ std::string read_string(std::string str){
         str = str.substr(sep);
     }
     return str;
+}
+
+int read_integer(std::string str){
+    return std::stoi(read_string(str));
 }
 
 Element read_element(std::string line) {
@@ -132,13 +125,13 @@ FluidBlock::FluidBlock(const char * file_name) {
 
         for ( int i_vertex=0; i_vertex < n_vertices-1; i_vertex++) {
             interface_vertices.assign({cell_vertices[i_vertex], cell_vertices[i_vertex+1]});
-            Interface * interface = this->add_interface(interface_vertices);
+            Interface * interface = this->_add_interface(interface_vertices);
             cell_interfaces.push_back(interface);
         }
         // the last interface wraps around, so we can't use the above pattern
         // instead we just hard code the closing interface
         interface_vertices.assign({cell_vertices[n_vertices-1], cell_vertices[0]});
-        Interface * interface = this->add_interface(interface_vertices);
+        Interface * interface = this->_add_interface(interface_vertices);
         cell_interfaces.push_back(interface);
         _cells.push_back(new Cell(cell_vertices, cell_interfaces));
     }
@@ -170,7 +163,7 @@ FluidBlock::FluidBlock(const char * file_name) {
             for (int vertex_indx : element.vertices){
                 boundary_vertices.push_back(this->_vertices[vertex_indx]);
             }
-            Interface * interface = this->find_interface(boundary_vertices);
+            Interface * interface = this->_find_interface(boundary_vertices);
             if (interface == nullptr) {
                 for (int vertex_indx : element.vertices) {
                     std::cout << vertex_indx << ", ";
@@ -186,10 +179,9 @@ FluidBlock::FluidBlock(const char * file_name) {
     }
     // All done
     su2_file.close();
-
 }
 
-Interface * FluidBlock::find_interface(std::vector<Vertex *> vertices){
+Interface * FluidBlock::_find_interface(std::vector<Vertex *> vertices){
     // Return a pointer to the interface with verteices `vertices`
     for (Interface * interface : this->_interfaces){
         if (interface->is(vertices)) return interface;
@@ -197,7 +189,7 @@ Interface * FluidBlock::find_interface(std::vector<Vertex *> vertices){
     return nullptr;
 }
 
-Interface * FluidBlock::add_interface(std::vector<Vertex *> vertices){
+Interface * FluidBlock::_add_interface(std::vector<Vertex *> vertices){
     // loop through all the interfaces we have so far, checking
     // if the this new one is already in our collection of them
     for (Interface * interface : this->_interfaces){

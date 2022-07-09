@@ -7,38 +7,45 @@ flavour     ?= debug
 TARGET      := aeolus
 
 #The Directories, Source, Includes, Objects, Binary and Resources
-SRCDIR      := src
-INCDIR      := inc
-BUILDDIR    := bin/obj
-TARGETDIR   := bin/target
-LIBDIR      := bin/lib
-RESDIR      := res
-SRCEXT      := cpp
-DEPEXT      := d
-OBJEXT      := o
+SRCDIR     := src
+INCDIR     := inc
+BUILDDIR   := build/obj
+TARGETDIR  := build/target
+INSTALLDIR := inst/bin
+LIBINSTDIR := inst/lib
+LIBDIR     := build/lib
+RESDIR     := res
+SRCEXT     := cpp
+DEPEXT     := d
+OBJEXT     := o
 
 #Flags, Libraries and Includes
-CFLAGS      := -fopenmp -Wall -g
+CFLAGS      := -fopenmp -Wall -g -fPIC
 LIB         := -fopenmp -lm
-INC         := -I$(INCDIR) -I/usr/local/include
+INC         := -I$(INCDIR) -I/usr/local/include 
 INCDEP      := -I$(INCDIR)
 
 ifeq ($(flavour), debug)
 	TARGET = aeolus_debug
 endif
 
-SOURCES := cell.cpp, gas_state.cpp, flow_state.cpp, main.cpp, vertex.cpp, \
-		   gas_model.cpp, fluid_block.cpp
-
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
-SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+SOURCES     := $(shell find $(SRCDIR) -path src/python_api -prune -o -type f -name *.$(SRCEXT) -print)
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
 LIBSOURCES  := $(shell find $(SRCDIR)/python_api -type f -name *.$(SRCEXT))
+PYBIND11    := $(shell python -m pybind11 --includes)
 
 #Default Make
-all: directories $(TARGET)
+aeolus: directories $(TARGET) lib
+	@echo done
+
+install: aeolus
+	mkdir -p $(INSTALLDIR)
+	mkdir -p $(LIBINSTDIR)
+	cp $(TARGETDIR)/* $(INSTALLDIR)
+	cp $(LIBDIR)/* $(LIBINSTDIR)
 
 # Compile only
 build: directories $(OBJECTS)
@@ -58,7 +65,8 @@ clean:
 
 #Full Clean, Objects and Binaries
 cleaner:
-	$(RM) -rf bin
+	$(RM) -rf build
+	$(RM) -rf inst
 
 #Pull in dependency info for *existing* .o files
 -include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
@@ -70,8 +78,8 @@ $(TARGET): $(OBJECTS)
 #Compile
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
-	$(CC) $(CFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
+	$(CC) $(CFLAGS) $(INC) $(PYBIND11) -c -o $@ $< 
+	$(CC) $(CFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT) $(python3 -m pybind11 --includes)
 	@cp -f $(BUILDDIR)/$*.$(DEPEXT) $(BUILDDIR)/$*.$(DEPEXT).tmp
 	@sed -e 's|.*:|$(BUILDDIR)/$*.$(OBJEXT):|' < $(BUILDDIR)/$*.$(DEPEXT).tmp > $(BUILDDIR)/$*.$(DEPEXT)
 	@sed -e 's/.*://' -e 's/\\$$//' < $(BUILDDIR)/$*.$(DEPEXT).tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >> $(BUILDDIR)/$*.$(DEPEXT)
@@ -79,7 +87,7 @@ $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 
 # make the dynamic libraries
 lib: $(OBJECTS)
-	$(CC) -shared -Wl,-soname,libgas.so -o $(LIBDIR)/libgas.so bin/obj/python_api/libgas.o
+	$(CC) -O3 -Wall -shared -std=c++11 -fPIC $(PYBIND11) $(SRCDIR)/python_api/lib.cpp -o $(LIBDIR)/aeolus.so $^ $(LIB)
 
 #Non-File Targets
 .PHONY: all remake clean cleaner resources

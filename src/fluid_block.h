@@ -19,12 +19,7 @@ class FluidBlock {
 public:
     FluidBlock(const char * file_name);
 
-    // Add an interface to the fluid block if it doesn't already exist
-    Interface * add_interface(std::vector<Vertex *> vertices);
-
-    // Find the interface with specified vertices.
-    // Return null pointer if the interface doesn't exist
-    Interface * find_interface(std::vector<Vertex *> vertices);
+    void fill_initial_condition();
 
     friend std::ostream& operator << (std::ostream& os, const FluidBlock fluid_block);
 
@@ -49,6 +44,12 @@ private:
     void _print_interfaces();
 
 
+    // Add an interface to the fluid block if it doesn't already exist
+    Interface * _add_interface(std::vector<Vertex *> vertices);
+
+    // Find the interface with specified vertices.
+    // Return null pointer if the interface doesn't exist
+    Interface * _find_interface(std::vector<Vertex *> vertices);
 };
 
 

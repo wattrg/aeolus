@@ -9,7 +9,7 @@ public:
     void update_from_pT(GasState & gas_state);
     void update_from_rhoT(GasState & gas_state);
     void update_from_prho(GasState & gas_state);
-    double internal_energy(GasState & gas_state);
+//    double internal_energy(GasState & gas_state);
 
 private:
     double _R;
