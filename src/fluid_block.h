@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <functional>
 #include "cell.h"
 #include "interface.h"
 #include "vertex.h"
@@ -19,9 +20,12 @@ class FluidBlock {
 public:
     FluidBlock(const char * file_name);
 
-    void fill_initial_condition();
-
+    /// String representation of the FluidBlock
+    std::string to_string();
     friend std::ostream& operator << (std::ostream& os, const FluidBlock fluid_block);
+
+    // set the function to use to fill the fluid block with data
+    void fill_function(std::function<FlowState(double, double, double)> &func);
 
 private:
     // Collection of cells

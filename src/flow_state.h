@@ -7,9 +7,11 @@
 class FlowState {
 public:
     FlowState();
+    FlowState(GasState gs, Vector3 vel);
     ~FlowState();
     GasState gas_state;
-    Vector2 velocity;
+    Vector3 velocity;
+    std::string to_string() const;
     friend std::ostream& operator << (std::ostream& os, const FlowState gs);
 };
 

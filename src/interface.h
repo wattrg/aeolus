@@ -41,10 +41,10 @@ private:
     std::vector<Vertex *> _vertices;
 
     //    position of the centre of the interface
-    Vector2 _pos;
+    Vector3 _pos;
 
     // direction of the interface
-    Vector2 _dir;
+    Vector3 _dir;
 
     // cell to the left
     Cell * _left_cell = nullptr;
@@ -63,7 +63,7 @@ private:
     Side _compute_side(Cell & cell);
 
     // Figure out if a point is on the left or right of the interface
-    Side _compute_side(Vector2 & point);
+    Side _compute_side(Vector3 & point);
 };
 
 #endif // __INTERFACE_H_

@@ -96,7 +96,7 @@ FluidBlock::FluidBlock(const char * file_name) {
         int sep = line.find(" ");
         x = std::stod(line.substr(0, sep));
         y = std::stod(line.substr(sep));
-        this->_vertices.push_back(new Vertex(Vector2(x,y), vertex_id));
+        this->_vertices.push_back(new Vertex(Vector3(x,y), vertex_id));
     }
 
     // Read the cells
@@ -174,11 +174,15 @@ FluidBlock::FluidBlock(const char * file_name) {
             interface->mark_on_boundary(tag);
         }
     }
-    for (Interface * interface : this->_interfaces){
-        std::cout << interface->get_left_cell() << "\n";
-    }
     // All done
     su2_file.close();
+}
+
+void FluidBlock::fill_function(std::function<FlowState(double, double, double)> &func){
+    for (Cell * cell : this->_cells) {
+        Vector3 pos = cell->get_pos();
+        cell->fs = func(pos.x, pos.y, pos.z);
+    }
 }
 
 Interface * FluidBlock::_find_interface(std::vector<Vertex *> vertices){
@@ -204,6 +208,21 @@ Interface * FluidBlock::_add_interface(std::vector<Vertex *> vertices){
     Interface * interface = new Interface(vertices);
     this->_interfaces.push_back(interface);
     return interface;
+}
+
+std::string FluidBlock::to_string() {
+    std::string str = "FluidBlock(";
+    str.append("n_interfaces = ");
+    str.append(std::to_string(this->_interfaces.size()));
+    str.append(", n_cells = ");
+    str.append(std::to_string(this->_cells.size()));
+    str.append(", cells = [");
+    for (Cell * cell : this->_cells){
+        str.append(cell->to_string());
+        str.append(",\n\n");
+    }
+    str.append(")");
+    return str;
 }
 
 std::ostream& operator << (std::ostream& os, const FluidBlock fluid_block){

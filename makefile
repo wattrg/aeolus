@@ -41,11 +41,14 @@ PYBIND11    := $(shell python -m pybind11 --includes)
 aeolus: directories $(TARGET) lib
 	@echo done
 
+pybind11:
+	@echo $(SOURCES)
+
 install: aeolus
-	mkdir -p $(INSTALLDIR)
-	mkdir -p $(LIBINSTDIR)
-	cp $(TARGETDIR)/* $(INSTALLDIR)
-	cp $(LIBDIR)/* $(LIBINSTDIR)
+	@mkdir -p $(INSTALLDIR)
+	@mkdir -p $(LIBINSTDIR)
+	@cp $(TARGETDIR)/* $(INSTALLDIR)
+	@cp $(LIBDIR)/* $(LIBINSTDIR)
 
 # Compile only
 build: directories $(OBJECTS)
@@ -55,9 +58,9 @@ remake: cleaner all
 
 #Make the Directories
 directories:
-	mkdir -p $(TARGETDIR)
-	mkdir -p $(BUILDDIR)
-	mkdir -p $(LIBDIR)
+	@mkdir -p $(TARGETDIR)
+	@mkdir -p $(BUILDDIR)
+	@mkdir -p $(LIBDIR)
 
 #Clean only Objecst
 clean:
@@ -77,7 +80,6 @@ $(TARGET): $(OBJECTS)
 
 #Compile
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
-	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INC) $(PYBIND11) -c -o $@ $< 
 	$(CC) $(CFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT) $(python3 -m pybind11 --includes)
 	@cp -f $(BUILDDIR)/$*.$(DEPEXT) $(BUILDDIR)/$*.$(DEPEXT).tmp
@@ -86,8 +88,10 @@ $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@rm -f $(BUILDDIR)/$*.$(DEPEXT).tmp
 
 # make the dynamic libraries
-lib: $(OBJECTS)
+$(BUILDDIR)/lib/aeolus.so: $(OBJECTS)
 	$(CC) -O3 -Wall -shared -std=c++11 -fPIC $(PYBIND11) $(SRCDIR)/python_api/lib.cpp -o $(LIBDIR)/aeolus.so $^ $(LIB)
+
+lib: $(BUILDDIR)/lib/aeolus.so
 
 #Non-File Targets
 .PHONY: all remake clean cleaner resources

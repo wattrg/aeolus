@@ -7,10 +7,10 @@
 
 class Vertex {
 public:
-    Vertex(Vector2 x, int id);
+    Vertex(Vector3 x, int id);
 
     // get the position
-    Vector2 & get_pos();
+    Vector3 & get_pos();
 
     // calculate distance to another vertex
     double distance_to(Vertex & other);
@@ -18,10 +18,11 @@ public:
     // check if two vertices are close to one another
     bool is(Vertex & other);
 
+    std::string to_string() const;
     friend std::ostream& operator << (std::ostream& os, const Vertex vertex);
 
 private:
-    Vector2 _pos;
+    Vector3 _pos;
     int _id;
 };
 

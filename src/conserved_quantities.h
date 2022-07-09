@@ -6,7 +6,7 @@
 class ConservedQuantity{
 public:
     double rho;
-    Vector2 momentum;
+    Vector3 momentum;
     double energy;
 };
 

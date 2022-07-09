@@ -16,7 +16,7 @@ Cell::Cell(std::vector<Vertex*> vertices, std::vector<Interface*> interfaces)
     }
     centre_x /= num_vertices;
     centre_y /= num_vertices;
-    _pos = Vector2(centre_x, centre_y);
+    _pos = Vector3(centre_x, centre_y);
 
     //  attach the cell to the interfaces
     for (Interface * interface : _interfaces) {
@@ -24,23 +24,24 @@ Cell::Cell(std::vector<Vertex*> vertices, std::vector<Interface*> interfaces)
     }
 }
 
-Vector2 & Cell::get_pos(){
+Vector3 & Cell::get_pos(){
     return this->_pos;
 }
 
+std::string Cell::to_string() const {
+    std::string str = "Cell(";
+    str.append(this->_pos.to_string());
+    str.append(this->fs.to_string());
+    str.append(", ");
+    str.append("vertices = [");
+    for (Vertex * vertex : this->_vertices){
+        str.append(vertex->to_string());
+    }
+    str.append("])");
+    return str;
+}
+
 std::ostream& operator << (std::ostream& os, const Cell cell){
-    os << "Cell(";
-    os << cell.fs << ", ";
-    os << "vertices = [";
-    for (Vertex * vertex : cell._vertices) {
-        os << *vertex << ", ";
-    }
-    os << "], ";
-    os << "interfaces = [";
-    for (Interface * interface : cell._interfaces) {
-        os << *interface << ", ";
-    }
-    os << "]";
-    os << ")";
+    os << cell.to_string();
     return os;
 }

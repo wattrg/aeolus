@@ -23,8 +23,9 @@ public:
     FlowState fs;
 
     // return the position of the cell
-    Vector2 & get_pos();
+    Vector3 & get_pos();
 
+    std::string to_string () const;
     friend std::ostream& operator << (std::ostream& os, const Cell gs);
 
 private:
@@ -35,7 +36,7 @@ private:
     std::vector<Vertex *> _vertices;
 
     // position of the cell centre
-    Vector2 _pos;
+    Vector3 _pos;
 
     // Cell shape
     CellShape::CellShape _shape;

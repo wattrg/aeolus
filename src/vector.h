@@ -6,15 +6,19 @@
 
 const double TOL=1e-10;
 
-class Vector2 {
+class Vector3 {
 public:
-    Vector2();
-    Vector2(double x, double y);
-    double x;
-    double y;
-    double distance_to(Vector2 & other);
-    bool is_close(Vector2 & other);
-    friend std::ostream& operator << (std::ostream& os, const Vector2 vec);
+    Vector3();
+    Vector3(double x);
+    Vector3(double x, double y);
+    Vector3(double x, double y, double z);
+    double x, y, z;
+
+    double distance_to(Vector3 & other);
+    bool is_close(Vector3 & other);
+
+    std::string to_string () const;
+    friend std::ostream& operator << (std::ostream& os, const Vector3 vec);
 
 };
 

@@ -83,7 +83,7 @@ Side Interface::_compute_side(Cell & cell){
     return _compute_side(cell.get_pos());
 }
 
-Side Interface::_compute_side(Vector2 & point){
+Side Interface::_compute_side(Vector3 & point){
     //       B
     //      /
     //     /
