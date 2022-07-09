@@ -1,8 +1,14 @@
 #include "gas_model.h"
 
+
 GasModel::GasModel(double R) : _R(R) {
     _Cv = 3.0 / 2.0 * _R;
     _Cp = 5.0 / 2.0 * _R;
+}
+
+GasModel::GasModel() {
+    // assume air
+    GasModel(287.0);
 }
 
 void GasModel::update_from_pT(GasState & gas_state) {

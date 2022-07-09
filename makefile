@@ -39,7 +39,7 @@ PYBIND11    := $(shell python -m pybind11 --includes)
 
 #Default Make
 aeolus: directories $(TARGET) lib
-	@echo done
+	@echo Finished compilation
 
 pybind11:
 	@echo $(SOURCES)
@@ -47,8 +47,9 @@ pybind11:
 install: aeolus
 	@mkdir -p $(INSTALLDIR)
 	@mkdir -p $(LIBINSTDIR)
-	@cp $(TARGETDIR)/* $(INSTALLDIR)
-	@cp $(LIBDIR)/* $(LIBINSTDIR)
+	cp $(TARGETDIR)/* $(INSTALLDIR)
+	cp $(LIBDIR)/* $(LIBINSTDIR)
+	@echo Finished installation
 
 # Compile only
 build: directories $(OBJECTS)
@@ -58,9 +59,9 @@ remake: cleaner all
 
 #Make the Directories
 directories:
-	@mkdir -p $(TARGETDIR)
-	@mkdir -p $(BUILDDIR)
-	@mkdir -p $(LIBDIR)
+	mkdir -p $(TARGETDIR)
+	mkdir -p $(BUILDDIR)
+	mkdir -p $(LIBDIR)
 
 #Clean only Objecst
 clean:

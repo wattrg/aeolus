@@ -3,8 +3,11 @@
 
 #include "gas_state.h"
 
+class GasState;
+
 class GasModel {
 public:
+    GasModel();
     GasModel(double R);
     void update_from_pT(GasState & gas_state);
     void update_from_rhoT(GasState & gas_state);
