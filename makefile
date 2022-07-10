@@ -44,7 +44,7 @@ build: directories $(TARGET) lib
 pybind11:
 	@echo $(SOURCES)
 
-install: aeolus
+install: build
 	@mkdir -p $(INSTALLDIR)
 	@mkdir -p $(LIBINSTDIR)
 	cp $(TARGETDIR)/* $(INSTALLDIR)
