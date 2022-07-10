@@ -181,7 +181,8 @@ FluidBlock::FluidBlock(const char * file_name) {
 void FluidBlock::fill_function(std::function<FlowState(double, double, double)> &func){
     for (Cell * cell : this->_cells) {
         Vector3 pos = cell->get_pos();
-        cell->fs = func(pos.x, pos.y, pos.z);
+        FlowState fs = func(pos.x, pos.y, pos.z);
+        cell->fs.copy(fs);
     }
 }
 

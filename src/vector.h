@@ -17,6 +17,8 @@ public:
     double distance_to(Vector3 & other);
     bool is_close(Vector3 & other);
 
+    void copy(Vector3 & other);
+
     std::string to_string () const;
     friend std::ostream& operator << (std::ostream& os, const Vector3 vec);
 

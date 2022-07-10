@@ -9,8 +9,12 @@ public:
     FlowState();
     FlowState(GasState gs, Vector3 vel);
     ~FlowState();
+
     GasState gas_state;
     Vector3 velocity;
+
+    void copy(FlowState & other);
+
     std::string to_string() const;
     friend std::ostream& operator << (std::ostream& os, const FlowState gs);
 };

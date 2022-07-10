@@ -6,6 +6,12 @@ Vector3::Vector3(double x) : x(x), y(0.0), z(0.0) {}
 Vector3::Vector3(double x, double y) : x(x), y(y), z(0.0) {}
 Vector3::Vector3(double x, double y, double z) : x(x), y(y), z(z) {}
 
+void Vector3::copy(Vector3 & other){
+    this->x = other.x;
+    this->y = other.y;
+    this->z = other.z;
+}
+
 std::string Vector3::to_string() const {
     std::string str = "Vector3(";
     str.append("x = ");
