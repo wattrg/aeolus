@@ -59,19 +59,20 @@ bool Interface::is(std::vector<Vertex *> & vertices){
     return is_same;
 }
 
-void Interface::attach_cell(Cell & cell) {
+bool Interface::attach_cell(Cell & cell) {
     // Attach this cell to the left or right of the interface
     Side side = this->_compute_side(cell);
     switch (side){
         case left:
             this->_left_cell = &cell;
-            break;
+            return true;
         case right:
             this->_right_cell = &cell;
-            break;
+            return false;
         case centre:
             throw std::runtime_error("Cell centre is on the interface");
     }
+    throw std::runtime_error("Shouldn't get here");
 }
 
 void Interface::mark_on_boundary(std::string tag) {

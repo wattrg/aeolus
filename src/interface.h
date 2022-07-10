@@ -25,7 +25,10 @@ public:
     bool has_vertex(Vertex & other_vertex);
 
     // attach a cell to the interface. This deals with left vs right cells
-    void attach_cell(Cell & cell);
+    // Returns true if the interface is facing the cell
+    // (i.e. the cell is to the left of the interface), or false if the interface
+    // is facing away from the cell (the cell is to the right of the interface)
+    bool attach_cell(Cell & cell);
 
     // Return reference to cells attached to the interface
     Cell & get_left_cell();

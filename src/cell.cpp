@@ -1,10 +1,13 @@
 #include "cell.h"
 
 Cell::Cell(std::vector<Vertex*> vertices, std::vector<Interface*> interfaces)
- : _interfaces(interfaces), _vertices(vertices)
+ : _vertices(vertices)
 {
     // TODO do we need to have vertices passed to the constructor?
     // we could get away with just the interfaces
+
+    //  this->_interfaces = interfaces;
+    //
 
     // find the centroid of the cell
     double centre_x = 0.0;
@@ -19,8 +22,10 @@ Cell::Cell(std::vector<Vertex*> vertices, std::vector<Interface*> interfaces)
     _pos = Vector3(centre_x, centre_y);
 
     //  attach the cell to the interfaces
-    for (Interface * interface : _interfaces) {
-        interface->attach_cell(*this);
+    bool inward_interface;
+    for (Interface * interface : interfaces) {
+        inward_interface = interface->attach_cell(*this);
+        this->_interfaces.push_back(CellFace(*interface, inward_interface)); 
     }
 }
 

@@ -15,6 +15,17 @@ namespace CellShape {
     };
 }
 
+// keep track of the interface, as well as if the interface is facing the cell
+// or not
+struct CellFace {
+    CellFace(Interface & interface, bool inwards) : interface(&interface), inwards(inwards){}
+    // the interface
+    Interface * interface;
+
+    // if this interface points inwards from the cell or not
+    bool inwards;
+};
+
 class Cell {
 public:
     Cell(std::vector<Vertex*> verticies, std::vector<Interface*>);
@@ -30,7 +41,11 @@ public:
 
 private:
     // the interfaces surrounding the cell
-    std::vector<Interface *> _interfaces;
+    std::vector<CellFace> _interfaces;
+
+    // true if the interface is facing away from this cell
+    // false if the interface is facing towards the cell
+    std::vector<bool> outward_interface;
 
     // the vertices of the cell
     std::vector<Vertex *> _vertices;

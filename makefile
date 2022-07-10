@@ -38,8 +38,8 @@ LIBSOURCES  := $(shell find $(SRCDIR)/python_api -type f -name *.$(SRCEXT))
 PYBIND11    := $(shell python -m pybind11 --includes)
 
 #Default Make
-aeolus: directories $(TARGET) lib
-	@echo Finished compilation
+build: directories $(TARGET) lib
+	@echo Finished build
 
 pybind11:
 	@echo $(SOURCES)
