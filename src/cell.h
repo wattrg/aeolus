@@ -43,10 +43,6 @@ private:
     // the interfaces surrounding the cell
     std::vector<CellFace> _interfaces;
 
-    // true if the interface is facing away from this cell
-    // false if the interface is facing towards the cell
-    std::vector<bool> outward_interface;
-
     // the vertices of the cell
     std::vector<Vertex *> _vertices;
 
