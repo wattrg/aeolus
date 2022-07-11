@@ -73,7 +73,7 @@ private:
     bool _is_on_boundary = false;
     std::string _boundary_tag = "";
 
-    // Figure out if a cell is on the left or right of the interface
+    // Figure out if a cell is
     Side _compute_side(Cell & cell);
 
     // Figure out if a point is on the left or right of the interface
