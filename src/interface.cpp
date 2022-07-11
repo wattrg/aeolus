@@ -2,6 +2,18 @@
 
 Interface::Interface(std::vector<Vertex *> vertices) : _vertices(vertices) {
     // TODO: check if vertices are co-planar
+
+    _left = new FlowState();
+    _right = new FlowState();
+}
+
+Interface::~Interface(){
+    delete _left;
+    delete _right;
+}
+
+void Interface::compute_flux(){
+    _compute_flux(*this->_left, *this->_right, this->_flux);
 }
 
 std::ostream& operator << (std::ostream& os, const Interface interface){

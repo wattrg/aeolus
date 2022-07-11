@@ -16,6 +16,7 @@ enum Side { left, right, centre };
 class Interface {
 public:
     Interface(std::vector<Vertex *> vertices);
+    ~Interface();
 
     // check if two vertices are the same
     bool is(Interface & other);
@@ -39,6 +40,11 @@ public:
 
     friend std::ostream& operator << (std::ostream& os, const Interface interface);
 
+    // compute the flux across this interface
+    // does not perform reconstruction. Assumes `_left` and `_right` are
+    // correctly set
+    void compute_flux();
+
 private:
     //  Vertices on the end of the interface
     std::vector<Vertex *> _vertices;
@@ -55,6 +61,11 @@ private:
     // cell to the right
     Cell * _right_cell = nullptr;
 
+    // The left and right flow states to use to compute the 
+    // fluxes. These states are possibly the result of reconstruction
+    FlowState * _left;
+    FlowState * _right;
+
     // the flux on the cell
     ConservedQuantity _flux;
 
@@ -67,6 +78,11 @@ private:
 
     // Figure out if a point is on the left or right of the interface
     Side _compute_side(Vector3 & point);
+
+    // pointer to flux calculator function. The actual function
+    // takes the left and right `FlowState`, and fills in the 
+    // ConservedQuantity flux value.
+    void (*_compute_flux)(FlowState&, FlowState&, ConservedQuantity&);
 };
 
 #endif // __INTERFACE_H_
