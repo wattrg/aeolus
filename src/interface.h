@@ -88,10 +88,13 @@ private:
     void (*_compute_flux)(FlowState&, FlowState&, ConservedQuantity&);
 
     // rotate left and right flow states to interface reference frame
-    void _transform_to_local_frame();
+    void _transform_flowstate_to_local_frame();
 
     // rotate left and right flow states to global frame
-    void _transform_to_global_frame();
+    void _transform_flowstate_to_global_frame();
+
+    // rotate flux to global frame
+    void _transform_flux_to_global_frame();
 };
 
 #endif // __INTERFACE_H_

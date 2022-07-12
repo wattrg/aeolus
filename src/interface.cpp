@@ -25,16 +25,20 @@ Interface::~Interface(){
 }
 
 void Interface::compute_flux(){
-    this->_transform_to_local_frame();
+    this->_transform_flowstate_to_local_frame();
     _compute_flux(*this->_left, *this->_right, this->_flux);
-    this->_transform_to_global_frame();
+    this->_transform_flowstate_to_global_frame();
 }
 
-void Interface::_transform_to_local_frame(){
+void Interface::_transform_flux_to_global_frame(){
     std::runtime_error("Not implemented yet");
 }
 
-void Interface::_transform_to_global_frame(){
+void Interface::_transform_flowstate_to_local_frame(){
+    std::runtime_error("Not implemented yet");
+}
+
+void Interface::_transform_flowstate_to_global_frame(){
     std::runtime_error("Not implemented yet");
 }
 
