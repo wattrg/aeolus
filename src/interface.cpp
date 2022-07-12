@@ -5,6 +5,18 @@ Interface::Interface(std::vector<Vertex *> vertices) : _vertices(vertices) {
 
     _left = new FlowState();
     _right = new FlowState();
+
+    if (this->_vertices.size() == 2){
+        // signals two dimensional grid
+        this->_tan1 = this->_vertices[1] - this->_vertices[0];
+        double length = this->_tan1.length();
+        this->_tan1.scale(1.0 / length);
+        this->_tan2 = Vector3(0.0, 0.0, 1.0);
+        this->_norm = this->_tan1.cross(this->_tan2);
+    }
+    else {
+        std::runtime_error("unsupported number of dimensions");
+    }
 }
 
 Interface::~Interface(){
@@ -13,7 +25,17 @@ Interface::~Interface(){
 }
 
 void Interface::compute_flux(){
+    this->_transform_to_local_frame();
     _compute_flux(*this->_left, *this->_right, this->_flux);
+    this->_transform_to_global_frame();
+}
+
+void Interface::_transform_to_local_frame(){
+    std::runtime_error("Not implemented yet");
+}
+
+void Interface::_transform_to_global_frame(){
+    std::runtime_error("Not implemented yet");
 }
 
 std::ostream& operator << (std::ostream& os, const Interface interface){

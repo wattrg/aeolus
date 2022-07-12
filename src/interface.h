@@ -52,8 +52,11 @@ private:
     //    position of the centre of the interface
     Vector3 _pos;
 
-    // direction of the interface
-    Vector3 _dir;
+    // direction normal to the interface
+    Vector3 _norm;
+
+    // the two directions tangent to the interface
+    Vector3 _tan1, _tan2;
 
     // cell to the left
     Cell * _left_cell = nullptr;
@@ -83,6 +86,12 @@ private:
     // takes the left and right `FlowState`, and fills in the 
     // ConservedQuantity flux value.
     void (*_compute_flux)(FlowState&, FlowState&, ConservedQuantity&);
+
+    // rotate left and right flow states to interface reference frame
+    void _transform_to_local_frame();
+
+    // rotate left and right flow states to global frame
+    void _transform_to_global_frame();
 };
 
 #endif // __INTERFACE_H_

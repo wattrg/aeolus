@@ -12,6 +12,39 @@ void Vector3::copy(Vector3 & other){
     this->z = other.z;
 }
 
+Vector3 Vector3::operator + (const Vector3& other){
+    return Vector3(this->x + other.x, this->y + other.y, this->z + other.z);    
+}
+
+Vector3 Vector3::operator - (const Vector3& other){
+    return Vector3(this->x - other.x, this->y - other.y, this->z - other.z);    
+}
+
+Vector3 Vector3::operator * (const double c){
+    return Vector3(c*this->x, c*this->y, c*this->z);    
+}
+
+Vector3 Vector3::operator / (const double c){
+    return Vector3(this->x/c, this->y/c, this->z/c);    
+}
+
+double Vector3::length(){
+   return this->x*this->x + this->y*this->y + this->z*this->z; 
+}
+
+void Vector3::scale(double scale){
+    this->x *= scale;
+    this->y *= scale;
+    this->z *= scale;
+}
+
+Vector3 Vector3::cross(const Vector3& other){
+    double x = this->x*other.z - this->z*other.y;
+    double y = this->z*other.x - this->x*other.z;
+    double z = this->x*other.y - this->y*other.x;
+    return Vector3(x, y, z);
+}
+
 std::string Vector3::to_string() const {
     std::string str = "Vector3(";
     str.append("x = ");
