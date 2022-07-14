@@ -45,6 +45,10 @@ Vector3 Vector3::cross(const Vector3& other){
     return Vector3(x, y, z);
 }
 
+double Vector3::dot(const Vector3 & other){
+    return this->x*other.x + this->y*other.y + this->z*other.z;
+}
+
 std::string Vector3::to_string() const {
     std::string str = "Vector3(";
     str.append("x = ");

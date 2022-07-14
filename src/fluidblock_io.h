@@ -6,7 +6,7 @@
 // Interface for specific implementations of reading a grid
 class GridInput{
 public:
-    virtual void read_grid(const char * file_name) = 0;
+    virtual void read_grid(const char * file_name, FluidBlock & fb) = 0;
 };
 
 // Interface for specific implementations of writing a grid

@@ -35,6 +35,9 @@ public:
 
     // cross product
     Vector3 cross(const Vector3& other);
+
+    // dot product
+    double dot(const Vector3& other);
 };
 
 #endif // __UTIL_H_

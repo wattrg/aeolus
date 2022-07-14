@@ -71,6 +71,7 @@ Element read_element(std::string line) {
 }
 
 FluidBlock::FluidBlock(const char * file_name) {
+    this->fb_config = GlobalConfig();
     std::fstream su2_file;
     su2_file.open(file_name);
     if (!su2_file) {
@@ -86,6 +87,7 @@ FluidBlock::FluidBlock(const char * file_name) {
     if ( n_dim != 2 ) {
         throw std::runtime_error("Only two dimensions implemented");
     }
+    this->fb_config.dimensions = n_dim;
 
     // Read the vertices
     std::getline(su2_file, line);
@@ -206,7 +208,7 @@ Interface * FluidBlock::_add_interface(std::vector<Vertex *> vertices){
     }
     // the interface doesn't exist, so we'll create a new one,
     // add it to the list, and return a reference to it
-    Interface * interface = new Interface(vertices);
+    Interface * interface = new Interface(vertices, this->fb_config);
     this->_interfaces.push_back(interface);
     return interface;
 }

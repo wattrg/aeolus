@@ -6,6 +6,7 @@
 #include "vector.h"
 #include "conserved_quantities.h"
 #include "vertex.h"
+#include "config.h"
 #include <vector>
 #include <cmath>
 
@@ -15,7 +16,7 @@ enum Side { left, right, centre };
 
 class Interface {
 public:
-    Interface(std::vector<Vertex *> vertices);
+    Interface(std::vector<Vertex *> vertices, GlobalConfig & config);
     ~Interface();
 
     // check if two vertices are the same
@@ -95,6 +96,8 @@ private:
 
     // rotate flux to global frame
     void _transform_flux_to_global_frame();
+
+    GlobalConfig & _my_config;
 };
 
 #endif // __INTERFACE_H_

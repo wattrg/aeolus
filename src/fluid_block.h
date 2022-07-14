@@ -11,6 +11,7 @@
 #include "vertex.h"
 #include "flow_state.h"
 #include "gas_model.h"
+#include "config.h"
 
 namespace ElementShape {
     enum ElementShape { Quad, Line, };
@@ -26,6 +27,8 @@ public:
 
     // set the function to use to fill the fluid block with data
     void fill_function(std::function<FlowState(double, double, double)> &func);
+
+    GlobalConfig fb_config;
 
 private:
     // Collection of cells
@@ -54,6 +57,7 @@ private:
     // Find the interface with specified vertices.
     // Return null pointer if the interface doesn't exist
     Interface * _find_interface(std::vector<Vertex *> vertices);
+
 };
 
 

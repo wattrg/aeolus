@@ -1,6 +1,8 @@
 #include "interface.h"
 
-Interface::Interface(std::vector<Vertex *> vertices) : _vertices(vertices) {
+Interface::Interface(std::vector<Vertex *> vertices, GlobalConfig & config )
+    : _vertices(vertices), _my_config(config)
+{
     // TODO: check if vertices are co-planar
 
     _left = new FlowState();
@@ -27,15 +29,37 @@ Interface::~Interface(){
 void Interface::compute_flux(){
     this->_transform_flowstate_to_local_frame();
     _compute_flux(*this->_left, *this->_right, this->_flux);
-    this->_transform_flowstate_to_global_frame();
+    this->_transform_flux_to_global_frame();
 }
 
 void Interface::_transform_flux_to_global_frame(){
-    std::runtime_error("Not implemented yet");
+    double * momentum = &this->_flux.momentum();
+    double p_x = 0.0, p_y = 0.0, p_z = 0.0;
+    p_x = this->_norm.x*momentum[0] + this->_tan1.x*momentum[1];
+    p_y = this->_norm.y*momentum[0] + this->_tan1.y*momentum[1];
+    if (this->_my_config.dimensions == 3){
+        p_x += this->_tan2.x*momentum[2];
+        p_y += this->_tan2.y*momentum[2];
+        p_z = this->_norm.z*momentum[0] + this->_tan1.z*momentum[1] + this->_tan2.z*momentum[2];
+    }
+    momentum[0] = p_x;
+    momentum[1] = p_y;
+    if (this->_my_config.dimensions == 3){
+        momentum[2] = p_z;
+    }
 }
 
 void Interface::_transform_flowstate_to_local_frame(){
-    std::runtime_error("Not implemented yet");
+    this->_left->velocity.x = this->_norm.dot(this->_left->velocity);
+    this->_right->velocity.x = this->_norm.dot(this->_right->velocity);
+
+    this->_left->velocity.y = this->_tan1.dot(this->_left->velocity);
+    this->_right->velocity.y = this->_tan1.dot(this->_right->velocity);
+
+    if (this->_my_config.dimensions == 3){
+        this->_left->velocity.z = this->_tan2.dot(this->_left->velocity);
+        this->_right->velocity.z = this->_tan2.dot(this->_right->velocity);
+    }
 }
 
 void Interface::_transform_flowstate_to_global_frame(){
