@@ -1,7 +1,7 @@
 #ifndef __FLOW_STATE_H_
 #define __FLOW_STATE_H_
 
-#include "gas_state.h"
+#include "gas/gas_state.h"
 #include "vector.h"
 
 class FlowState {

@@ -10,7 +10,7 @@
 #include "interface.h"
 #include "vertex.h"
 #include "flow_state.h"
-#include "gas_model.h"
+#include "gas/gas_model.h"
 #include "config.h"
 
 namespace ElementShape {

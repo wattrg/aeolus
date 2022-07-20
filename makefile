@@ -38,17 +38,18 @@ LIBSOURCES  := $(shell find $(SRCDIR)/python_api -type f -name *.$(SRCEXT))
 PYBIND11    := $(shell python -m pybind11 --includes)
 
 #Default Make
-build: directories $(TARGET) lib
+all: directories $(TARGET) lib
 	@echo Finished build
 
-pybind11:
+echo_sources:
 	@echo $(SOURCES)
 
-install: build
+echo_objects:
+	@echo $(OBJECTS)
+
+install: build $(TARGET) 
 	@mkdir -p $(INSTALLDIR)
-	@mkdir -p $(LIBINSTDIR)
 	cp $(TARGETDIR)/* $(INSTALLDIR)
-	cp $(LIBDIR)/* $(LIBINSTDIR)
 	@echo Finished installation
 
 # Compile only
@@ -62,6 +63,7 @@ directories:
 	mkdir -p $(TARGETDIR)
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(LIBDIR)
+	mkdir -p $(BUILDDIR)/gas
 
 #Clean only Objecst
 clean:
@@ -81,8 +83,8 @@ $(TARGET): $(OBJECTS)
 
 #Compile
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
-	$(CC) $(CFLAGS) $(INC) $(PYBIND11) -c -o $@ $< 
-	$(CC) $(CFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT) $(python3 -m pybind11 --includes)
+	$(CC) $(CFLAGS) $(INC) -c -o $@ $< 
+	$(CC) $(CFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
 	@cp -f $(BUILDDIR)/$*.$(DEPEXT) $(BUILDDIR)/$*.$(DEPEXT).tmp
 	@sed -e 's|.*:|$(BUILDDIR)/$*.$(OBJEXT):|' < $(BUILDDIR)/$*.$(DEPEXT).tmp > $(BUILDDIR)/$*.$(DEPEXT)
 	@sed -e 's/.*://' -e 's/\\$$//' < $(BUILDDIR)/$*.$(DEPEXT).tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >> $(BUILDDIR)/$*.$(DEPEXT)
@@ -92,7 +94,9 @@ $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 $(BUILDDIR)/lib/aeolus.so: $(OBJECTS)
 	$(CC) -O3 -Wall -shared -std=c++11 -fPIC $(PYBIND11) $(SRCDIR)/python_api/lib.cpp -o $(LIBDIR)/aeolus.so $^ $(LIB)
 
-lib: $(BUILDDIR)/lib/aeolus.so
+lib: directories $(BUILDDIR)/lib/aeolus.so
+	mkdir -p $(LIBINSTDIR)
+	cp -f $(LIBDIR)/* $(LIBINSTDIR)
 
 #Non-File Targets
 .PHONY: all remake clean cleaner resources

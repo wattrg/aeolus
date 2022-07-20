@@ -1,6 +1,6 @@
 #include <iostream>
-#include "gas_state.h"
-#include "gas_model.h"
+#include "gas/gas_state.h"
+#include "gas/gas_model.h"
 #include "fluid_block.h"
 
 int main(int argc, char *argv[]) {

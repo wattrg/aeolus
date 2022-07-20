@@ -1,5 +1,5 @@
-#include "../gas_state.h"
-#include "../gas_model.h"
+#include "../gas/gas_state.h"
+#include "../gas/gas_model.h"
 #include "../flow_state.h"
 #include "../vector.h"
 #include "../fluid_block.h"
