@@ -9,6 +9,7 @@ class ConservedQuantity{
 public:
     ConservedQuantity();
     ConservedQuantity(GlobalConfig & config);
+    GlobalConfig * cq_config;
     std::vector<double> conserved_quantities;
     double & rho() {return conserved_quantities[_rho_idx];}
     double * momentum() {return  &conserved_quantities[_momentum_idx];}

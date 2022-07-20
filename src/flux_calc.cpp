@@ -61,7 +61,9 @@ void hanel(FlowState &left, FlowState &right, ConservedQuantity &flux){
     double * momentum = flux.momentum();
     momentum[0] = uLplus * rL * uL + uRminus * rR * uR + p_half;
     momentum[1] = uLplus * rL * vL + uRminus * rL * vR;
-    momentum[2] = uLplus * rL * wL + uRminus * rR * wR;
+    if (flux.cq_config->dimensions > 2){
+        momentum[2] = uLplus * rL * wL + uRminus * rR * wR;
+    }
     flux.energy() = uLplus *rL * HL + uRminus * rR * HR; 
 
     return;
