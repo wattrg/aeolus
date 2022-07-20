@@ -38,8 +38,8 @@ LIBSOURCES  := $(shell find $(SRCDIR)/python_api -type f -name *.$(SRCEXT))
 PYBIND11    := $(shell python -m pybind11 --includes)
 
 #Default Make
-all: directories $(TARGET) lib
-	@echo Finished build
+all: directories $(TARGET) lib install install_lib
+	@echo Finished
 
 echo_sources:
 	@echo $(SOURCES)
@@ -54,6 +54,7 @@ install: build $(TARGET)
 
 # Compile only
 build: directories $(OBJECTS)
+	@echo Finished build
 
 #Remake
 remake: cleaner all
@@ -75,7 +76,7 @@ cleaner:
 	$(RM) -rf inst
 
 #Pull in dependency info for *existing* .o files
--include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
+#-include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
 
 #Link
 $(TARGET): $(OBJECTS)
@@ -95,8 +96,13 @@ $(BUILDDIR)/lib/aeolus.so: $(OBJECTS)
 	$(CC) -O3 -Wall -shared -std=c++11 -fPIC $(PYBIND11) $(SRCDIR)/python_api/lib.cpp -o $(LIBDIR)/aeolus.so $^ $(LIB)
 
 lib: directories $(BUILDDIR)/lib/aeolus.so
+	@echo Finished building python library
+
+install_lib: lib
 	mkdir -p $(LIBINSTDIR)
 	cp -f $(LIBDIR)/* $(LIBINSTDIR)
+	@echo Finished installing python library
+
 
 #Non-File Targets
 .PHONY: all remake clean cleaner resources
