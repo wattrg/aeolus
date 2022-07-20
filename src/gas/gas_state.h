@@ -15,6 +15,9 @@ public:
     double T;
     double rho;
     double u;
+    
+    // speed of sound
+    double a;
 
     std::string to_string() const;
     friend std::ostream& operator << (std::ostream& os, const GasState gs);
@@ -28,6 +31,10 @@ public:
 
     void set_gmodel(GasModel & gmodel);
     GasModel & get_gas_model();
+
+    // compute the internal energy
+    double internal_energy();
+
 
 private:
     GasModel * _gm;

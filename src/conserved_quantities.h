@@ -11,7 +11,7 @@ public:
     ConservedQuantity(GlobalConfig & config);
     std::vector<double> conserved_quantities;
     double & rho() {return conserved_quantities[_rho_idx];}
-    double & momentum() {return conserved_quantities[_momentum_idx];}
+    double * momentum() {return  &conserved_quantities[_momentum_idx];}
     double & energy() { return conserved_quantities[_energy_idx]; }
     int n_conserved_quantities() {return _n_conserved_quantities; }
 

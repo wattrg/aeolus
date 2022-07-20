@@ -22,6 +22,8 @@ void GasState::update_from_pT() { this->_gm->update_from_pT(*this); }
 void GasState::update_from_prho() { this->_gm->update_from_prho(*this); }
 void GasState::update_from_rhoT() { this->_gm->update_from_rhoT(*this); }
 
+double GasState::internal_energy() {return this->_gm->internal_energy(*this); }
+
 void GasState::copy(GasState & other){
     this->p = other.p;
     this->T = other.T;
