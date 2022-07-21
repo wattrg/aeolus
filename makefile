@@ -66,6 +66,7 @@ directories:
 	mkdir -p $(LIBDIR)
 	mkdir -p $(BUILDDIR)/gas
 	mkdir -p $(BUILDDIR)/grid
+	mkdir -p $(BUILDDIR)/boundary_conditions
 
 #Clean only Objecst
 clean:

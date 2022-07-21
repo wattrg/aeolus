@@ -36,6 +36,9 @@ public:
     // return the position of the cell
     Vector3 & get_pos();
 
+    // return if the cell is a valid cell (as opposed to ghost cell)
+    bool is_valid() { return _valid_cell; }
+
     std::string to_string () const;
     friend std::ostream& operator << (std::ostream& os, const Cell gs);
 
@@ -51,6 +54,13 @@ private:
 
     // Cell shape
     CellShape::CellShape _shape;
+
+    // keep track of if the cell is a valid cell
+    bool _valid_cell;
+
+    friend class ExtrapolateCopy;
+    friend class ReflectNormal;
+    friend class ReflectTangential;
 };
 
 #endif // __CELL_H_

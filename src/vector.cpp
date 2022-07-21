@@ -49,6 +49,24 @@ double Vector3::dot(const Vector3 & other){
     return this->x*other.x + this->y*other.y + this->z*other.z;
 }
 
+void Vector3::transform_to_local_frame(const Vector3 & n, const Vector3 & t1, const Vector3 & t2){
+    double x = this->dot(n);
+    double y = this->dot(t1);
+    double z = this->dot(t2);
+    this->x = x;
+    this->y = y;
+    this->z = z;
+}
+
+void Vector3::transform_to_global_frame(const Vector3 & n, const Vector3 & t1, const Vector3 & t2){
+    double x = this->x*n.x + this->y*t1.x + this->z*t2.x;
+    double y = this->x*n.y + this->y*t1.y + this->z*t2.y;
+    double z = this->x*n.z + this->y*t1.z + this->z*t2.z;
+    this->x = x;
+    this->y = y;
+    this->z = z;
+}
+
 std::string Vector3::to_string() const {
     std::string str = "Vector3(";
     str.append("x = ");

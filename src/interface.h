@@ -46,6 +46,14 @@ public:
     // correctly set
     void compute_flux();
 
+    // Return a reference to the valid cell. Will throw an error if the cells
+    // on both sides of the interface are valid
+    Cell & get_valid_cell();
+
+    Vector3 & n() { return this->_norm; }
+    Vector3 & t1() { return this->_tan1; }
+    Vector3 & t2() {return this->_tan2; }
+
 private:
     //  Vertices on the end of the interface
     std::vector<Vertex *> _vertices;
@@ -98,6 +106,7 @@ private:
     void _transform_flux_to_global_frame();
 
     GlobalConfig & _my_config;
+
 };
 
 #endif // __INTERFACE_H_

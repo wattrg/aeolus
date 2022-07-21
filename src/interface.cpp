@@ -50,20 +50,21 @@ void Interface::_transform_flux_to_global_frame(){
 }
 
 void Interface::_transform_flowstate_to_local_frame(){
-    this->_left->velocity.x = this->_norm.dot(this->_left->velocity);
-    this->_right->velocity.x = this->_norm.dot(this->_right->velocity);
-
-    this->_left->velocity.y = this->_tan1.dot(this->_left->velocity);
-    this->_right->velocity.y = this->_tan1.dot(this->_right->velocity);
-
-    if (this->_my_config.dimensions == 3){
-        this->_left->velocity.z = this->_tan2.dot(this->_left->velocity);
-        this->_right->velocity.z = this->_tan2.dot(this->_right->velocity);
-    }
+    this->_left->velocity.transform_to_local_frame(this->_norm, this->_tan1, this->_tan2);
+    this->_right->velocity.transform_to_local_frame(this->_norm, this->_tan1, this->_tan2);
 }
 
 void Interface::_transform_flowstate_to_global_frame(){
-    std::runtime_error("Not implemented yet");
+    this->_left->velocity.transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
+    this->_right->velocity.transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
+}
+
+Cell & Interface::get_valid_cell(){
+    bool left = this->get_left_cell().is_valid();
+    bool right = this->get_right_cell().is_valid();
+
+    if (left && right) throw std::runtime_error("Both cells are valid");
+    return (left) ? this->get_left_cell() : this->get_right_cell();
 }
 
 std::ostream& operator << (std::ostream& os, const Interface interface){

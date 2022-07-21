@@ -38,6 +38,13 @@ public:
 
     // dot product
     double dot(const Vector3& other);
+
+    // transform vector to the a coordinate system defined by three vectors
+    void transform_to_local_frame(const Vector3 & n, const Vector3 & t1, const Vector3 & t2);
+
+    // transform a vector in a coordinate system defined by three vectors
+    // back into the global frame
+    void transform_to_global_frame(const Vector3 & n, const Vector3 & t1, const Vector3 & t2);
 };
 
 #endif // __UTIL_H_
