@@ -6,8 +6,8 @@
 #include "ghost_cell_effect.h"
 #include <vector>
 
+// This is general enough to represent all boundary conditions
 class BoundaryCondition{
-
 public:
     BoundaryCondition(std::vector<GhostCellEffect> pre_recon);
 
@@ -23,5 +23,15 @@ private:
     // actions to perform
     std::vector<GhostCellEffect> _pre_recon_actions;
 };
+
+// we'll keep track of the available boundary conditions here
+namespace BoundaryConditions {
+enum BcType {
+    SlipWall,
+    SupersonicInflow,
+    SupersonicOutflow,
+    UserDefined,
+};
+}
 
 #endif

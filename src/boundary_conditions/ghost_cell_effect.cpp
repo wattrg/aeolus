@@ -1,16 +1,14 @@
 #include "ghost_cell_effect.h"
 
 // Fixed PT
-FixedPT::FixedPT(double p, double T) : _p(p), _T(T) {}
+FlowStateCopy::FlowStateCopy(FlowState & fs) : _fs(fs) {}
 
-void FixedPT::apply(Cell & ghost_cell){
-    ghost_cell.fs.gas_state.p = this->_p;
-    ghost_cell.fs.gas_state.T = this->_T;
-    ghost_cell.fs.gas_state.update_from_pT();
+void FlowStateCopy::apply(Cell & ghost_cell){
+    ghost_cell.fs.copy(this->_fs);
 }
 
 // copy from the interior valid cell
-void ExtrapolateCopy::apply(Cell & ghost_cell) {
+void InternalCopy::apply(Cell & ghost_cell) {
     // the ghost cell only has one interface -- the one with the 
     // valid cell. So we find the cell on the other side
     // of that interface

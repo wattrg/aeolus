@@ -61,12 +61,12 @@ remake: cleaner all
 
 #Make the Directories
 directories:
-	mkdir -p $(TARGETDIR)
-	mkdir -p $(BUILDDIR)
-	mkdir -p $(LIBDIR)
-	mkdir -p $(BUILDDIR)/gas
-	mkdir -p $(BUILDDIR)/grid
-	mkdir -p $(BUILDDIR)/boundary_conditions
+	@mkdir -p $(TARGETDIR)
+	@mkdir -p $(BUILDDIR)
+	@mkdir -p $(LIBDIR)
+	@mkdir -p $(BUILDDIR)/gas
+	@mkdir -p $(BUILDDIR)/grid
+	@mkdir -p $(BUILDDIR)/boundary_conditions
 
 #Clean only Objecst
 clean:

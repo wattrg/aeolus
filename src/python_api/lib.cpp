@@ -3,6 +3,7 @@
 #include "../flow_state.h"
 #include "../vector.h"
 #include "../fluid_block.h"
+#include "libbc.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
 
@@ -43,4 +44,5 @@ PYBIND11_MODULE(aeolus, m) {
         .def(pybind11::init<const char *>())
         .def("__repr__", &FluidBlock::to_string)
         .def("fill_function", &FluidBlock::fill_function, "fill the fluid block with FlowState as a function of position");
+
 }

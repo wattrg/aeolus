@@ -58,7 +58,7 @@ private:
     // keep track of if the cell is a valid cell
     bool _valid_cell;
 
-    friend class ExtrapolateCopy;
+    friend class InternalCopy;
     friend class ReflectNormal;
     friend class ReflectTangential;
 };

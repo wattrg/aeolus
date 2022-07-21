@@ -8,18 +8,18 @@ public:
     virtual void apply(Cell & ghost_cell)=0;
 };
 
-class FixedPT : public GhostCellEffect{
+class FlowStateCopy : public GhostCellEffect{
 public:
-    FixedPT(double p, double T);
+    FlowStateCopy(FlowState & fs);
     void apply(Cell & ghost_cell);
 
 private:
-    double _p, _T;
+    FlowState & _fs;
 };
 
-class ExtrapolateCopy : public GhostCellEffect{
+class InternalCopy : public GhostCellEffect{
 public:
-    ExtrapolateCopy();
+    InternalCopy();
     void apply(Cell & ghost_cell);
 };
 
