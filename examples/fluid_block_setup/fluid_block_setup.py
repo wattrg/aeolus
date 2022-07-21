@@ -1,4 +1,5 @@
 from aeolus import FluidBlock, GasState, GasModel, FlowState, Vector3
+import aeolus.bc
 
 gm = GasModel(287)
 

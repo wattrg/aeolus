@@ -11,6 +11,7 @@ public:
 class FlowStateCopy : public GhostCellEffect{
 public:
     FlowStateCopy(FlowState & fs);
+    FlowStateCopy(const FlowStateCopy & other);
     void apply(Cell & ghost_cell);
 
 private:
@@ -20,18 +21,21 @@ private:
 class InternalCopy : public GhostCellEffect{
 public:
     InternalCopy();
+    InternalCopy(const InternalCopy & other);
     void apply(Cell & ghost_cell);
 };
 
 class ReflectNormal : public GhostCellEffect {
 public:
     ReflectNormal();
+    ReflectNormal(const ReflectNormal & other);
     void apply(Cell & ghost_cell);
 };
 
 class ReflectTangential : public GhostCellEffect {
 public:
     ReflectTangential();
+    ReflectTangential(const ReflectTangential & other);
     void apply(Cell & ghost_cell) {}
 };
 
