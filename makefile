@@ -65,6 +65,7 @@ directories:
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(LIBDIR)
 	mkdir -p $(BUILDDIR)/gas
+	mkdir -p $(BUILDDIR)/grid
 
 #Clean only Objecst
 clean:

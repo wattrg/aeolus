@@ -12,6 +12,9 @@
 #include "flow_state.h"
 #include "gas/gas_model.h"
 #include "config.h"
+#include "grid/grid_io.h"
+
+class GridIO;
 
 namespace ElementShape {
     enum ElementShape { Quad, Line, };
@@ -58,6 +61,10 @@ private:
     // Return null pointer if the interface doesn't exist
     Interface * _find_interface(std::vector<Vertex *> vertices);
 
+    friend class GridIO;
+    friend class Su2GridInput;
+
+    GridIO * _grid_io;
 };
 
 
