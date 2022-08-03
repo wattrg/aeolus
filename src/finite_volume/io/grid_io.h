@@ -1,17 +1,16 @@
 #ifndef __FLUIDBLOCK_IO_H_
 #define __FLUIDBLOCK_IO_H_
 
-#include "../finite_volume/fluid_block.h"
+#include "../fluid_block.h"
 
 class FluidBlock;
+namespace ElementShape{ enum ElementShape : unsigned short; };
 
 namespace GridFormat {
-
 enum GridFormats{
     su2,
     none,
 };
-
 }
 
 // Interface for specific implementations of reading a grid
@@ -29,7 +28,6 @@ public:
 // Public interface to handling fluid block input/output
 class GridIO {
 public:
-    GridIO(GridInput * input, GridOutput * output);
     GridIO(GridFormat::GridFormats input, GridFormat::GridFormats output);
 
     // read a grid from file
@@ -47,9 +45,21 @@ private:
     friend class GridOutput;
 };
 
-// su2 grid reader
-class Su2GridInput : public GridInput {
-    void read_grid(const char * file_name, FluidBlock & fb);   
+// some useful things for reading grids
+struct Element {
+
+    ElementShape::ElementShape shape;
+    std::vector<int> vertices;
+
+    Element(ElementShape::ElementShape shape, std::vector<int> vertices)
+        : shape(shape), vertices(vertices)
+    {};
 };
+
+ElementShape::ElementShape int_to_element_shape(int shape);
+int element_shape_to_number_vertices(ElementShape::ElementShape shape);
+std::string read_string(std::string str);
+int read_integer(std::string str);
+Element read_element(std::string line);
 
 #endif

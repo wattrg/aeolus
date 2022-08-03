@@ -65,10 +65,10 @@ directories:
 	@mkdir -p $(BUILDDIR)
 	@mkdir -p $(LIBDIR)
 	@mkdir -p $(BUILDDIR)/gas
-	@mkdir -p $(BUILDDIR)/grid
 	@mkdir -p $(BUILDDIR)/util
 	@mkdir -p $(BUILDDIR)/finite_volume
 	@mkdir -p $(BUILDDIR)/finite_volume/boundary_conditions
+	@mkdir -p $(BUILDDIR)/finite_volume/io
 
 #Clean only Objecst
 clean:

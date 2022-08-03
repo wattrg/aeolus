@@ -12,12 +12,14 @@
 #include "flow_state.h"
 #include "../gas/gas_model.h"
 #include "config.h"
-#include "../grid/grid_io.h"
+#include "io/grid_io.h"
+#include "io/fluid_block_io.h"
 
 class GridIO;
+class FluidBlockIO;
 
 namespace ElementShape {
-    enum ElementShape { Quad, Line, };
+    enum ElementShape : unsigned short { Quad, Line, };
 }
 
 class FluidBlock {
@@ -65,6 +67,7 @@ private:
     friend class Su2GridInput;
 
     GridIO * _grid_io;
+    FluidBlockIO * _fb_io;
 };
 
 
