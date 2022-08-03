@@ -26,6 +26,14 @@ GridIO::GridIO(GridFormat::GridFormats input, GridFormat::GridFormats output)
     }
 }
 
+GridInput::~GridInput(){};
+GridOutput::~GridOutput(){};
+
+GridIO::~GridIO(){
+    delete _grid_input;
+    delete _grid_output;
+}
+
 void GridIO::read_grid(const char * file_name, FluidBlock & fluid_block){
     if (_grid_input){
         _grid_input->read_grid(file_name, fluid_block);

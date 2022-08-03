@@ -5,13 +5,13 @@
 
 class VTKWriter : public FluidBlockWriter {
 public:
-    //VTKWriter();
+    ~VTKWriter();
     void write_fluid_block(const char & file_name, FluidBlock & fb);
 };
 
 class VTKReader : public FluidBlockReader {
 public:
-    //VTKReader();
+    ~VTKReader();
     void read_fluid_block(const char & file_name, FluidBlock & fb);
 };
 

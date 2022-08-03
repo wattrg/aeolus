@@ -20,6 +20,14 @@ FluidBlockIO::FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt,
     }
 }
 
+FluidBlockIO::~FluidBlockIO(){
+    delete _reader;
+    delete _writer;
+}
+
+FluidBlockWriter::~FluidBlockWriter() {}
+FluidBlockReader::~FluidBlockReader() {}
+
 void FluidBlockIO::read_fluid_block(const char & file_name, FluidBlock & fb) {
     if (this->_reader) {
         this->_reader->read_fluid_block(file_name, fb);
