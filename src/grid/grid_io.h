@@ -1,7 +1,7 @@
 #ifndef __FLUIDBLOCK_IO_H_
 #define __FLUIDBLOCK_IO_H_
 
-#include "../fluid_block.h"
+#include "../finite_volume/fluid_block.h"
 
 class FluidBlock;
 

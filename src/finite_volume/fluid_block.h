@@ -10,9 +10,9 @@
 #include "interface.h"
 #include "vertex.h"
 #include "flow_state.h"
-#include "gas/gas_model.h"
+#include "../gas/gas_model.h"
 #include "config.h"
-#include "grid/grid_io.h"
+#include "../grid/grid_io.h"
 
 class GridIO;
 

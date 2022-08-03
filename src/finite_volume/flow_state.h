@@ -1,8 +1,8 @@
 #ifndef __FLOW_STATE_H_
 #define __FLOW_STATE_H_
 
-#include "gas/gas_state.h"
-#include "vector.h"
+#include "../gas/gas_state.h"
+#include "../util/vector.h"
 
 class FlowState {
 public:

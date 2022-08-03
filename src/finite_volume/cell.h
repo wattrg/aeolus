@@ -1,7 +1,7 @@
 #ifndef __CELL_H_
 #define __CELL_H_
 
-#include "vector.h"
+#include "../util/vector.h"
 #include "flow_state.h"
 #include "interface.h"
 #include "vertex.h"

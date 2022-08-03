@@ -4,9 +4,9 @@
 #define __LIBBC_
 
 #include <vector>
-#include "../boundary_conditions/boundary_condition.h"
-#include "../boundary_conditions/ghost_cell_effect.h"
-#include "../flow_state.h"
+#include "../finite_volume/boundary_conditions/boundary_condition.h"
+#include "../finite_volume/boundary_conditions/ghost_cell_effect.h"
+#include "../finite_volume/flow_state.h"
 
 BoundaryCondition slip_wall();
 BoundaryCondition supersonic_outflow();

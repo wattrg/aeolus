@@ -3,7 +3,7 @@
 
 #include "cell.h"
 #include "flow_state.h"
-#include "vector.h"
+#include "../util/vector.h"
 #include "conserved_quantities.h"
 #include "vertex.h"
 #include "config.h"

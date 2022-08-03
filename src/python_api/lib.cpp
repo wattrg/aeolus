@@ -1,9 +1,9 @@
 #include "../gas/gas_state.h"
 #include "../gas/gas_model.h"
-#include "../flow_state.h"
-#include "../vector.h"
-#include "../fluid_block.h"
-#include "../boundary_conditions/boundary_condition.h"
+#include "../finite_volume/flow_state.h"
+#include "../util/vector.h"
+#include "../finite_volume/fluid_block.h"
+//#include "../finite_volume/boundary_conditions/boundary_conditions.h"
 #include "libbc.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
