@@ -1,6 +1,6 @@
 #ifndef __FLUX_CALC_H
 #define __FLUX_CALC_H
-#include "flow_state.h"
+#include "../gas/flow_state.h"
 #include "conserved_quantities.h"
 
 

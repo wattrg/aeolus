@@ -1,6 +1,6 @@
 #include "../gas/gas_state.h"
 #include "../gas/gas_model.h"
-#include "../finite_volume/flow_state.h"
+#include "../gas/flow_state.h"
 #include "../util/vector.h"
 #include "../finite_volume/fluid_block.h"
 //#include "../finite_volume/boundary_conditions/boundary_conditions.h"

@@ -2,7 +2,7 @@
 #define __CELL_H_
 
 #include "../util/vector.h"
-#include "flow_state.h"
+#include "../gas/flow_state.h"
 #include "interface.h"
 #include "vertex.h"
 #include <vector>
