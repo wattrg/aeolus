@@ -16,6 +16,10 @@ void FluidBlock::fill_function(std::function<FlowState(double, double, double)> 
     }
 }
 
+const std::vector<Cell *> & FluidBlock::cells() const{
+    return this->_cells;
+}
+
 Interface * FluidBlock::_find_interface(std::vector<Vertex *> vertices){
     // Return a pointer to the interface with verteices `vertices`
     for (Interface * interface : this->_interfaces){

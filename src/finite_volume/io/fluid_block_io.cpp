@@ -5,7 +5,8 @@ FluidBlockIO::FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt,
                            FluidBlockFormats::FluidBlockFormat output_fmt) {
     switch (input_fmt) {
         case FluidBlockFormats::vtk:
-            _reader = new VTKReader();
+            //_reader = new VTKReader();
+            throw std::runtime_error("reading from vtk not supported yet");
             break;
         case FluidBlockFormats::none:
             break;

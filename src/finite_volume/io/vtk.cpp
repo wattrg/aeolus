@@ -3,7 +3,7 @@
 // VTK writer
 VTKWriter::~VTKWriter() {}
 
-void VTKWriter::write_fluid_block(const char & file_name, FluidBlock & fb){
+void VTKWriter::write_fluid_block(const char & file_name, const FluidBlock & fb){
     std::runtime_error("Writing vtk files not implemented yet");
 }
 
