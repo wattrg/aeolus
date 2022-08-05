@@ -42,6 +42,13 @@ public:
     std::string to_string () const;
     friend std::ostream& operator << (std::ostream& os, const Cell gs);
 
+    // give out some read only info about the vertices
+    const unsigned int number_vertices() const;
+    const std::vector<Vertex *> & vertices() const;
+
+    // get info about the shape of the cell
+    const CellShape::CellShape get_shape() const;
+
 private:
     // the interfaces surrounding the cell
     std::vector<CellFace> _interfaces;

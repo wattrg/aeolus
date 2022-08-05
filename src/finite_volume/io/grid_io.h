@@ -2,6 +2,7 @@
 #define __FLUIDBLOCK_IO_H_
 
 #include "../fluid_block.h"
+#include <fstream>
 
 class FluidBlock;
 namespace ElementShape{ enum ElementShape : unsigned short; };

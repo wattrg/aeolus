@@ -7,7 +7,7 @@
 class FluidBlock;
 
 
-// pipeline for accessing data from a fluid block.
+// pipeline for accessing data from a cell.
 class Accessor {
 public: 
     Accessor(std::string name,
@@ -16,7 +16,7 @@ public:
 
     // access a particular variable from a fluid block
     // this returns a vector of a particular type
-    std::vector<double> operator () (const FluidBlock & fb);
+    std::vector<double> read_variable(const Cell & cell);
 
     unsigned int number_of_components();
 

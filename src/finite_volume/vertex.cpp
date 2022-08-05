@@ -10,7 +10,11 @@ bool Vertex::is(Vertex & other) {
     return this->_id == other._id;
 }
 
-Vector3 & Vertex::get_pos(){
+const int Vertex::id() const {
+    return this->_id;
+}
+
+const Vector3 & Vertex::get_pos() const {
     return this->_pos;
 }
 

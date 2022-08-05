@@ -20,7 +20,7 @@ DEPEXT     := d
 OBJEXT     := o
 
 #Flags, Libraries and Includes
-CFLAGS      := -fopenmp -Wall -g -fPIC
+CFLAGS      := -fopenmp -Wall -g -fPIC -std=c++20
 LIB         := -fopenmp -lm
 INC         := -I$(INCDIR) -I/usr/local/include 
 INCDEP      := -I$(INCDIR)

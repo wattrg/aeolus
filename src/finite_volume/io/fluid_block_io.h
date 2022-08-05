@@ -16,6 +16,13 @@ enum FluidBlockFormat {
 };
 }
 
+template <typename T>
+struct GridData{
+    GridData(std::string name, std::vector<T> data, unsigned int number_components);
+    std::string name;
+    std::vector<T> data;
+    unsigned int number_components;
+};
 
 // handles writing a fluid block to a file
 class FluidBlockWriter {
@@ -25,8 +32,12 @@ public:
 
     void register_accessor(Accessor * accessor);
 
-private:
-    std::vector<Accessor *> _variables;
+protected:
+    // one accessor for each flow variable
+    std::vector<Accessor *> _variable_accessors;
+
+    // place to keep all the flow data
+    std::vector<GridData<double>> _flow_data;
 };
 
 
@@ -47,7 +58,7 @@ public:
     ~FluidBlockIO();
 
     void read_fluid_block(const char & file_name,  FluidBlock & fb);
-    void write_fluid_block(const char & file_name, FluidBlock & fb);
+    void write_fluid_block(const char & file_name, const FluidBlock & fb);
 
 private:
     FluidBlockWriter * _writer;

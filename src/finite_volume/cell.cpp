@@ -33,6 +33,18 @@ Vector3 & Cell::get_pos(){
     return this->_pos;
 }
 
+const unsigned int Cell::number_vertices() const {
+    return this->_vertices.size();
+}
+
+const std::vector<Vertex * > & Cell::vertices() const {
+    return this->_vertices;
+}
+
+const CellShape::CellShape Cell::get_shape() const {
+    return _shape; 
+}
+
 std::string Cell::to_string() const {
     std::string str = "Cell(";
     str.append(this->_pos.to_string());

@@ -1,6 +1,11 @@
 #include "fluid_block_io.h"
 #include "vtk.h"
 
+template <typename T>
+GridData<T>::GridData(std::string name, std::vector<T> data, unsigned int number_components)
+    : name(name), data(data), number_components(number_components)
+{}
+
 FluidBlockIO::FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt,
                            FluidBlockFormats::FluidBlockFormat output_fmt) {
     switch (input_fmt) {
@@ -35,7 +40,7 @@ void FluidBlockIO::read_fluid_block(const char & file_name, FluidBlock & fb) {
     }
 }
 
-void FluidBlockIO::write_fluid_block(const char & file_name, FluidBlock & fb) {
+void FluidBlockIO::write_fluid_block(const char & file_name, const FluidBlock & fb) {
     if (this->_writer){
         this->_writer->write_fluid_block(file_name, fb);
     }

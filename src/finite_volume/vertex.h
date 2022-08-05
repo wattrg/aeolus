@@ -10,7 +10,7 @@ public:
     Vertex(Vector3 x, int id);
 
     // get the position
-    Vector3 & get_pos();
+    const Vector3 & get_pos() const;
 
     // calculate distance to another vertex
     double distance_to(Vertex & other);
@@ -20,6 +20,8 @@ public:
 
     std::string to_string() const;
     friend std::ostream& operator << (std::ostream& os, const Vertex vertex);
+
+    const int id() const;
 
 private:
     Vector3 _pos;
