@@ -2,9 +2,10 @@
 #include "vtk.h"
 
 template <typename T>
-GridData<T>::GridData(std::string name, std::vector<T> data, unsigned int number_components)
-    : name(name), data(data), number_components(number_components)
+GridData<T>::GridData(std::string name, std::vector<T> data, unsigned int number_components, std::string type_name)
+    : name(name), data(data), number_components(number_components), type_name(type_name)
 {}
+
 
 FluidBlockIO::FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt,
                            FluidBlockFormats::FluidBlockFormat output_fmt) {
@@ -15,6 +16,8 @@ FluidBlockIO::FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt,
             break;
         case FluidBlockFormats::none:
             break;
+        default:
+            throw std::runtime_error("Unknown fluid block format");
     }
 
     switch (output_fmt) {
@@ -23,6 +26,8 @@ FluidBlockIO::FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt,
             break;
         case FluidBlockFormats::none:
             break;
+        default:
+            throw std::runtime_error("Unknown fluid block format");
     }
 }
 

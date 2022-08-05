@@ -13,10 +13,10 @@ public:
     void write_fluid_block(const char & file_name, const FluidBlock & fb);
 
 private:
-    std::vector<double> _points;
-    std::vector<int> _connectivity;
-    std::vector<int> _offsets;
-    std::vector<int> _types;
+    GridData<double> _points;
+    GridData<int> _connectivity;
+    GridData<int> _offsets;
+    GridData<int> _types;
     const std::vector<Cell *> * _cells;
     unsigned int _number_points;
     unsigned int _number_cells;
@@ -25,7 +25,7 @@ private:
     void _read_data(const FluidBlock & fb);
 
     // write a data array
-    template <typename T> void _write_data_array(GridData<T> data);
+    template <typename T> void _write_data_array(const GridData<T> & data, std::fstream & vtk_file);
 };
 
 
