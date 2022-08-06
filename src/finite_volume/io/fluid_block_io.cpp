@@ -2,10 +2,29 @@
 #include "vtk.h"
 
 template <typename T>
-GridData<T>::GridData(std::string name, std::vector<T> data, unsigned int number_components, std::string type_name)
-    : name(name), data(data), number_components(number_components), type_name(type_name)
+GridData<T>::GridData(std::string name, 
+                      std::vector<T> data, 
+                      unsigned int number_components,
+                      std::string type)
+    : name(name), data(data), number_components(number_components), type_name(type)
 {}
 
+//template <typename T>
+//GridData<T>::GridData(std::string name,
+//                      std::string type)
+//    : name(name), type_name(type), data(std::vector<T>()), number_components(0)
+//{}
+
+template <typename T>
+GridData<T>::GridData(std::string name, 
+                      unsigned int number_components,
+                      std::string type)
+    : name(name), data(std::vector<T>()), number_components(number_components), type_name(type)
+{}
+
+FluidBlockIO::FluidBlockIO() {
+    _writer = new VTKWriter();
+}
 
 FluidBlockIO::FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt,
                            FluidBlockFormats::FluidBlockFormat output_fmt) {

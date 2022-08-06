@@ -9,7 +9,7 @@
 class VTKWriter : public FluidBlockWriter {
 public:
     ~VTKWriter();
-
+    VTKWriter();
     void write_fluid_block(const char & file_name, const FluidBlock & fb);
 
 private:

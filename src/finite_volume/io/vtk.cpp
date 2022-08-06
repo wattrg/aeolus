@@ -4,6 +4,13 @@
 // VTK writer
 VTKWriter::~VTKWriter() {}
 
+VTKWriter::VTKWriter():
+    _points(GridData<double> ("points", "Float32")),
+    _connectivity(GridData<int> ("connectivity", "Int32")),
+    _offsets(GridData<int> ("offsets", "Int32")),
+    _types(GridData<int> ("offsets", "Int32"))
+{}
+
 void VTKWriter::write_fluid_block(const char & file_name, const FluidBlock & fb){
     std::fstream vtk_file;
     vtk_file.open(&file_name);
@@ -21,27 +28,12 @@ void VTKWriter::write_fluid_block(const char & file_name, const FluidBlock & fb)
     vtk_file << "</Cells>\n";
     vtk_file << "<CellData>\n";
     for (GridData<double> data : this->_flow_data){
-        this->_write_data_array(data, vtk_file); 
+        this->_write_data_array(data, vtk_file);
     }
     vtk_file << "</CellData>\n";
     vtk_file << "</Piece>\n";
     vtk_file << "</UnstructuredGrid>\n";
     vtk_file << "</VTKFile>";
-}
-
-template <typename T>
-void VTKWriter::_write_data_array(const GridData<T> & data, std::fstream & vtk_file){
-    vtk_file << "<DataArray type='" << data.type_name << "' ";
-    vtk_file << "NumberOfComponents='" <<  data.number_components << "' ";
-    vtk_file << "format='ascii'>\n";
-    for (unsigned int i = 0; i < data.data.size(); i++){
-        // print a new line to separate the different values
-        for (unsigned int i_comp = 0; i < data.number_components-1; i_comp++){
-            vtk_file << data.data[i] << " ";
-        }
-        vtk_file << data.data[i] << "\n";
-    }
-    vtk_file << "</DataArray>\n";
 }
 
 void VTKWriter::_read_data(const FluidBlock & fb){
@@ -74,7 +66,21 @@ void VTKWriter::_read_data(const FluidBlock & fb){
     }
 }
 
-
+template <typename T>
+void VTKWriter::_write_data_array(const GridData<T> & data, std::fstream & vtk_file){
+    vtk_file << "DataArray type='" << data.type_name << "'";
+    if (data.number_components != 0){
+        vtk_file << " NumberOfComponents='" << data.number_components << "'";
+    }
+    vtk_file << " format='ascii'>\n";
+    for (unsigned int i = 0; i < data.data.size(); i++){
+        for (unsigned int i_comp = 0; i_comp < data.number_components-1; i_comp++){
+            vtk_file << data.data[i] << " ";
+        }
+        vtk_file << data.data[i] << "\n";
+    }
+    vtk_file << "</DataArray>\n";
+}
 
 
 // VTK reader 

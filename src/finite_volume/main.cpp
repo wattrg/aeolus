@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
 
 
     FluidBlock fluid_block = FluidBlock("test_grid.su2");
+    FluidBlockIO fb_io = FluidBlockIO();
 
     return 0;
 }
