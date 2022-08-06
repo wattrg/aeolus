@@ -18,7 +18,17 @@ enum FluidBlockFormat {
 
 template <typename T>
 struct GridData{
-    GridData(std::string name, std::vector<T> data, unsigned int number_components);
+    GridData(const std::string & name, 
+             std::vector<T> data, 
+             unsigned int number_components,
+             const std::string & type);
+
+    GridData(const std::string & name,
+             const std::string & type); 
+
+    GridData(const std::string & name,
+             unsigned int number_components,
+             const std::string & type);
     std::string name;
     std::vector<T> data;
     unsigned int number_components;
