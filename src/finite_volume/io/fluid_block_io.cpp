@@ -2,8 +2,11 @@
 #include "vtk.h"
 
 template <typename T>
-GridData<T>::GridData(std::string name, std::vector<T> data, unsigned int number_components)
-    : name(name), data(data), number_components(number_components)
+GridData<T>::GridData(const std::string & name, 
+                      std::vector<T> data, 
+                      unsigned int number_components,
+                      const std::string & type)
+    : name(name), data(data), number_components(number_components), type_name(type)
 {}
 
 FluidBlockIO::FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt,

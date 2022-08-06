@@ -32,6 +32,7 @@ struct GridData{
     std::string name;
     std::vector<T> data;
     unsigned int number_components;
+    std::string type_name;
 };
 
 // handles writing a fluid block to a file
