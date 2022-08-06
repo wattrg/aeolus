@@ -91,6 +91,9 @@ void VTKWriter::_read_data(const FluidBlock & fb){
         for (unsigned int var_i = 0; var_i < _variable_accessors.size(); var_i++){
             Accessor & var_access = _variable_accessors[var_i];
             std::vector<double> data = var_access.read_variable(*cell);
+            if (data.size() != var_access.number_of_components()){
+                throw std::runtime_error("Incorrect number of components for flow variable");
+            }
             for (double d : data){
                 _flow_data[var_i].data.push_back(d);
             }
@@ -110,7 +113,7 @@ void VTKWriter::_write_data_array(const GridData<T> & data, std::ofstream & vtk_
         for (unsigned int i_comp = 0; i_comp < data.number_components-1; i_comp++){
             vtk_file << data.data[i+i_comp] << " ";
         }
-        vtk_file << data.data[i] << "\n";
+        vtk_file << data.data[i+data.number_components-1] << "\n";
     }
     vtk_file << "</DataArray>\n";
 }

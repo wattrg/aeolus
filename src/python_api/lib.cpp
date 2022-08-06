@@ -3,6 +3,7 @@
 #include "../gas/flow_state.h"
 #include "../util/vector.h"
 #include "../finite_volume/fluid_block.h"
+#include "../finite_volume/io/fluid_block_io.h"
 //#include "../finite_volume/boundary_conditions/boundary_conditions.h"
 #include "libbc.h"
 #include <pybind11/pybind11.h>
@@ -45,6 +46,10 @@ PYBIND11_MODULE(aeolus, m) {
         .def(pybind11::init<const char *>())
         .def("__repr__", &FluidBlock::to_string)
         .def("fill_function", &FluidBlock::fill_function, "fill the fluid block with FlowState as a function of position");
+
+    pybind11::class_<FluidBlockIO>(m, "FluidBlockIO")
+        .def(pybind11::init<>())
+        .def("write_fluid_block", &FluidBlockIO::write_fluid_block, "Write the fluid block to file");
 
     pybind11::module_ bc = m.def_submodule("bc", "Boundary conditions");
     pybind11::class_<BoundaryCondition>(bc, "BoundaryCondition");
