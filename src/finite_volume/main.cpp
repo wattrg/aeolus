@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "../gas/gas_state.h"
 #include "../gas/gas_model.h"
 #include "fluid_block.h"
@@ -16,6 +17,8 @@ int main(int argc, char *argv[]) {
 
     FluidBlock fluid_block = FluidBlock("test_grid.su2");
     FluidBlockIO fb_io = FluidBlockIO();
+    fb_io.write_fluid_block("test.vtu", fluid_block);
+    std::cout << "Finished :)\n";
 
     return 0;
 }

@@ -19,12 +19,14 @@ public:
     std::vector<double> read_variable(const Cell & cell);
 
     unsigned int number_of_components();
+    std::string name();
 
 protected:
     std::vector<double> (*_access_from_cell)(const Cell &);
 
 private:
     unsigned int _number_of_components;
+    std::string _name;
 };
 
 // functions to actually get the data from an individual cell

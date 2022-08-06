@@ -24,8 +24,11 @@ private:
     // read all the data
     void _read_data(const FluidBlock & fb);
 
+    // clear the data
+    void _clear_data();
+
     // write a data array
-    template <typename T> void _write_data_array(const GridData<T> & data, std::fstream & vtk_file);
+    template <typename T> void _write_data_array(const GridData<T> & data, std::ofstream & vtk_file);
 };
 
 

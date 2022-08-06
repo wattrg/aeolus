@@ -35,6 +35,7 @@ public:
     GlobalConfig fb_config;
 
     const std::vector<Cell *> & cells() const;
+    const std::vector<Vertex *> & vertices() const;
 
 private:
     // Collection of cells

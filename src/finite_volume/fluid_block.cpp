@@ -20,6 +20,10 @@ const std::vector<Cell *> & FluidBlock::cells() const{
     return this->_cells;
 }
 
+const std::vector<Vertex *> & FluidBlock::vertices() const {
+    return this->_vertices;
+}
+
 Interface * FluidBlock::_find_interface(std::vector<Vertex *> vertices){
     // Return a pointer to the interface with verteices `vertices`
     for (Interface * interface : this->_interfaces){

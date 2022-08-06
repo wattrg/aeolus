@@ -23,14 +23,26 @@ struct GridData{
     GridData(std::string name, 
              std::vector<T> data, 
              unsigned int number_components,
-             std::string type);
+             std::string type) :
+        name(name), data(data), number_components(number_components), type_name(type_name)
+    {};
 
     GridData(std::string name, std::string type) : 
-        name(name), type_name(type) {}; 
+        name(name), data(std::vector<T>()), type_name(type), number_components(0)
+    {}; 
 
     GridData(std::string name,
              unsigned int number_components,
-             std::string type);
+             std::string type) :
+        name(name), data(std::vector<T>()), number_components(number_components), type_name(type)
+    {};
+
+    void clear(){
+        type_name = "";
+        name = "";
+        data.clear();
+        number_components = 0;
+    };
 
     std::string name;
     std::vector<T> data;
@@ -42,13 +54,14 @@ struct GridData{
 class FluidBlockWriter {
 public:
     virtual ~FluidBlockWriter() = 0;
+    FluidBlockWriter();
     virtual void write_fluid_block(const char & file_name, const FluidBlock & fb) = 0;
 
-    void register_accessor(Accessor * accessor);
+    void add_variable(Accessor accessor);
 
 protected:
     // one accessor for each flow variable
-    std::vector<Accessor *> _variable_accessors;
+    std::vector<Accessor> _variable_accessors;
 
     // place to keep all the flow data
     std::vector<GridData<double>> _flow_data;
@@ -72,8 +85,8 @@ public:
                  FluidBlockFormats::FluidBlockFormat output_fmt);
     ~FluidBlockIO();
 
-    void read_fluid_block(const char & file_name,  FluidBlock & fb);
-    void write_fluid_block(const char & file_name, const FluidBlock & fb);
+    void read_fluid_block(const char * file_name,  FluidBlock & fb);
+    void write_fluid_block(const char * file_name, const FluidBlock & fb);
 
 private:
     FluidBlockWriter * _writer;
