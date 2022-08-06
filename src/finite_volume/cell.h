@@ -33,6 +33,9 @@ public:
     // the flow state in the cell centre
     FlowState fs;
 
+    // the conserved quantities
+    ConservedQuantity _conserved_quantities;
+
     // return the position of the cell
     Vector3 & get_pos();
 
@@ -49,6 +52,9 @@ public:
     // get info about the shape of the cell
     const CellShape::CellShape get_shape() const;
 
+    // compute the residual for a cell, assuming the fluxes have been calculated
+    void compute_residual();
+
 private:
     // the interfaces surrounding the cell
     std::vector<CellFace> _interfaces;
@@ -64,6 +70,7 @@ private:
 
     // keep track of if the cell is a valid cell
     bool _valid_cell;
+
 
     friend class InternalCopy;
     friend class ReflectNormal;

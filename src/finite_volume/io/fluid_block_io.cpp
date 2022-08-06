@@ -1,11 +1,20 @@
 #include "fluid_block_io.h"
 #include "vtk.h"
 
+FluidBlockWriter::FluidBlockWriter(){
+   // default things to output
+   this->add_variable("pressure", &access_pressure, 1);
+   this->add_variable("density", &access_density, 1);
+   this->add_variable("temperature", &access_temperature, 1);
+   this->add_variable("velocity", &access_velocity, 3);
+   this->add_variable("vel.x", &access_x_velocity, 1);
+   this->add_variable("vel.y", &access_y_velocity, 1);
+   this->add_variable("vel.z", &access_z_velocity, 1);
+}
+
 FluidBlockIO::FluidBlockIO() {
     _writer = new VTKWriter();
     _reader = nullptr;
-
-
 }
 
 FluidBlockIO::FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt,
@@ -43,16 +52,11 @@ FluidBlockIO::~FluidBlockIO(){
     }
 }
 
-FluidBlockWriter::FluidBlockWriter(){
-   // default things to output
-   this->add_variable(Accessor("pressure", &access_pressure, 1));
-   this->add_variable(Accessor("density", &access_density, 1));
-   this->add_variable(Accessor("temperature", &access_temperature, 1));
-   this->add_variable(Accessor("velocity", &access_velocity, 3));
-}
 
-void FluidBlockWriter::add_variable(Accessor accessor){
-    this->_variable_accessors.push_back(accessor);
+void FluidBlockWriter::add_variable(std::string name, 
+                                    std::vector<double> (*access_from_cell)(const Cell &),
+                                    int number_of_components){
+    this->_variable_accessors.push_back(Accessor(name, access_from_cell, number_of_components));
 }
 
 FluidBlockWriter::~FluidBlockWriter() {}

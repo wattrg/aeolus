@@ -4,6 +4,7 @@
 class GlobalConfig{
 public:
     short dimensions = 2;
+
 };
 
 #endif

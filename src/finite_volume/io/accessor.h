@@ -34,5 +34,8 @@ std::vector<double> access_pressure(const Cell &);
 std::vector<double> access_density(const Cell &);
 std::vector<double> access_temperature(const Cell &);
 std::vector<double> access_velocity(const Cell &);
+std::vector<double> access_x_velocity(const Cell &);
+std::vector<double> access_y_velocity(const Cell &);
+std::vector<double> access_z_velocity(const Cell &);
 
 #endif

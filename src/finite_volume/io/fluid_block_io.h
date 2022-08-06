@@ -57,7 +57,9 @@ public:
     FluidBlockWriter();
     virtual void write_fluid_block(const char & file_name, const FluidBlock & fb) = 0;
 
-    void add_variable(Accessor accessor);
+    void add_variable(std::string name, 
+                      std::vector<double> (*access_from_cell)(const Cell &),
+                      int number_of_components);
 
 protected:
     // one accessor for each flow variable

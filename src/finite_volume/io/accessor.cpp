@@ -17,6 +17,18 @@ std::vector<double> access_velocity(const Cell & cell){
     return std::vector<double> {vel.x, vel.y, vel.z};
 }
 
+std::vector<double> access_x_velocity(const Cell & cell){
+    return std::vector<double> {cell.fs.velocity.x};
+}
+
+std::vector<double> access_y_velocity(const Cell & cell){
+    return std::vector<double> {cell.fs.velocity.y};
+}
+
+std::vector<double> access_z_velocity(const Cell & cell){
+    return std::vector<double> {cell.fs.velocity.z};
+}
+
 Accessor::Accessor(std::string name,
                    std::vector<double> (*access_from_cell)(const Cell &), 
                    int number_of_components):
