@@ -18,17 +18,20 @@ enum FluidBlockFormat {
 
 template <typename T>
 struct GridData{
-    GridData(const std::string & name, 
+    GridData(){};
+
+    GridData(std::string name, 
              std::vector<T> data, 
              unsigned int number_components,
-             const std::string & type);
+             std::string type);
 
-    GridData(const std::string & name,
-             const std::string & type); 
+    GridData(std::string name, std::string type) : 
+        name(name), type_name(type) {}; 
 
-    GridData(const std::string & name,
+    GridData(std::string name,
              unsigned int number_components,
-             const std::string & type);
+             std::string type);
+
     std::string name;
     std::vector<T> data;
     unsigned int number_components;
@@ -64,6 +67,7 @@ public:
 
 class FluidBlockIO {
 public:
+    FluidBlockIO();
     FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt, 
                  FluidBlockFormats::FluidBlockFormat output_fmt);
     ~FluidBlockIO();
