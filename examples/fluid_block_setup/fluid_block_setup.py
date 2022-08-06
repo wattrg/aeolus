@@ -3,13 +3,17 @@ import aeolus.bc
 
 gm = GasModel(287)
 
-def fill_func(x, y, z):
-    gs = GasState()
-    gs.T = 300
-    gs.p = 101325
-    gm.update_from_pT(gs)
-    vel = Vector3(1000)
-    return FlowState(gs, vel)
+def fill_func(x, y, _):
+    """ compute the flow state as a function of position """
+    gas_state = GasState()
+    if x < 1.5:
+        gas_state.T = 500
+    else:
+        gas_state.T = 300
+    gas_state.p = 101325
+    gm.update_from_pT(gas_state)
+    vel = Vector3(1000+200*x, 500*(y-1.5))
+    return FlowState(gas_state, vel)
 
 
 fb = FluidBlock("test_grid.su2")
