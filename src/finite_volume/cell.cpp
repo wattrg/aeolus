@@ -21,11 +21,42 @@ Cell::Cell(std::vector<Vertex*> vertices, std::vector<Interface*> interfaces)
     centre_y /= num_vertices;
     _pos = Vector3(centre_x, centre_y);
 
+    this->_compute_volume();
+
     //  attach the cell to the interfaces
     bool inward_interface;
     for (Interface * interface : interfaces) {
         inward_interface = interface->attach_cell(*this);
         this->_interfaces.push_back(CellFace(*interface, inward_interface)); 
+    }
+}
+
+void Cell::_compute_shape(){
+    switch (this->_vertices.size()){
+        case 4:
+            this->_shape = CellShape::Quad;
+            break;
+        default:
+            throw std::runtime_error("unknown cell shape");
+    }
+}
+
+const double Cell::volume() const {return this->_volume;}
+
+void Cell::_compute_volume(){
+    switch (this->_shape){
+        case CellShape::Quad:
+            {
+            std::vector<Vector3> points;
+            points.reserve(4);
+            for (Vertex * vertex : this->_vertices){
+                points.push_back(vertex->get_pos());
+            }
+            this->_volume = quad_area(points);
+            break;
+            }
+        default:
+            throw std::runtime_error("unknown cell shape");
     }
 }
 

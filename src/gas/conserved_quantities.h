@@ -2,7 +2,7 @@
 #define __CONSERVED_QUANTITIES_H_
 
 #include "../util/vector.h"
-#include "../finite_volume/config.h"
+#include "config.h"
 #include <vector>
 
 class ConservedQuantity{
@@ -14,7 +14,7 @@ public:
     double & rho() {return conserved_quantities[_rho_idx];}
     double * momentum() {return  &conserved_quantities[_momentum_idx];}
     double & energy() { return conserved_quantities[_energy_idx]; }
-    int n_conserved_quantities() {return _n_conserved_quantities; }
+    const int n_conserved_quantities() const {return _n_conserved_quantities; }
 
 private:
     int _rho_idx = 0;

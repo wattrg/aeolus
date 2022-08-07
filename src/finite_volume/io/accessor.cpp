@@ -29,6 +29,10 @@ std::vector<double> access_z_velocity(const Cell & cell){
     return std::vector<double> {cell.fs.velocity.z};
 }
 
+std::vector<double> access_volume(const Cell & cell){
+    return std::vector<double> {cell.volume()};
+}
+
 Accessor::Accessor(std::string name,
                    std::vector<double> (*access_from_cell)(const Cell &), 
                    int number_of_components):

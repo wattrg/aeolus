@@ -2,10 +2,13 @@
 #define __CELL_H_
 
 #include "../util/vector.h"
+#include "../util/volume.h"
 #include "../gas/flow_state.h"
 #include "interface.h"
+#include "conserved_quantities.h"
 #include "vertex.h"
 #include <vector>
+#include <cmath>
 
 class Interface;
 
@@ -36,6 +39,16 @@ public:
     // the conserved quantities
     ConservedQuantity _conserved_quantities;
 
+    // the residual
+    ConservedQuantity _residual;
+
+public:
+    // compute the residual for a cell, assuming the fluxes have been calculated
+    void compute_residual();
+
+    // volume of the cell
+    const double volume() const;
+
     // return the position of the cell
     Vector3 & get_pos();
 
@@ -48,12 +61,11 @@ public:
     // give out some read only info about the vertices
     const unsigned int number_vertices() const;
     const std::vector<Vertex *> & vertices() const;
+    const std::vector<Vector3> & vertex_positions() const;
 
     // get info about the shape of the cell
     const CellShape::CellShape get_shape() const;
 
-    // compute the residual for a cell, assuming the fluxes have been calculated
-    void compute_residual();
 
 private:
     // the interfaces surrounding the cell
@@ -67,9 +79,14 @@ private:
 
     // Cell shape
     CellShape::CellShape _shape;
+    void _compute_shape();
 
     // keep track of if the cell is a valid cell
     bool _valid_cell;
+
+    // cell volume
+    double _volume = std::nan("");
+    void _compute_volume();
 
 
     friend class InternalCopy;

@@ -37,5 +37,6 @@ std::vector<double> access_velocity(const Cell &);
 std::vector<double> access_x_velocity(const Cell &);
 std::vector<double> access_y_velocity(const Cell &);
 std::vector<double> access_z_velocity(const Cell &);
+std::vector<double> access_volume(const Cell &);
 
 #endif

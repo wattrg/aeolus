@@ -10,6 +10,7 @@ FluidBlockWriter::FluidBlockWriter(){
    this->add_variable("vel.x", &access_x_velocity, 1);
    this->add_variable("vel.y", &access_y_velocity, 1);
    this->add_variable("vel.z", &access_z_velocity, 1);
+   this->add_variable("volume", &access_volume, 1);
 }
 
 FluidBlockIO::FluidBlockIO() {
