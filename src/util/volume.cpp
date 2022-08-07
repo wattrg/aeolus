@@ -4,7 +4,7 @@
 double quad_area(std::vector<Vector3> & points){
     if (points.size() != 4) { throw std::runtime_error("Shape doesn't have 4 points"); }
     for (Vector3 point : points){
-        if (point.z != 0.0) { 
+        if (fabs(point.z) > 1e-14) { 
             throw std::runtime_error("Non zero z coordinate not supported yet"); 
         }
     }
