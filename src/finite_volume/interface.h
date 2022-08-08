@@ -19,6 +19,9 @@ public:
     Interface(std::vector<Vertex *> vertices, GlobalConfig & config);
     ~Interface();
 
+    // area of the interface
+    const double area() const;
+
     // check if two vertices are the same
     bool is(Interface & other);
     bool is(std::vector<Vertex *> & vertices);
@@ -45,6 +48,7 @@ public:
     // does not perform reconstruction. Assumes `_left` and `_right` are
     // correctly set
     void compute_flux();
+    const ConservedQuantity & flux() const;
 
     // Return a reference to the valid cell. Will throw an error if the cells
     // on both sides of the interface are valid
@@ -60,6 +64,10 @@ private:
 
     //    position of the centre of the interface
     Vector3 _pos;
+
+    // area
+    double _area = std::nan("");
+    void _compute_area();
 
     // direction normal to the interface
     Vector3 _norm;

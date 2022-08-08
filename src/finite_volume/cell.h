@@ -37,10 +37,10 @@ public:
     FlowState fs;
 
     // the conserved quantities
-    ConservedQuantity _conserved_quantities;
+    ConservedQuantity conserved_quantities;
 
     // the residual
-    ConservedQuantity _residual;
+    ConservedQuantity residual;
 
 public:
     // compute the residual for a cell, assuming the fluxes have been calculated

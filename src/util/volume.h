@@ -6,5 +6,6 @@
 
 double triangle_area(std::vector<Vector3> & points);
 double quad_area(std::vector<Vector3> & points);
+double line_area(std::vector<Vector3> & points);
 
 #endif

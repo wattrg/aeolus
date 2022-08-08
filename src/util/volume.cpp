@@ -19,3 +19,11 @@ double quad_area(std::vector<Vector3> & points){
     double tmp_minus = b.x*a.y + c.x*b.y + d.x*c.y + a.x*d.y;
     return 0.5 * fabs(tmp_plus - tmp_minus);
 }
+
+double line_area(std::vector<Vector3> & points){
+    if (points.size() != 2)
+        throw std::runtime_error("Shape should only have 2 points");
+    Vector3 a = points[0];
+    Vector3 b= points[1];
+    return sqrt( (b.x-a.x)*(b.x-a.x) + (b.y-a.y)*(b.y-a.y) + (b.z-a.z)*(b.z-a.z) );
+}

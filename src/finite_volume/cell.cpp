@@ -60,6 +60,18 @@ void Cell::_compute_volume(){
     }
 }
 
+void Cell::compute_residual(){
+    double surface_integral = 0.0;
+    int n_conserved = this->conserved_quantities.n_conserved_quantities();
+    for (int i = 0; i < n_conserved; i++){
+        for (CellFace face : this->_interfaces){
+            Interface * fvface = face.interface;
+            double area = face.inwards * fvface->area(); 
+            surface_integral += area * fvface->flux().conserved_quantities[i];
+        }
+    }
+}
+
 Vector3 & Cell::get_pos(){
     return this->_pos;
 }

@@ -15,10 +15,20 @@ Interface::Interface(std::vector<Vertex *> vertices, GlobalConfig & config )
         this->_tan1.scale(1.0 / length);
         this->_tan2 = Vector3(0.0, 0.0, 1.0);
         this->_norm = this->_tan1.cross(this->_tan2);
+        std::vector<Vector3> points {vertices[0]->get_pos(), vertices[1]->get_pos()};
+        this->_area = line_area(points);
     }
     else {
         std::runtime_error("unsupported number of dimensions");
     }
+}
+
+const double Interface::area() const {
+    return _area;
+}
+
+const ConservedQuantity & Interface::flux() const {
+    return _flux;
 }
 
 Interface::~Interface(){

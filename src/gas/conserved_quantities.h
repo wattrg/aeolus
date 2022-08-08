@@ -15,6 +15,7 @@ public:
     double * momentum() {return  &conserved_quantities[_momentum_idx];}
     double & energy() { return conserved_quantities[_energy_idx]; }
     const int n_conserved_quantities() const {return _n_conserved_quantities; }
+    double & operator [] (int i);
 
 private:
     int _rho_idx = 0;
