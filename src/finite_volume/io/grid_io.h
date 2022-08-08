@@ -60,9 +60,6 @@ public:
 private:
     GridInput * _grid_input = nullptr;
     GridOutput * _grid_output = nullptr; 
-
-    friend class GridInput;
-    friend class GridOutput;
 };
 
 // some useful things for reading grids
