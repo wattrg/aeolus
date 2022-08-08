@@ -18,6 +18,11 @@ FluidBlockIO::FluidBlockIO() {
     _reader = nullptr;
 }
 
+FluidBlockIO::~FluidBlockIO(){
+    if (this->_writer) delete this->_writer;
+    if (this->_reader) delete this->_reader;
+}
+
 FluidBlockIO::FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt,
                            FluidBlockFormats::FluidBlockFormat output_fmt) {
     switch (input_fmt) {
@@ -43,16 +48,6 @@ FluidBlockIO::FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt,
             throw std::runtime_error("Unknown fluid block format");
     }
 }
-
-FluidBlockIO::~FluidBlockIO(){
-    if (this->_writer){
-        delete _writer;
-    }
-    if (this->_reader){
-        delete _reader;
-    }
-}
-
 
 void FluidBlockWriter::add_variable(std::string name, 
                                     std::vector<double> (*access_from_cell)(const Cell &),

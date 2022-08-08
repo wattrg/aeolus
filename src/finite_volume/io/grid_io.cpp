@@ -30,8 +30,8 @@ GridInput::~GridInput(){};
 GridOutput::~GridOutput(){};
 
 GridIO::~GridIO(){
-    delete _grid_input;
-    delete _grid_output;
+    if (_grid_input) delete _grid_input;
+    if (_grid_output) delete _grid_output;
 }
 
 void GridIO::read_grid(const char * file_name, FluidBlock & fluid_block){

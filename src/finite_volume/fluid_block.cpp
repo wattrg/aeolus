@@ -1,5 +1,18 @@
 #include "fluid_block.h"
 
+FluidBlock::~FluidBlock(){
+    for (Cell * cell : this->_cells){
+        delete cell;
+    }
+    for (Interface * interface : this->_interfaces){
+        delete interface;
+    }
+    for (Vertex * vertex : this->_vertices){
+        delete vertex;
+    }
+    if (_grid_io) delete _grid_io;
+}
+
 FluidBlock::FluidBlock(const char * file_name) {
     this->fb_config = GlobalConfig();
     this->_grid_io = new GridIO(GridFormat::su2, GridFormat::none);

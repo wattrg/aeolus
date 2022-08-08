@@ -23,6 +23,7 @@ namespace ElementShape {
 
 class FluidBlock {
 public:
+    ~FluidBlock();
     FluidBlock(const char * file_name);
 
     /// String representation of the FluidBlock
