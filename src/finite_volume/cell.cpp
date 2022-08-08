@@ -61,7 +61,7 @@ void Cell::_compute_volume(){
             break;
             }
         default:
-            throw std::runtime_error("unknown cell shape");
+            throw std::runtime_error("unknown cell shape in volume calculation");
     }
 }
 
