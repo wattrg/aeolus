@@ -21,6 +21,7 @@ Cell::Cell(std::vector<Vertex*> vertices, std::vector<Interface*> interfaces)
     centre_y /= num_vertices;
     _pos = Vector3(centre_x, centre_y);
 
+    this->_compute_shape();
     this->_compute_volume();
 
     //  attach the cell to the interfaces
