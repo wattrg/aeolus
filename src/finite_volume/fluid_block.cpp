@@ -16,6 +16,13 @@ void FluidBlock::fill_function(std::function<FlowState(double, double, double)> 
     }
 }
 
+void FluidBlock::set_grid(std::vector<Vertex *> vertices, std::vector<Interface *> interfaces, std::vector<Cell *> cells){
+    this->_vertices = vertices;
+    this->_interfaces = interfaces;
+    this->_cells = cells;
+}
+
+
 const std::vector<Cell *> & FluidBlock::cells() const{
     return this->_cells;
 }
@@ -24,30 +31,7 @@ const std::vector<Vertex *> & FluidBlock::vertices() const {
     return this->_vertices;
 }
 
-Interface * FluidBlock::_find_interface(std::vector<Vertex *> vertices){
-    // Return a pointer to the interface with verteices `vertices`
-    for (Interface * interface : this->_interfaces){
-        if (interface->is(vertices)) return interface;
-    }
-    return nullptr;
-}
 
-Interface * FluidBlock::_add_interface(std::vector<Vertex *> vertices){
-    // loop through all the interfaces we have so far, checking
-    // if the this new one is already in our collection of them
-    for (Interface * interface : this->_interfaces){
-        if (interface->is(vertices)){
-            //  the interface already exists, so we'll return
-            // a reference to the interface
-            return interface;
-        }
-    }
-    // the interface doesn't exist, so we'll create a new one,
-    // add it to the list, and return a reference to it
-    Interface * interface = new Interface(vertices, this->fb_config);
-    this->_interfaces.push_back(interface);
-    return interface;
-}
 
 std::string FluidBlock::to_string() {
     std::string str = "FluidBlock(";

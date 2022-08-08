@@ -34,8 +34,13 @@ public:
 
     GlobalConfig fb_config;
 
+    // getter methods
     const std::vector<Cell *> & cells() const;
     const std::vector<Vertex *> & vertices() const;
+
+    // setter method
+    void set_grid(std::vector<Vertex *>, std::vector<Interface *>, std::vector<Cell *>);
+
 
 private:
     // Collection of cells
@@ -56,17 +61,6 @@ private:
     bool _has_vertex(Vertex vertex);
 
     void _print_interfaces();
-
-
-    // Add an interface to the fluid block if it doesn't already exist
-    Interface * _add_interface(std::vector<Vertex *> vertices);
-
-    // Find the interface with specified vertices.
-    // Return null pointer if the interface doesn't exist
-    Interface * _find_interface(std::vector<Vertex *> vertices);
-
-    friend class GridIO;
-    friend class Su2GridInput;
 
     GridIO * _grid_io;
     FluidBlockIO * _fb_io;

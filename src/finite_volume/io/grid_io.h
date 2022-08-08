@@ -19,6 +19,22 @@ class GridInput{
 public:
     virtual ~GridInput() = 0;
     virtual void read_grid(const char * file_name, FluidBlock & fb) = 0;
+    std::vector<Vertex *> vertices() {return _vertices;}
+    std::vector<Interface *> interfaces() {return _interfaces;}
+    std::vector<Cell *> cells() {return _cells;}
+
+protected:
+    // storage for the geometry elements
+    std::vector<Vertex *> _vertices;
+    std::vector<Interface *> _interfaces;
+    std::vector<Cell *> _cells;
+    
+    // Add an interface to the fluid block if it doesn't already exist
+    Interface * _add_interface(std::vector<Vertex *> vertices, GlobalConfig & config);
+
+    // Find the interface with specified vertices.
+    // Return null pointer if the interface doesn't exist
+    Interface * _find_interface(std::vector<Vertex *> vertices);
 };
 
 // Interface for specific implementations of writing a grid

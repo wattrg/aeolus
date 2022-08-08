@@ -37,6 +37,7 @@ GridIO::~GridIO(){
 void GridIO::read_grid(const char * file_name, FluidBlock & fluid_block){
     if (_grid_input){
         _grid_input->read_grid(file_name, fluid_block);
+        fluid_block.set_grid(_grid_input->vertices(), _grid_input->interfaces(), _grid_input->cells());
     }
     else {
         throw std::runtime_error("Grid input not initialised");
@@ -113,3 +114,27 @@ Element read_element(std::string line) {
     return Element(shape, element_vertices);
 }
 
+Interface * GridInput::_find_interface(std::vector<Vertex *> vertices){
+    // Return a pointer to the interface with verteices `vertices`
+    for (Interface * interface : this->_interfaces){
+        if (interface->is(vertices)) return interface;
+    }
+    return nullptr;
+}
+
+Interface * GridInput::_add_interface(std::vector<Vertex *> vertices, GlobalConfig & config){
+    // loop through all the interfaces we have so far, checking
+    // if the this new one is already in our collection of them
+    for (Interface * interface : this->_interfaces){
+        if (interface->is(vertices)){
+            //  the interface already exists, so we'll return
+            // a reference to the interface
+            return interface;
+        }
+    }
+    // the interface doesn't exist, so we'll create a new one,
+    // add it to the list, and return a reference to it
+    Interface * interface = new Interface(vertices, config);
+    this->_interfaces.push_back(interface);
+    return interface;
+}

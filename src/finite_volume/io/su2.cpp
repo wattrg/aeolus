@@ -28,7 +28,7 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block){
         int sep = line.find(" ");
         x = std::stod(line.substr(0, sep));
         y = std::stod(line.substr(sep));
-        fluid_block._vertices.push_back(new Vertex(Vector3(x,y), vertex_id));
+        this->_vertices.push_back(new Vertex(Vector3(x,y), vertex_id));
     }
 
     // Read the cells
@@ -48,7 +48,7 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block){
         // read each vertex for this cell
         std::vector<Vertex *> cell_vertices{};
         for (int vertex : element.vertices){
-            cell_vertices.push_back(fluid_block._vertices[vertex]);
+            cell_vertices.push_back(this->_vertices[vertex]);
         }
 
         // make the interfaces for each cell
@@ -57,15 +57,15 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block){
 
         for ( int i_vertex=0; i_vertex < n_vertices-1; i_vertex++) {
             interface_vertices.assign({cell_vertices[i_vertex], cell_vertices[i_vertex+1]});
-            Interface * interface = fluid_block._add_interface(interface_vertices);
+            Interface * interface = this->_add_interface(interface_vertices, fluid_block.fb_config);
             cell_interfaces.push_back(interface);
         }
         // the last interface wraps around, so we can't use the above pattern
         // instead we just hard code the closing interface
         interface_vertices.assign({cell_vertices[n_vertices-1], cell_vertices[0]});
-        Interface * interface = fluid_block._add_interface(interface_vertices);
+        Interface * interface = this->_add_interface(interface_vertices, fluid_block.fb_config);
         cell_interfaces.push_back(interface);
-        fluid_block._cells.push_back(new Cell(cell_vertices, cell_interfaces));
+        this->_cells.push_back(new Cell(cell_vertices, cell_interfaces));
     }
 
     // read the boundary conditions
@@ -93,9 +93,9 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block){
             }
             std::vector<Vertex *> boundary_vertices = {};
             for (int vertex_indx : element.vertices){
-                boundary_vertices.push_back(fluid_block._vertices[vertex_indx]);
+                boundary_vertices.push_back(this->_vertices[vertex_indx]);
             }
-            Interface * interface = fluid_block._find_interface(boundary_vertices);
+            Interface * interface = this->_find_interface(boundary_vertices);
             if (!interface) {
                 for (int vertex_indx : element.vertices) {
                     std::cout << vertex_indx << ", ";
