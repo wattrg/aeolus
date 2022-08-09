@@ -65,7 +65,7 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block){
         interface_vertices.assign({cell_vertices[n_vertices-1], cell_vertices[0]});
         Interface * interface = this->_add_interface(interface_vertices, fluid_block.fb_config);
         cell_interfaces.push_back(interface);
-        this->_cells.push_back(new Cell(cell_vertices, cell_interfaces));
+        this->_cells.push_back(new Cell(cell_vertices, cell_interfaces, index));
     }
 
     // read the boundary conditions

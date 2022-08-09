@@ -1,7 +1,7 @@
 #include "cell.h"
 
-Cell::Cell(std::vector<Vertex*> vertices, std::vector<Interface*> interfaces)
- : _vertices(vertices)
+Cell::Cell(std::vector<Vertex*> vertices, std::vector<Interface*> interfaces, unsigned int id)
+ : _vertices(vertices), _id(id)
 {
     // TODO do we need to have vertices passed to the constructor?
     // we could get away with just the interfaces

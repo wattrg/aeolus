@@ -16,7 +16,7 @@ enum Side { left, right, centre };
 
 class Interface {
 public:
-    Interface(std::vector<Vertex *> vertices, GlobalConfig & config);
+    Interface(std::vector<Vertex *> vertices, GlobalConfig & config, unsigned int id);
     ~Interface();
 
     // area of the interface
@@ -57,6 +57,8 @@ public:
     Vector3 & n() { return this->_norm; }
     Vector3 & t1() { return this->_tan1; }
     Vector3 & t2() {return this->_tan2; }
+
+    const int id() const;
 
 private:
     //  Vertices on the end of the interface
@@ -115,6 +117,7 @@ private:
 
     GlobalConfig & _my_config;
 
+    unsigned int _id;
 };
 
 #endif // __INTERFACE_H_

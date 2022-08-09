@@ -134,7 +134,7 @@ Interface * GridInput::_add_interface(std::vector<Vertex *> vertices, GlobalConf
     }
     // the interface doesn't exist, so we'll create a new one,
     // add it to the list, and return a reference to it
-    Interface * interface = new Interface(vertices, config);
+    Interface * interface = new Interface(vertices, config, this->_interfaces.size());
     this->_interfaces.push_back(interface);
     return interface;
 }

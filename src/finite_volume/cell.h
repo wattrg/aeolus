@@ -31,7 +31,7 @@ struct CellFace {
 
 class Cell {
 public:
-    Cell(std::vector<Vertex*> verticies, std::vector<Interface*>);
+    Cell(std::vector<Vertex*> verticies, std::vector<Interface*>, unsigned int id);
 
     // the flow state in the cell centre
     FlowState fs;
@@ -66,6 +66,8 @@ public:
     // get info about the shape of the cell
     const CellShape::CellShape get_shape() const;
 
+    const unsigned int id() const;
+
 
 private:
     // the interfaces surrounding the cell
@@ -88,6 +90,7 @@ private:
     double _volume = std::nan("");
     void _compute_volume();
 
+    unsigned int _id;
 
     friend class InternalCopy;
     friend class ReflectNormal;
