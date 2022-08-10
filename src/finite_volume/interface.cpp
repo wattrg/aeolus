@@ -1,6 +1,6 @@
 #include "interface.h"
 
-Interface::Interface(std::vector<Vertex *> vertices, GlobalConfig & config, unsigned int id )
+Interface::Interface(std::vector<Vertex *> vertices, Simulation & config, unsigned int id )
     : _vertices(vertices), _my_config(config), _id(id)
 {
     // TODO: check if vertices are co-planar

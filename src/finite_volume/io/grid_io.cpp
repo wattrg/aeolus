@@ -122,7 +122,7 @@ Interface * GridInput::_find_interface(std::vector<Vertex *> vertices){
     return nullptr;
 }
 
-Interface * GridInput::_add_interface(std::vector<Vertex *> vertices, GlobalConfig & config){
+Interface * GridInput::_add_interface(std::vector<Vertex *> vertices, Simulation & config){
     // loop through all the interfaces we have so far, checking
     // if the this new one is already in our collection of them
     for (Interface * interface : this->_interfaces){

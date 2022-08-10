@@ -5,6 +5,7 @@
 #include "../fluid_block.h"
 
 class FluidBlock;
+class Cell;
 
 
 // pipeline for accessing data from a cell.

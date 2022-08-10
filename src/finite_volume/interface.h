@@ -11,13 +11,13 @@
 #include <cmath>
 
 class Cell;
-class GlobalConfig;
+class Simulation;
 
 enum Side { left, right, centre };
 
 class Interface {
 public:
-    Interface(std::vector<Vertex *> vertices, GlobalConfig & config, unsigned int id);
+    Interface(std::vector<Vertex *> vertices, Simulation & config, unsigned int id);
     ~Interface();
 
     // area of the interface
@@ -116,7 +116,7 @@ private:
     // rotate flux to global frame
     void _transform_flux_to_global_frame();
 
-    GlobalConfig & _my_config;
+    Simulation & _my_config;
 
     unsigned int _id;
 };

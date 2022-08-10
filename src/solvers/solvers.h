@@ -5,12 +5,12 @@
 
 class Solver {
 public:
-    Solver(GlobalConfig & config);
+    Solver(Simulation & config);
     void solve();
 
 protected:
     virtual void _step()=0;
-    GlobalConfig _config;
+    Simulation _config;
 };
 
 

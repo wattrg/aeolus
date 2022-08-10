@@ -8,6 +8,7 @@
 // forward declaration of FluidBlock
 class FluidBlock;
 class Accessor;
+class Cell;
 
 // Define the formats for fluid block input/output
 namespace FluidBlockFormats {

@@ -24,7 +24,7 @@ namespace ElementShape {
 class FluidBlock {
 public:
     ~FluidBlock();
-    FluidBlock(const char * file_name, GlobalConfig & config, unsigned int id);
+    FluidBlock(const char * file_name, Simulation & config, unsigned int id);
 
     /// String representation of the FluidBlock
     std::string to_string();
@@ -33,11 +33,12 @@ public:
     // set the function to use to fill the fluid block with data
     void fill_function(std::function<FlowState(double, double, double)> &func);
 
-    GlobalConfig & fb_config;
+    Simulation & fb_config;
 
     // getter methods
     const std::vector<Cell *> & cells() const;
     const std::vector<Vertex *> & vertices() const;
+    const unsigned int id() const {return this->_id;}
 
     // setter method
     void set_grid(std::vector<Vertex *>, std::vector<Interface *>, std::vector<Cell *>);

@@ -13,7 +13,7 @@ FluidBlock::~FluidBlock(){
     if (_grid_io) delete _grid_io;
 }
 
-FluidBlock::FluidBlock(const char * file_name, GlobalConfig & config, unsigned int id) :
+FluidBlock::FluidBlock(const char * file_name, Simulation & config, unsigned int id) :
     fb_config(config),
     _id(id)
 {

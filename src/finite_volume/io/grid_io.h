@@ -8,7 +8,7 @@
 class Interface;
 class FluidBlock;
 class Cell;
-class GlobalConfig;
+class Simulation;
 
 namespace ElementShape{ enum ElementShape : unsigned short; };
 
@@ -35,7 +35,7 @@ protected:
     std::vector<Cell *> _cells;
     
     // Add an interface to the fluid block if it doesn't already exist
-    Interface * _add_interface(std::vector<Vertex *> vertices, GlobalConfig & config);
+    Interface * _add_interface(std::vector<Vertex *> vertices, Simulation & config);
 
     // Find the interface with specified vertices.
     // Return null pointer if the interface doesn't exist

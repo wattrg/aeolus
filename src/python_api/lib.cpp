@@ -43,15 +43,16 @@ PYBIND11_MODULE(aeolus, m) {
         .def_readwrite("velocity", &FlowState::velocity, "the velocity of the flow")
         .def("__repr__", &FlowState::to_string);
 
-    pybind11::class_<GlobalConfig>(m, "GlobalConfig")
+    pybind11::class_<Simulation>(m, "Simulation")
         .def(pybind11::init())
-        .def_property("dimensions", &GlobalConfig::dimensions, &GlobalConfig::set_dimensions, "The number of spatial dimensions")
-        .def_property("max_step", &GlobalConfig::max_step, &GlobalConfig::set_max_step, "The maximum number of steps")
-        .def_property("fluid_blocks", &GlobalConfig::fluid_blocks, nullptr, "The fluid blocks")
-        .def("add_fluid_block", &GlobalConfig::add_fluid_block, "Add a fluid block");
+        .def_property("dimensions", &Simulation::dimensions, &Simulation::set_dimensions, "The number of spatial dimensions")
+        .def_property("max_step", &Simulation::max_step, &Simulation::set_max_step, "The maximum number of steps")
+        .def_property("fluid_blocks", &Simulation::fluid_blocks, nullptr, "The fluid blocks")
+        .def("add_fluid_block", &Simulation::add_fluid_block, "Add a fluid block")
+        .def("write_fluid_blocks", &Simulation::write_fluid_blocks, "Write the fluid blocks to file");
 
     pybind11::class_<FluidBlock>(m, "FluidBlock")
-        .def(pybind11::init<const char *, GlobalConfig &, unsigned int>())
+        .def(pybind11::init<const char *, Simulation &, unsigned int>())
         .def("__repr__", &FluidBlock::to_string)
         .def("fill_function", &FluidBlock::fill_function, "fill the fluid block with FlowState as a function of position");
 

@@ -1,4 +1,4 @@
-from aeolus import FluidBlock, GasState, GasModel, FlowState, Vector3, FluidBlockIO, GlobalConfig
+from aeolus import GasState, GasModel, FlowState, Vector3, Simulation
 import aeolus.bc
 
 gm = GasModel(287)
@@ -15,11 +15,10 @@ def fill_func(x, y, _):
     vel = Vector3(1000+200*x, 500*(y-1.5))
     return FlowState(gas_state, vel)
 
-config = GlobalConfig()
+config = Simulation()
 config.dimensions = 2
 
 config.add_fluid_block("test_grid.su2")
 
-fb_io = FluidBlockIO()
 config.fluid_blocks[0].fill_function(fill_func)
-fb_io.write_fluid_block("test.vtu", config.fluid_blocks[0])
+config.write_fluid_blocks()
