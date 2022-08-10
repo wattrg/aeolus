@@ -4,6 +4,9 @@ FluidBlock::~FluidBlock(){
     for (Cell * cell : this->_cells){
         delete cell;
     }
+    for (Cell * cell : this->_ghost_cells){
+        delete cell;
+    }
     for (Interface * interface : this->_interfaces){
         delete interface;
     }
@@ -21,6 +24,26 @@ FluidBlock::FluidBlock(const char * file_name, Simulation & config, unsigned int
     this->_grid_io->read_grid(file_name, *this);
     
     // set up the boundary conditions
+    for (Interface * face : this->_interfaces){
+        if (face->is_on_boundary()){
+            // create a ghost cell
+            Cell * left;
+            Cell * right;
+            left = face->get_left_cell();
+            right = face->get_right_cell();
+            Cell * cell = new Cell(face, false);
+            this->_ghost_cells.push_back(cell); 
+            if (!left && right){
+                face->attach_cell_left(*cell); 
+            }
+            else if (left && !right){
+                face->attach_cell_right(*cell);    
+            }
+            else { 
+                throw std::runtime_error("It seems a boundary interface has two or no valid cells attached to it");
+            }
+        }
+    }
 }
 
 void FluidBlock::fill_function(std::function<FlowState(double, double, double)> &func){

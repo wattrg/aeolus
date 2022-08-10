@@ -30,18 +30,26 @@ public:
     // Check if `vertex` is in an interface
     bool has_vertex(Vertex & other_vertex);
 
+    // return vertices
+    std::vector<Vertex *> & vertices();
+
     // attach a cell to the interface. This deals with left vs right cells
     // Returns true if the interface is facing the cell
     // (i.e. the cell is to the left of the interface), or false if the interface
     // is facing away from the cell (the cell is to the right of the interface)
     bool attach_cell(Cell & cell);
 
-    // Return reference to cells attached to the interface
-    Cell & get_left_cell();
-    Cell & get_right_cell();
+    // attach cells to the left or right of the interface
+    void attach_cell_left(Cell & cell);
+    void attach_cell_right(Cell & cell);
+
+    // Return pointers to cells attached to the interface
+    Cell * get_left_cell();
+    Cell * get_right_cell();
 
     // Mark the interface as being on the boundary
     void mark_on_boundary(std::string tag);
+    const bool is_on_boundary() const;
 
     friend std::ostream& operator << (std::ostream& os, const Interface interface);
 

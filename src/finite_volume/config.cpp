@@ -5,6 +5,9 @@ Simulation::Simulation(){
 }
 
 Simulation::~Simulation(){
+    for (FluidBlock * fb : this->_fluid_blocks){
+        delete fb;
+    }
     delete _fluid_block_io;
 }
 
@@ -19,7 +22,8 @@ std::vector<FluidBlock *> & Simulation::fluid_blocks() {
 
 void Simulation::write_fluid_blocks(){
     for (const FluidBlock * fb : this->_fluid_blocks){
-        std::string file_name = "blk" + std::to_string(fb->id()) + ".vtu";
+        std::string file_name = "flow/blk" + std::to_string(fb->id()) + ".vtu";
+        mkdir("flow", 0777);
         this->_fluid_block_io->write_fluid_block(file_name.c_str(), *fb);
     }
 }

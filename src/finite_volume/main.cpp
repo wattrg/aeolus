@@ -17,9 +17,7 @@ int main(int argc, char *argv[]) {
     Simulation config = Simulation();
 
     config.add_fluid_block("test_grid.su2");
-    //FluidBlock fluid_block = FluidBlock("test_grid.su2", config, 0);
-    FluidBlockIO fb_io = FluidBlockIO();
-    fb_io.write_fluid_block("test.vtu", *config.fluid_blocks()[0]);
+    config.write_fluid_blocks();//("test.vtu", *config.fluid_blocks()[0]);
     std::cout << "Finished :)\n";
 
     return 0;

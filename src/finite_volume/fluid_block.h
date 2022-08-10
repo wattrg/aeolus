@@ -47,6 +47,9 @@ private:
     // Collection of cells
     std::vector<Cell *> _cells;
 
+    // ghost cells
+    std::vector<Cell *> _ghost_cells;
+
     // Collection of interfaces
     std::vector<Interface *> _interfaces;
 

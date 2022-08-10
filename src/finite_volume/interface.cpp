@@ -23,6 +23,8 @@ Interface::Interface(std::vector<Vertex *> vertices, Simulation & config, unsign
     }
 }
 
+const bool Interface::is_on_boundary() const { return this->_is_on_boundary; }
+
 const double Interface::area() const {
     return _area;
 }
@@ -70,11 +72,11 @@ void Interface::_transform_flowstate_to_global_frame(){
 }
 
 Cell & Interface::get_valid_cell(){
-    bool left = this->get_left_cell().is_valid();
-    bool right = this->get_right_cell().is_valid();
+    bool left = this->get_left_cell()->is_valid();
+    bool right = this->get_right_cell()->is_valid();
 
     if (left && right) throw std::runtime_error("Both cells are valid");
-    return (left) ? this->get_left_cell() : this->get_right_cell();
+    return (left) ? *this->get_left_cell() : *this->get_right_cell();
 }
 
 std::ostream& operator << (std::ostream& os, const Interface interface){
@@ -92,13 +94,13 @@ std::ostream& operator << (std::ostream& os, const Interface interface){
     return os;
 }
 
-Cell & Interface::get_left_cell() {
+Cell * Interface::get_left_cell() {
     // return reference to the left cell
-    return *this->_left_cell;
+    return this->_left_cell;
 }
-Cell & Interface::get_right_cell() {
+Cell * Interface::get_right_cell() {
     // return reference to the right cell
-    return *this->_right_cell;
+    return this->_right_cell;
 }
 
 bool Interface::is(Interface & other) {
@@ -146,6 +148,14 @@ bool Interface::attach_cell(Cell & cell) {
             throw std::runtime_error("Cell centre is on the interface");
     }
     throw std::runtime_error("Shouldn't get here");
+}
+
+void Interface::attach_cell_left(Cell & cell){
+    this->_left_cell = &cell;
+}
+
+void Interface::attach_cell_right(Cell & cell){
+    this->_right_cell = &cell;
 }
 
 void Interface::mark_on_boundary(std::string tag) {

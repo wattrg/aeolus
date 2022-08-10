@@ -31,7 +31,8 @@ struct CellFace {
 
 class Cell {
 public:
-    Cell(std::vector<Vertex*> verticies, std::vector<Interface*>, unsigned int id);
+    Cell(Interface * face, bool valid=true);
+    Cell(std::vector<Vertex*> verticies, std::vector<Interface*>, unsigned int id, bool valid=true);
 
     // the flow state in the cell centre
     FlowState fs;

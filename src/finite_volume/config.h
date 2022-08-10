@@ -3,6 +3,8 @@
 
 #include "io/fluid_block_io.h"
 #include "fluid_block.h"
+#include <sys/stat.h>
+
 
 class FluidBlock;
 class FluidBlockIO;
