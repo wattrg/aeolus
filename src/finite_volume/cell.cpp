@@ -61,7 +61,7 @@ void Cell::_compute_volume(){
     }
 }
 
-void Cell::compute_residual(){
+void Cell::compute_time_derivative(){
     double surface_integral = 0.0;
     int n_conserved = this->conserved_quantities.n_conserved_quantities();
     for (int i = 0; i < n_conserved; i++){

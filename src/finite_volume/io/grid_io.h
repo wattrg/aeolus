@@ -2,9 +2,14 @@
 #define __FLUIDBLOCK_IO_H_
 
 #include "../fluid_block.h"
+#include "../config.h"
 #include <fstream>
 
+class Interface;
 class FluidBlock;
+class Cell;
+class GlobalConfig;
+
 namespace ElementShape{ enum ElementShape : unsigned short; };
 
 namespace GridFormat {

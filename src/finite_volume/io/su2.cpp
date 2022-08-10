@@ -17,7 +17,10 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block){
     if ( n_dim != 2 ) {
         throw std::runtime_error("Only two dimensions implemented");
     }
-    fluid_block.fb_config.dimensions = n_dim;
+
+    if (fluid_block.fb_config.dimensions() != n_dim){
+        throw std::runtime_error("Dimensions of grid doesn't match dimensions set in config. Note default number of dimensions is 2");
+    }
 
     // Read the vertices
     std::getline(su2_file, line);

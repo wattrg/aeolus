@@ -47,14 +47,14 @@ void Interface::_transform_flux_to_global_frame(){
     double p_x = 0.0, p_y = 0.0, p_z = 0.0;
     p_x = this->_norm.x*momentum[0] + this->_tan1.x*momentum[1];
     p_y = this->_norm.y*momentum[0] + this->_tan1.y*momentum[1];
-    if (this->_my_config.dimensions == 3){
+    if (this->_my_config.dimensions() == 3){
         p_x += this->_tan2.x*momentum[2];
         p_y += this->_tan2.y*momentum[2];
         p_z = this->_norm.z*momentum[0] + this->_tan1.z*momentum[1] + this->_tan2.z*momentum[2];
     }
     momentum[0] = p_x;
     momentum[1] = p_y;
-    if (this->_my_config.dimensions == 3){
+    if (this->_my_config.dimensions() == 3){
         momentum[2] = p_z;
     }
 }

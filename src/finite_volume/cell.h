@@ -1,11 +1,11 @@
 #ifndef __CELL_H_
 #define __CELL_H_
 
+#include "conserved_quantities.h"
 #include "../util/vector.h"
 #include "../util/volume.h"
 #include "../gas/flow_state.h"
 #include "interface.h"
-#include "conserved_quantities.h"
 #include "vertex.h"
 #include <vector>
 #include <cmath>
@@ -44,7 +44,7 @@ public:
 
 public:
     // compute the residual for a cell, assuming the fluxes have been calculated
-    void compute_residual();
+    void compute_time_derivative();
 
     // volume of the cell
     const double volume() const;

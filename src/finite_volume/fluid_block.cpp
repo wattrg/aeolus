@@ -13,8 +13,10 @@ FluidBlock::~FluidBlock(){
     if (_grid_io) delete _grid_io;
 }
 
-FluidBlock::FluidBlock(const char * file_name) {
-    this->fb_config = GlobalConfig();
+FluidBlock::FluidBlock(const char * file_name, GlobalConfig & config, unsigned int id) :
+    fb_config(config),
+    _id(id)
+{
     this->_grid_io = new GridIO(GridFormat::su2, GridFormat::none);
     this->_grid_io->read_grid(file_name, *this);
     

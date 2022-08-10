@@ -1,16 +1,17 @@
 #ifndef __INTERFACE_H_
 #define __INTERFACE_H_
 
+#include "conserved_quantities.h"
 #include "cell.h"
 #include "../gas/flow_state.h"
 #include "../util/vector.h"
-#include "conserved_quantities.h"
 #include "vertex.h"
 #include "config.h"
 #include <vector>
 #include <cmath>
 
 class Cell;
+class GlobalConfig;
 
 enum Side { left, right, centre };
 
