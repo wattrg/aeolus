@@ -13,6 +13,7 @@
 #include "config.h"
 #include "io/grid_io.h"
 #include "io/fluid_block_io.h"
+#include "boundary_conditions/boundary_condition.h"
 
 class GridIO;
 class FluidBlockIO;
@@ -41,7 +42,7 @@ public:
     const unsigned int id() const {return this->_id;}
 
     // setter method
-    void set_grid(std::vector<Vertex *>, std::vector<Interface *>, std::vector<Cell *>);
+    void set_grid(std::vector<Vertex *>, std::vector<Interface *>, std::vector<Cell *>, std::vector<BoundaryCondition *>);
 
 private:
     // Collection of cells
@@ -55,6 +56,9 @@ private:
 
     // Collection of vertices
     std::vector<Vertex *> _vertices;
+
+    // boundary conditions for this fluid block
+    std::vector<BoundaryCondition *> _bcs;
 
     // check if the fluid block already has
     // a particular interface

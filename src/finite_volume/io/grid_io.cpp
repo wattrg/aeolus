@@ -37,7 +37,10 @@ GridIO::~GridIO(){
 void GridIO::read_grid(const char * file_name, FluidBlock & fluid_block){
     if (_grid_input){
         _grid_input->read_grid(file_name, fluid_block);
-        fluid_block.set_grid(_grid_input->vertices(), _grid_input->interfaces(), _grid_input->cells());
+        fluid_block.set_grid(_grid_input->vertices(), 
+                             _grid_input->interfaces(), 
+                             _grid_input->cells(),
+                             _grid_input->boundary_conditions());
     }
     else {
         throw std::runtime_error("Grid input not initialised");

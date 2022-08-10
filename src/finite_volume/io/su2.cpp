@@ -77,6 +77,7 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block){
         throw std::runtime_error("Could not find number of boundaries");
     }
     int n_boundaries = read_integer(line);
+    this->_bcs.reserve(n_boundaries);
     for (int i_boundary = 0; i_boundary < n_boundaries; i_boundary++){
         std::getline(su2_file, line);
         // first comes the tag

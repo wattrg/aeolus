@@ -42,6 +42,8 @@ FluidBlock::FluidBlock(const char * file_name, Simulation & config, unsigned int
             else { 
                 throw std::runtime_error("It seems a boundary interface has two or no valid cells attached to it");
             }
+
+            // add cell and interface to the relevant boundary condition
         }
     }
 }
@@ -54,10 +56,14 @@ void FluidBlock::fill_function(std::function<FlowState(double, double, double)> 
     }
 }
 
-void FluidBlock::set_grid(std::vector<Vertex *> vertices, std::vector<Interface *> interfaces, std::vector<Cell *> cells){
+void FluidBlock::set_grid(std::vector<Vertex *> vertices, 
+                          std::vector<Interface *> interfaces, 
+                          std::vector<Cell *> cells,
+                          std::vector<BoundaryCondition *> bcs){
     this->_vertices = vertices;
     this->_interfaces = interfaces;
     this->_cells = cells;
+    this->_bcs = bcs;
 }
 
 

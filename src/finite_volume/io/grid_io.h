@@ -3,12 +3,14 @@
 
 #include "../fluid_block.h"
 #include "../config.h"
+#include "../boundary_conditions/boundary_condition.h"
 #include <fstream>
 
 class Interface;
 class FluidBlock;
 class Cell;
 class Simulation;
+class BoundaryCondition;
 
 namespace ElementShape{ enum ElementShape : unsigned short; };
 
@@ -27,6 +29,8 @@ public:
     std::vector<Vertex *> vertices() {return _vertices;}
     std::vector<Interface *> interfaces() {return _interfaces;}
     std::vector<Cell *> cells() {return _cells;}
+    std::vector<BoundaryCondition *> boundary_conditions() {return _bcs;}
+    const unsigned int number_boundaries() const {return _number_boundaries;}
 
 protected:
     // storage for the geometry elements
@@ -34,6 +38,10 @@ protected:
     std::vector<Interface *> _interfaces;
     std::vector<Cell *> _cells;
     
+    // boundary conditions
+    unsigned int _number_boundaries;
+    std::vector<BoundaryCondition *> _bcs;
+
     // Add an interface to the fluid block if it doesn't already exist
     Interface * _add_interface(std::vector<Vertex *> vertices, Simulation & config);
 

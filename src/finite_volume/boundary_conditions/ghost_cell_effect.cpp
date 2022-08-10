@@ -1,7 +1,7 @@
 #include "ghost_cell_effect.h"
 
 // Fixed PT
-FlowStateCopy::FlowStateCopy(FlowState & fs) : _fs(fs) {}
+FlowStateCopy::FlowStateCopy(FlowState fs) : _fs(fs) {}
 
 void FlowStateCopy::apply(Cell & ghost_cell){
     ghost_cell.fs.copy(this->_fs);
