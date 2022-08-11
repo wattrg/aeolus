@@ -14,10 +14,14 @@ class Cell;
 class BoundaryCondition{
 public:
     ~BoundaryCondition();
+    BoundaryCondition(std::string tag);
     BoundaryCondition(std::vector<GhostCellEffect *> pre_recon, std::string tag);
 
     // apply the pre-reconstruction actions
     void apply_pre_reconstruction();
+
+    void add_interface(Interface * face);
+    void add_ghost_cell(Cell * cell);
 
     const std::string tag() const {return _tag;};
 

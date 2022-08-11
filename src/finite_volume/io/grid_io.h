@@ -41,6 +41,7 @@ protected:
     // boundary conditions
     unsigned int _number_boundaries;
     std::vector<BoundaryCondition *> _bcs;
+    std::vector<Cell *> _ghost_cells;
 
     // Add an interface to the fluid block if it doesn't already exist
     Interface * _add_interface(std::vector<Vertex *> vertices, Simulation & config);
