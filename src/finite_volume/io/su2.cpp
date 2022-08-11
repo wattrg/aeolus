@@ -124,7 +124,7 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block){
             else if (left && !right) interface->attach_cell_right(*cell);
             else throw std::runtime_error("It seems a boundary interface has two or no valid cells attached");
 
-            // finish up
+            // add the boundary cell and interface to the boundary condition
             interface->mark_on_boundary(tag);
             bc->add_interface(interface);
             bc->add_ghost_cell(cell);

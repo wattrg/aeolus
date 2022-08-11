@@ -39,6 +39,7 @@ public:
     // getter methods
     const std::vector<Cell *> & cells() const;
     const std::vector<Vertex *> & vertices() const;
+    std::vector<BoundaryCondition *> bcs() {return _bcs;}
     const unsigned int id() const {return this->_id;}
 
     // setter method
@@ -63,6 +64,7 @@ private:
 
     // boundary conditions for this fluid block
     std::vector<BoundaryCondition *> _bcs;
+
 
     // check if the fluid block already has
     // a particular interface
