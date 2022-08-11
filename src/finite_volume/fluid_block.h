@@ -42,7 +42,11 @@ public:
     const unsigned int id() const {return this->_id;}
 
     // setter method
-    void set_grid(std::vector<Vertex *>, std::vector<Interface *>, std::vector<Cell *>, std::vector<BoundaryCondition *>);
+    void set_grid(std::vector<Vertex *> vertices, 
+                  std::vector<Interface *> interfaces, 
+                  std::vector<Cell *> cells, 
+                  std::vector<Cell *> ghost_cells,
+                  std::vector<BoundaryCondition *> bcs);
 
 private:
     // Collection of cells

@@ -29,6 +29,7 @@ public:
     std::vector<Vertex *> vertices() {return _vertices;}
     std::vector<Interface *> interfaces() {return _interfaces;}
     std::vector<Cell *> cells() {return _cells;}
+    std::vector<Cell *> ghost_cells() {return _ghost_cells;}
     std::vector<BoundaryCondition *> boundary_conditions() {return _bcs;}
     const unsigned int number_boundaries() const {return _number_boundaries;}
 
