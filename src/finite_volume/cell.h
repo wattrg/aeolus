@@ -69,6 +69,9 @@ public:
 
     const unsigned int id() const;
 
+    // used for computing maximum allowable time step
+    double compute_local_timestep();
+
 
 private:
     // the interfaces surrounding the cell
@@ -92,6 +95,10 @@ private:
     void _compute_volume();
 
     unsigned int _id;
+
+    // the local time step
+    bool _lts = false;
+    double _dt;
 
     friend class InternalCopy;
     friend class ReflectNormal;

@@ -36,6 +36,17 @@ Cell::Cell(std::vector<Vertex*> vertices, std::vector<Interface*> interfaces, un
     }
 }
 
+double Cell::compute_local_timestep(){
+    double spectral_radii = 0.0;
+    for (CellFace face : this->_interfaces){
+        double sig_vel = fabs(this->fs.velocity.dot(face.interface->n())) + this->fs.gas_state.a;
+        spectral_radii += sig_vel * face.interface->area();
+    }
+    double dt = this->_volume / spectral_radii;
+    if (_lts) this->_dt = dt;
+    return dt;
+}
+
 void Cell::_compute_shape(){
     switch (this->_vertices.size()){
         case 4:
