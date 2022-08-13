@@ -6,7 +6,6 @@
 #include "../finite_volume/io/fluid_block_io.h"
 #include "../solvers/explicit.h"
 //#include "../finite_volume/boundary_conditions/boundary_conditions.h"
-#include "libbc.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
 #include <pybind11/stl.h>
@@ -52,7 +51,7 @@ PYBIND11_MODULE(aeolus, m) {
         .def("write_fluid_blocks", &Simulation::write_fluid_blocks, "Write the fluid blocks to file");
 
     pybind11::class_<FluidBlock>(m, "FluidBlock")
-        .def(pybind11::init<const char *, Simulation &, unsigned int>())
+        .def(pybind11::init<const char *, Simulation &, unsigned int, std::map<std::string, BoundaryCondition *> &>())
         .def("__repr__", &FluidBlock::to_string)
         .def("fill_function", &FluidBlock::fill_function, "fill the fluid block with FlowState as a function of position");
 
@@ -63,10 +62,15 @@ PYBIND11_MODULE(aeolus, m) {
     pybind11::class_<ExplicitSolver>(m, "ExplicitSolver")
         .def(pybind11::init<>())
         .def_property("cfl", &ExplicitSolver::cfl, &ExplicitSolver::set_cfl, "CFL number")
-        .def_property("max_step", &ExplicitSolver::max_step, &ExplicitSolver::set_max_step, "The maximum number of steps")
-        .def("solve", &ExplicitSolver::solve, "Begin solving");
+        .def_property("max_step", &ExplicitSolver::max_step, &ExplicitSolver::set_max_step, "The maximum number of steps");
 
     pybind11::module_ bc = m.def_submodule("bc", "Boundary conditions");
-    pybind11::class_<BoundaryCondition>(bc, "BoundaryCondition");
-    // m.def("slip_wall", &slip_wall, pybind11::return_value_policy::reference, "Slip wall boundary condition");
+    pybind11::class_<SlipWall>(bc, "Slip wall boundary condition")
+        .def(pybind11::init<const char *>());
+
+    pybind11::class_<SupersonicInflow>(bc, "Supersonic inflow boundary condition")
+        .def(pybind11::init<FlowState, const char *>());
+
+    pybind11::class_<SupersonicOutflow>(bc, "Supersonic outflow boundary condition")
+        .def(pybind11::init<const char *>());
 }

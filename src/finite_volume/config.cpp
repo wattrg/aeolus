@@ -11,9 +11,10 @@ Simulation::~Simulation(){
     delete _fluid_block_io;
 }
 
-void Simulation::add_fluid_block(const char * file_name){
+void Simulation::add_fluid_block(const char * file_name, 
+        std::map<std::string, BoundaryCondition *> & bc_map){
     unsigned int id = this->_fluid_blocks.size();
-    this->_fluid_blocks.push_back(new FluidBlock(file_name, *this, id));
+    this->_fluid_blocks.push_back(new FluidBlock(file_name, *this, id, bc_map));
 }
 
 std::vector<FluidBlock *> & Simulation::fluid_blocks() {

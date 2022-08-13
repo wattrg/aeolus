@@ -19,12 +19,13 @@ FluidBlock::~FluidBlock(){
     if (_grid_io) delete _grid_io;
 }
 
-FluidBlock::FluidBlock(const char * file_name, Simulation & config, unsigned int id) :
+FluidBlock::FluidBlock(const char * file_name, Simulation & config, unsigned int id, 
+        std::map<std::string, BoundaryCondition *> & bc_map) :
     fb_config(config),
     _id(id)
 {
     this->_grid_io = new GridIO(GridFormat::su2, GridFormat::none);
-    this->_grid_io->read_grid(file_name, *this);
+    this->_grid_io->read_grid(file_name, *this, bc_map);
 }
 
 void FluidBlock::fill_function(std::function<FlowState(double, double, double)> &func){

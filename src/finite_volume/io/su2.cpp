@@ -1,7 +1,8 @@
 #include "grid_io.h"
 #include "su2.h"
 
-void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block){
+void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block,
+        std::map<std::string, BoundaryCondition *> & bc_map){
     std::fstream su2_file;
     su2_file.open(file_name);
     if (!su2_file) {
@@ -84,7 +85,7 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block){
         std::string tag = read_string(line);
 
         // allocate memory for the boundary condition
-        BoundaryCondition * bc = new BoundaryCondition(tag);
+        BoundaryCondition * bc = bc_map[tag];
 
         // next comes the number of elements on this boundary
         std::getline(su2_file, line);

@@ -62,6 +62,7 @@ public:
 };
 
 class SupersonicOutflow : public BoundaryCondition {
+public:
     SupersonicOutflow(std::string tag);
 };
 

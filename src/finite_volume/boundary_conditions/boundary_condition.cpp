@@ -17,7 +17,11 @@ void BoundaryCondition::add_ghost_cell(Cell * cell){
 
 BoundaryCondition::~BoundaryCondition(){
     for (GhostCellEffect * gce : this->_pre_recon_actions){
-        delete gce;
+        // since multiple boundaries (with different tags) can
+        // use the same boundary condition object we have to be
+        // careful not to delete it twice
+        if (gce) delete gce;
+        gce = nullptr;
     }
 }
 

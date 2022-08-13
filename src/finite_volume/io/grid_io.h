@@ -5,6 +5,7 @@
 #include "../config.h"
 #include "../boundary_conditions/boundary_condition.h"
 #include <fstream>
+#include <map>
 
 class Interface;
 class FluidBlock;
@@ -25,7 +26,8 @@ enum GridFormats{
 class GridInput{
 public:
     virtual ~GridInput() = 0;
-    virtual void read_grid(const char * file_name, FluidBlock & fb) = 0;
+    virtual void read_grid(const char * file_name, FluidBlock & fb, 
+                            std::map<std::string, BoundaryCondition *> & bc_map) = 0;
     std::vector<Vertex *> vertices() {return _vertices;}
     std::vector<Interface *> interfaces() {return _interfaces;}
     std::vector<Cell *> cells() {return _cells;}
@@ -66,7 +68,7 @@ public:
     GridIO(GridFormat::GridFormats input, GridFormat::GridFormats output);
 
     // read a grid from file
-    void read_grid(const char * file_name, FluidBlock &fb);
+    void read_grid(const char * file_name, FluidBlock &fb, std::map<std::string, BoundaryCondition *>& bc_map);
 
     // write a grid to file
     void write_grid(const char * file_name, FluidBlock &fb);
