@@ -1,5 +1,5 @@
 from aeolus import GasState, GasModel, FlowState, Vector3, Simulation
-import aeolus.bc
+from aeolus.bc import SlipWall, SupersonicInflow, SupersonicOutflow
 
 gm = GasModel(287)
 
@@ -18,7 +18,13 @@ def fill_func(x, y, _):
 config = Simulation()
 config.dimensions = 2
 
-config.add_fluid_block("test_grid.su2")
+bcs = {
+    "slipwall": SlipWall("slipwall"), 
+    "outflow": SupersonicOutflow("outflow"), 
+    "inflow": SupersonicInflow(fill_func(0,0,0), "inflow")
+}
+
+config.add_fluid_block("test_grid.su2", bcs)
 
 config.fluid_blocks[0].fill_function(fill_func)
 config.write_fluid_blocks()

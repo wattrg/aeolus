@@ -5,7 +5,7 @@
 
 class ExplicitSolver : public Solver {
 public:
-    ExplicitSolver();
+    ExplicitSolver(Simulation & config) : Solver(config) {};
 
 protected:
     void _step();

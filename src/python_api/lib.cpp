@@ -60,17 +60,18 @@ PYBIND11_MODULE(aeolus, m) {
         .def("write_fluid_block", &FluidBlockIO::write_fluid_block, "Write the fluid block to file");
 
     pybind11::class_<ExplicitSolver>(m, "ExplicitSolver")
-        .def(pybind11::init<>())
+        .def(pybind11::init<Simulation&>())
         .def_property("cfl", &ExplicitSolver::cfl, &ExplicitSolver::set_cfl, "CFL number")
         .def_property("max_step", &ExplicitSolver::max_step, &ExplicitSolver::set_max_step, "The maximum number of steps");
 
     pybind11::module_ bc = m.def_submodule("bc", "Boundary conditions");
-    pybind11::class_<SlipWall>(bc, "Slip wall boundary condition")
+    pybind11::class_<BoundaryCondition>(bc, "BoundaryCondition");
+    pybind11::class_<SlipWall, BoundaryCondition>(bc, "SlipWall")
         .def(pybind11::init<const char *>());
 
-    pybind11::class_<SupersonicInflow>(bc, "Supersonic inflow boundary condition")
+    pybind11::class_<SupersonicInflow, BoundaryCondition>(bc, "SupersonicInflow")
         .def(pybind11::init<FlowState, const char *>());
 
-    pybind11::class_<SupersonicOutflow>(bc, "Supersonic outflow boundary condition")
+    pybind11::class_<SupersonicOutflow, BoundaryCondition>(bc, "SupersonicOutflow")
         .def(pybind11::init<const char *>());
 }
