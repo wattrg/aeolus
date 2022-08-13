@@ -39,10 +39,15 @@ public:
     // getter methods
     const std::vector<Cell *> & cells() const;
     const std::vector<Vertex *> & vertices() const;
+    std::vector<BoundaryCondition *> bcs() {return _bcs;}
     const unsigned int id() const {return this->_id;}
 
     // setter method
-    void set_grid(std::vector<Vertex *>, std::vector<Interface *>, std::vector<Cell *>, std::vector<BoundaryCondition *>);
+    void set_grid(std::vector<Vertex *> vertices, 
+                  std::vector<Interface *> interfaces, 
+                  std::vector<Cell *> cells, 
+                  std::vector<Cell *> ghost_cells,
+                  std::vector<BoundaryCondition *> bcs);
 
 private:
     // Collection of cells
@@ -59,6 +64,7 @@ private:
 
     // boundary conditions for this fluid block
     std::vector<BoundaryCondition *> _bcs;
+
 
     // check if the fluid block already has
     // a particular interface

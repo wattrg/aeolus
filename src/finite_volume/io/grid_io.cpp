@@ -40,6 +40,7 @@ void GridIO::read_grid(const char * file_name, FluidBlock & fluid_block){
         fluid_block.set_grid(_grid_input->vertices(), 
                              _grid_input->interfaces(), 
                              _grid_input->cells(),
+                             _grid_input->ghost_cells(),
                              _grid_input->boundary_conditions());
     }
     else {

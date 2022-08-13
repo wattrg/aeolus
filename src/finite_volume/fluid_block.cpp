@@ -38,10 +38,12 @@ void FluidBlock::fill_function(std::function<FlowState(double, double, double)> 
 void FluidBlock::set_grid(std::vector<Vertex *> vertices, 
                           std::vector<Interface *> interfaces, 
                           std::vector<Cell *> cells,
+                          std::vector<Cell *> ghost_cells,
                           std::vector<BoundaryCondition *> bcs){
     this->_vertices = vertices;
     this->_interfaces = interfaces;
     this->_cells = cells;
+    this->_ghost_cells = ghost_cells;
     this->_bcs = bcs;
 }
 

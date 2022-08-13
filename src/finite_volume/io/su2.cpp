@@ -82,7 +82,10 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block){
         std::getline(su2_file, line);
         // first comes the tag
         std::string tag = read_string(line);
+
+        // allocate memory for the boundary condition
         BoundaryCondition * bc = new BoundaryCondition(tag);
+
         // next comes the number of elements on this boundary
         std::getline(su2_file, line);
         if (line.find("MARKER_ELEMS") != 0){
@@ -109,20 +112,24 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block){
                 throw std::runtime_error("Could not find the interface on boundary");
             }
             // create a ghost cell
+            Cell * cell = new Cell(interface, false);
+            this->_ghost_cells.push_back(cell);
+
+            // attach the ghost cell to the other side of the interface
             Cell * left;
             Cell * right;
             left = interface->get_left_cell();
             right = interface->get_right_cell();
-            Cell * cell = new Cell(interface, false);
-            this->_ghost_cells.push_back(cell);
             if (!left && right) interface->attach_cell_left(*cell);
             else if (left && !right) interface->attach_cell_right(*cell);
             else throw std::runtime_error("It seems a boundary interface has two or no valid cells attached");
+
+            // add the boundary cell and interface to the boundary condition
             interface->mark_on_boundary(tag);
             bc->add_interface(interface);
             bc->add_ghost_cell(cell);
-            this->_bcs.push_back(bc);
         }
+        this->_bcs.push_back(bc);
     }
     // All done
     su2_file.close();
