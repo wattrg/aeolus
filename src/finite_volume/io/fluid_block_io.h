@@ -39,10 +39,10 @@ struct GridData{
     {};
 
     void clear(){
-        type_name = "";
-        name = "";
+        //type_name = "";
+        //name = "";
         data.clear();
-        number_components = 0;
+        //number_components = 0;
     };
 
     std::string name;

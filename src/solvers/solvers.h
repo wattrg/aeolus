@@ -14,7 +14,7 @@ public:
 
 protected:
     virtual void _step()=0;
-    Simulation _config;
+    Simulation & _config;
     double _cfl = 0.5;
     unsigned int _max_step = 0;
 };

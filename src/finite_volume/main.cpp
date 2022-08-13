@@ -2,6 +2,7 @@
 #include <fstream>
 #include "../gas/gas_state.h"
 #include "../gas/gas_model.h"
+#include "../solvers/explicit.h"
 #include "fluid_block.h"
 #include "boundary_conditions/boundary_condition.h"
 
@@ -25,18 +26,26 @@ int main(int argc, char *argv[]) {
     gas_state.T = 300;
     g_model.update_from_pT(gas_state);
     FlowState flow_state = FlowState(gas_state, Vector3(1000.0));
+    FlowState inflow = FlowState(gas_state, Vector3(2000.0));
 
     Simulation config = Simulation();
 
     std::map<std::string, BoundaryCondition> bc_map;
     bc_map.insert(std::pair<std::string, BoundaryCondition>("slip_wall", SlipWall("slip_wall")));
     bc_map.insert(std::pair<std::string, BoundaryCondition>("outflow", SupersonicOutflow("outflow")));
-    bc_map.insert(std::pair<std::string, BoundaryCondition>("inflow", SupersonicInflow(flow_state, "inflow")));
+    bc_map.insert(std::pair<std::string, BoundaryCondition>("inflow", SupersonicInflow(inflow, "inflow")));
 
     config.add_fluid_block("test_grid.su2", bc_map);
     std::function<FlowState(double, double, double)> ic = initial_conditions;
     config.fluid_blocks()[0]->fill_function(ic);
-    config.write_fluid_blocks();//("test.vtu", *config.fluid_blocks()[0]);
+    config.write_fluid_blocks();
+
+    ExplicitSolver solver = ExplicitSolver(config);
+    solver.set_max_step(10);
+    solver.solve();
+
+    config.write_fluid_blocks();
+
     std::cout << "Finished :)\n";
 
     return 0;

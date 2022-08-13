@@ -21,11 +21,14 @@ public:
     void set_dimensions(unsigned short number_dim);
     std::vector<FluidBlock *> & fluid_blocks();
     void write_fluid_blocks();
+    void solve();
 
 private:
+    int _time_index = 0;
     unsigned short _dimensions = 2;
     std::vector<FluidBlock *> _fluid_blocks;
     FluidBlockIO * _fluid_block_io = nullptr;
+    //std::vector<Solver> _solver;
 };
 
 #endif
