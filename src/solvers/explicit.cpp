@@ -9,6 +9,7 @@ void ExplicitSolver::_step(){
     }
     
     for (FluidBlock * fb : this->_config.fluid_blocks()){
+        fb->reconstruct();
         fb->compute_fluxes();
         fb->compute_time_derivatives();
         fb->compute_block_dt();

@@ -1,6 +1,6 @@
 import faulthandler
 faulthandler.enable()
-from aeolus import GasState, GasModel, FlowState, Vector3, Simulation, ExplicitSolver
+from aeolus import GasState, GasModel, FlowState, Vector3, Simulation, ExplicitSolver, FluxCalculators
 from aeolus.bc import SlipWall, SupersonicInflow, SupersonicOutflow
 
 gm = GasModel(287)
@@ -19,6 +19,7 @@ def fill_func(x, y, _):
 
 config = Simulation()
 config.dimensions = 2
+config.flux_calculator = FluxCalculators.hanel
 
 bcs = {
     "slipwall": SlipWall("slipwall"),

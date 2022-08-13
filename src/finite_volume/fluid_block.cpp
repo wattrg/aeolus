@@ -57,6 +57,13 @@ void FluidBlock::apply_time_derivative(){
     }
 }
 
+void FluidBlock::reconstruct(){
+    for (Interface * face : this->_interfaces){
+        face->set_left_flow_state(face->get_left_cell()->fs);
+        face->set_right_flow_state(face->get_right_cell()->fs);
+    }
+}
+
 void FluidBlock::fill_function(std::function<FlowState(double, double, double)> &func){
     for (Cell * cell : this->_cells) {
         Vector3 pos = cell->get_pos();

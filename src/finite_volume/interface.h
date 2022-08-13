@@ -2,6 +2,7 @@
 #define __INTERFACE_H_
 
 #include "conserved_quantities.h"
+#include "flux_calc.h"
 #include "cell.h"
 #include "../gas/flow_state.h"
 #include "../util/vector.h"
@@ -17,7 +18,8 @@ enum Side { left, right, centre };
 
 class Interface {
 public:
-    Interface(std::vector<Vertex *> vertices, Simulation & config, unsigned int id);
+    Interface(std::vector<Vertex *> vertices, Simulation & config, unsigned int id,
+            FluxCalculators::FluxCalculators flux_calc);
     ~Interface();
 
     // area of the interface
@@ -46,6 +48,9 @@ public:
     // Return pointers to cells attached to the interface
     Cell * get_left_cell();
     Cell * get_right_cell();
+    
+    void set_left_flow_state(FlowState fs);
+    void set_right_flow_state(FlowState fs);
 
     // Mark the interface as being on the boundary
     void mark_on_boundary(std::string tag);
@@ -94,8 +99,8 @@ private:
 
     // The left and right flow states to use to compute the 
     // fluxes. These states are possibly the result of reconstruction
-    FlowState * _left;
-    FlowState * _right;
+    FlowState _left;
+    FlowState _right;
 
     // the flux on the cell
     ConservedQuantity _flux;

@@ -29,6 +29,7 @@ int main(int argc, char *argv[]) {
     FlowState inflow = FlowState(gas_state, Vector3(2000.0));
 
     Simulation config = Simulation();
+    config.set_flux_calculator(FluxCalculators::hanel);
 
     std::map<std::string, BoundaryCondition> bc_map;
     bc_map.insert(std::pair<std::string, BoundaryCondition>("slip_wall", SlipWall("slip_wall")));

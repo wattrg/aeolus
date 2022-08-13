@@ -41,6 +41,7 @@ public:
     void compute_time_derivatives();
     void apply_time_derivative();
     void compute_block_dt();
+    void reconstruct();
 
     // getter methods
     const std::vector<Cell *> & cells() const;

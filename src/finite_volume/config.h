@@ -20,6 +20,8 @@ public:
     const unsigned short dimensions() const;
     void set_dimensions(unsigned short number_dim);
     std::vector<FluidBlock *> & fluid_blocks();
+    FluxCalculators::FluxCalculators flux_calculator() {return _flux_calculator;}
+    void set_flux_calculator(FluxCalculators::FluxCalculators flux_calc) {_flux_calculator = flux_calc;}
     void write_fluid_blocks();
     void solve();
 
@@ -28,6 +30,7 @@ private:
     unsigned short _dimensions = 2;
     std::vector<FluidBlock *> _fluid_blocks;
     FluidBlockIO * _fluid_block_io = nullptr;
+    FluxCalculators::FluxCalculators _flux_calculator;
     //std::vector<Solver> _solver;
 };
 

@@ -139,7 +139,7 @@ Interface * GridInput::_add_interface(std::vector<Vertex *> vertices, Simulation
     }
     // the interface doesn't exist, so we'll create a new one,
     // add it to the list, and return a reference to it
-    Interface * interface = new Interface(vertices, config, this->_interfaces.size());
+    Interface * interface = new Interface(vertices, config, this->_interfaces.size(), config.flux_calculator());
     this->_interfaces.push_back(interface);
     return interface;
 }

@@ -1,12 +1,13 @@
 #include "interface.h"
 
-Interface::Interface(std::vector<Vertex *> vertices, Simulation & config, unsigned int id )
+Interface::Interface(std::vector<Vertex *> vertices, Simulation & config, unsigned int id,
+        FluxCalculators::FluxCalculators flux_calc)
     : _vertices(vertices), _my_config(config), _id(id)
 {
     // TODO: check if vertices are co-planar
 
-    _left = new FlowState();
-    _right = new FlowState();
+    //_left = new FlowState();
+    //_right = new FlowState();
 
     if (this->_vertices.size() == 2){
         // signals two dimensional grid
@@ -21,6 +22,24 @@ Interface::Interface(std::vector<Vertex *> vertices, Simulation & config, unsign
     else {
         std::runtime_error("unsupported number of dimensions");
     }
+    
+    // set the flux calculator
+    switch (flux_calc){
+        case FluxCalculators::roe:
+            this->_compute_flux = &FluxCalculator::roe; 
+            break;
+        case FluxCalculators::hanel:
+            this->_compute_flux = &FluxCalculator::hanel;
+            break;
+    }
+}
+
+void Interface::set_left_flow_state(FlowState fs){
+    this->_left = fs;
+}
+
+void Interface::set_right_flow_state(FlowState fs){
+    this->_right = fs;
 }
 
 const bool Interface::is_on_boundary() const { return this->_is_on_boundary; }
@@ -34,13 +53,13 @@ const ConservedQuantity & Interface::flux() const {
 }
 
 Interface::~Interface(){
-    delete _left;
-    delete _right;
+    //delete _left;
+    //delete _right;
 }
 
 void Interface::compute_flux(){
     this->_transform_flowstate_to_local_frame();
-    _compute_flux(*this->_left, *this->_right, this->_flux);
+    _compute_flux(this->_left, this->_right, this->_flux);
     this->_transform_flux_to_global_frame();
 }
 
@@ -62,13 +81,13 @@ void Interface::_transform_flux_to_global_frame(){
 }
 
 void Interface::_transform_flowstate_to_local_frame(){
-    this->_left->velocity.transform_to_local_frame(this->_norm, this->_tan1, this->_tan2);
-    this->_right->velocity.transform_to_local_frame(this->_norm, this->_tan1, this->_tan2);
+    this->_left.velocity.transform_to_local_frame(this->_norm, this->_tan1, this->_tan2);
+    this->_right.velocity.transform_to_local_frame(this->_norm, this->_tan1, this->_tan2);
 }
 
 void Interface::_transform_flowstate_to_global_frame(){
-    this->_left->velocity.transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
-    this->_right->velocity.transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
+    this->_left.velocity.transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
+    this->_right.velocity.transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
 }
 
 Cell & Interface::get_valid_cell(){

@@ -47,6 +47,7 @@ PYBIND11_MODULE(aeolus, m) {
         .def(pybind11::init())
         .def_property("dimensions", &Simulation::dimensions, &Simulation::set_dimensions, "The number of spatial dimensions")
         .def_property("fluid_blocks", &Simulation::fluid_blocks, nullptr, "The fluid blocks")
+        .def_property("flux_calculator", &Simulation::flux_calculator, &Simulation::set_flux_calculator, "The flux calculator")
         .def("add_fluid_block", &Simulation::add_fluid_block, "Add a fluid block")
         .def("write_fluid_blocks", &Simulation::write_fluid_blocks, "Write the fluid blocks to file");
 
@@ -64,6 +65,11 @@ PYBIND11_MODULE(aeolus, m) {
         .def_property("cfl", &ExplicitSolver::cfl, &ExplicitSolver::set_cfl, "CFL number")
         .def_property("max_step", &ExplicitSolver::max_step, &ExplicitSolver::set_max_step, "The maximum number of steps")
         .def("solve", &ExplicitSolver::solve, "Begin solving");
+
+    pybind11::enum_<FluxCalculators::FluxCalculators>(m, "FluxCalculators")
+        .value("roe", FluxCalculators::FluxCalculators::roe)
+        .value("hanel", FluxCalculators::FluxCalculators::hanel)
+        .export_values();
 
 
     pybind11::module_ bc = m.def_submodule("bc", "Boundary conditions");
