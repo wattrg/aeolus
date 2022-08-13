@@ -4,6 +4,7 @@ BoundaryCondition::BoundaryCondition(std::vector<GhostCellEffect *> pre_recon, s
     : _tag(tag), _pre_recon_actions(pre_recon)
 {}
 
+
 BoundaryCondition::BoundaryCondition(std::string tag) : _tag(tag) {}
 
 void BoundaryCondition::add_interface(Interface * face){
@@ -20,6 +21,11 @@ BoundaryCondition::~BoundaryCondition(){
     }
 }
 
+void BoundaryCondition::add_pre_recon_action(GhostCellEffect * gce){
+    this->_pre_recon_actions.push_back(gce); 
+}
+
+
 void BoundaryCondition::apply_pre_reconstruction(){
     for (Cell * ghost_cell : this->_ghost_cells){
         for (GhostCellEffect * action : this->_pre_recon_actions){
@@ -28,3 +34,17 @@ void BoundaryCondition::apply_pre_reconstruction(){
     }
 }
 
+// specific implementation of some common boundary conditions
+// this should only be a matter of constructing the boundary condition
+SlipWall::SlipWall(std::string tag) : BoundaryCondition(tag) {
+    this->_pre_recon_actions.push_back(new InternalCopy());
+    this->_pre_recon_actions.push_back(new ReflectNormal());
+}
+
+SupersonicOutflow::SupersonicOutflow(std::string tag) : BoundaryCondition(tag) {
+    this->_pre_recon_actions.push_back(new InternalCopy());
+}
+
+SupersonicInflow::SupersonicInflow(FlowState fs, std::string tag) : BoundaryCondition(tag) {
+    this->_pre_recon_actions.push_back(new FlowStateCopy(fs)); 
+}

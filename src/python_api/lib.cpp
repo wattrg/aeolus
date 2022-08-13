@@ -4,6 +4,7 @@
 #include "../util/vector.h"
 #include "../finite_volume/fluid_block.h"
 #include "../finite_volume/io/fluid_block_io.h"
+#include "../solvers/explicit.h"
 //#include "../finite_volume/boundary_conditions/boundary_conditions.h"
 #include "libbc.h"
 #include <pybind11/pybind11.h>
@@ -46,7 +47,6 @@ PYBIND11_MODULE(aeolus, m) {
     pybind11::class_<Simulation>(m, "Simulation")
         .def(pybind11::init())
         .def_property("dimensions", &Simulation::dimensions, &Simulation::set_dimensions, "The number of spatial dimensions")
-        .def_property("max_step", &Simulation::max_step, &Simulation::set_max_step, "The maximum number of steps")
         .def_property("fluid_blocks", &Simulation::fluid_blocks, nullptr, "The fluid blocks")
         .def("add_fluid_block", &Simulation::add_fluid_block, "Add a fluid block")
         .def("write_fluid_blocks", &Simulation::write_fluid_blocks, "Write the fluid blocks to file");
@@ -59,6 +59,12 @@ PYBIND11_MODULE(aeolus, m) {
     pybind11::class_<FluidBlockIO>(m, "FluidBlockIO")
         .def(pybind11::init<>())
         .def("write_fluid_block", &FluidBlockIO::write_fluid_block, "Write the fluid block to file");
+
+    pybind11::class_<ExplicitSolver>(m, "ExplicitSolver")
+        .def(pybind11::init<>())
+        .def_property("cfl", &ExplicitSolver::cfl, &ExplicitSolver::set_cfl, "CFL number")
+        .def_property("max_step", &ExplicitSolver::max_step, &ExplicitSolver::set_max_step, "The maximum number of steps")
+        .def("solve", &ExplicitSolver::solve, "Begin solving");
 
     pybind11::module_ bc = m.def_submodule("bc", "Boundary conditions");
     pybind11::class_<BoundaryCondition>(bc, "BoundaryCondition");

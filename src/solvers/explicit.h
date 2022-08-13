@@ -3,12 +3,12 @@
 
 #include "solvers.h"
 
-class ExplicitSolver : Solver {
+class ExplicitSolver : public Solver {
 public:
-    void solve();
+    ExplicitSolver();
 
 protected:
-    void step();
+    void _step();
 };
 
 #endif

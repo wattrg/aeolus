@@ -34,6 +34,3 @@ void Simulation::set_dimensions(unsigned short number_dim) {
     this->_dimensions = number_dim;
 }
 
-const unsigned int Simulation::max_step() const {return this->_max_step;}
-
-void Simulation::set_max_step(unsigned int max_step) {this->_max_step = max_step;}
