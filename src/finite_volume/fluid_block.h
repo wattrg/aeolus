@@ -26,7 +26,7 @@ class FluidBlock {
 public:
     ~FluidBlock();
     FluidBlock(const char * file_name, Simulation & config, unsigned int id, 
-            std::map<std::string, BoundaryCondition &> &);
+            std::map<std::string, BoundaryCondition> &);
 
     /// String representation of the FluidBlock
     std::string to_string();

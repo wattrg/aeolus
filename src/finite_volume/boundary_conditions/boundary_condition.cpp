@@ -1,6 +1,8 @@
 #include "boundary_condition.h"
 
-BoundaryCondition::BoundaryCondition(std::vector<GhostCellEffect *> pre_recon, std::string tag)
+BoundaryCondition::BoundaryCondition(){};
+
+BoundaryCondition::BoundaryCondition(std::vector<std::shared_ptr<GhostCellEffect>> pre_recon, std::string tag)
     : _tag(tag), _pre_recon_actions(pre_recon)
 {}
 
@@ -16,23 +18,15 @@ void BoundaryCondition::add_ghost_cell(Cell * cell){
 }
 
 BoundaryCondition::~BoundaryCondition(){
-    for (GhostCellEffect * gce : this->_pre_recon_actions){
-        // since multiple boundaries (with different tags) can
-        // use the same boundary condition object we have to be
-        // careful not to delete it twice
-        if (gce) delete gce;
-        gce = nullptr;
-    }
+    //for (GhostCellEffect * gce : this->_pre_recon_actions){
+    //    if (gce) delete gce;
+    //    gce = 0;
+    //}
 }
-
-void BoundaryCondition::add_pre_recon_action(GhostCellEffect * gce){
-    this->_pre_recon_actions.push_back(gce); 
-}
-
 
 void BoundaryCondition::apply_pre_reconstruction(){
     for (Cell * ghost_cell : this->_ghost_cells){
-        for (GhostCellEffect * action : this->_pre_recon_actions){
+        for (std::shared_ptr<GhostCellEffect> action : this->_pre_recon_actions){
             action->apply(*ghost_cell);
         }
     }
@@ -41,14 +35,14 @@ void BoundaryCondition::apply_pre_reconstruction(){
 // specific implementation of some common boundary conditions
 // this should only be a matter of constructing the boundary condition
 SlipWall::SlipWall(std::string tag) : BoundaryCondition(tag) {
-    this->_pre_recon_actions.push_back(new InternalCopy());
-    this->_pre_recon_actions.push_back(new ReflectNormal());
+    this->_pre_recon_actions.push_back(std::shared_ptr<GhostCellEffect>(new InternalCopy()));
+    this->_pre_recon_actions.push_back(std::shared_ptr<GhostCellEffect>(new ReflectNormal()));
 }
 
 SupersonicOutflow::SupersonicOutflow(std::string tag) : BoundaryCondition(tag) {
-    this->_pre_recon_actions.push_back(new InternalCopy());
+    this->_pre_recon_actions.push_back(std::shared_ptr<GhostCellEffect>(new InternalCopy()));
 }
 
 SupersonicInflow::SupersonicInflow(FlowState fs, std::string tag) : BoundaryCondition(tag) {
-    this->_pre_recon_actions.push_back(new FlowStateCopy(fs)); 
+    this->_pre_recon_actions.push_back(std::shared_ptr<GhostCellEffect>(new FlowStateCopy(fs))); 
 }

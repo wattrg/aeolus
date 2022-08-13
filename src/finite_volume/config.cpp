@@ -12,7 +12,7 @@ Simulation::~Simulation(){
 }
 
 void Simulation::add_fluid_block(const char * file_name, 
-        std::map<std::string, BoundaryCondition *> & bc_map){
+        std::map<std::string, BoundaryCondition> & bc_map){
     unsigned int id = this->_fluid_blocks.size();
     this->_fluid_blocks.push_back(new FluidBlock(file_name, *this, id, bc_map));
 }

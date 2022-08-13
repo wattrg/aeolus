@@ -35,7 +35,7 @@ GridIO::~GridIO(){
 }
 
 void GridIO::read_grid(const char * file_name, FluidBlock & fluid_block, 
-        std::map<std::string, BoundaryCondition *> & bc_map){
+        std::map<std::string, BoundaryCondition> & bc_map){
     if (_grid_input){
         _grid_input->read_grid(file_name, fluid_block, bc_map);
         fluid_block.set_grid(_grid_input->vertices(), 

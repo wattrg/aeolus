@@ -51,7 +51,7 @@ PYBIND11_MODULE(aeolus, m) {
         .def("write_fluid_blocks", &Simulation::write_fluid_blocks, "Write the fluid blocks to file");
 
     pybind11::class_<FluidBlock>(m, "FluidBlock")
-        .def(pybind11::init<const char *, Simulation &, unsigned int, std::map<std::string, BoundaryCondition *> &>())
+        .def(pybind11::init<const char *, Simulation &, unsigned int, std::map<std::string, BoundaryCondition> &>())
         .def("__repr__", &FluidBlock::to_string)
         .def("fill_function", &FluidBlock::fill_function, "fill the fluid block with FlowState as a function of position");
 

@@ -5,6 +5,7 @@
 #include "../interface.h"
 #include "ghost_cell_effect.h"
 #include <vector>
+#include <memory>
 
 class GhostCellEffect;
 class Interface;
@@ -25,8 +26,9 @@ enum BcType {
 class BoundaryCondition{
 public:
     ~BoundaryCondition();
+    BoundaryCondition();
     BoundaryCondition(std::string tag);
-    BoundaryCondition(std::vector<GhostCellEffect *> pre_recon, std::string tag);
+    BoundaryCondition(std::vector<std::shared_ptr<GhostCellEffect>> pre_recon, std::string tag);
 
     // apply the pre-reconstruction actions
     void apply_pre_reconstruction();
@@ -36,7 +38,6 @@ public:
 
     const std::string tag() const {return _tag;};
 
-    void add_pre_recon_action(GhostCellEffect *);
 
 protected:
     std::string _tag;
@@ -46,7 +47,7 @@ protected:
     std::vector<Interface*> _interfaces;
 
     // actions to perform
-    std::vector<GhostCellEffect *> _pre_recon_actions;
+    std::vector<std::shared_ptr<GhostCellEffect>> _pre_recon_actions;
 };
 
 

@@ -16,7 +16,7 @@ class Simulation{
 public:
     Simulation();
     ~Simulation();
-    void add_fluid_block(const char *, std::map<std::string, BoundaryCondition *> &);
+    void add_fluid_block(const char *, std::map<std::string, BoundaryCondition> &);
     const unsigned short dimensions() const;
     void set_dimensions(unsigned short number_dim);
     std::vector<FluidBlock *> & fluid_blocks();
