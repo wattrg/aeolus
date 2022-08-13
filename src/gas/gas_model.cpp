@@ -36,6 +36,12 @@ void GasModel::update_from_prho(GasState & gas_state) {
     _update_sound_speed(gas_state);
 }
 
+void GasModel::update_from_rhou(GasState & gas_state){
+    gas_state.T = gas_state.u / _Cv;
+    gas_state.p = gas_state.rho * _R * gas_state.T;
+    _update_sound_speed(gas_state);
+}
+
 double GasModel::internal_energy(GasState & gas_state) {
     return gas_state.u;
 }

@@ -37,9 +37,15 @@ public:
 
     Simulation & fb_config;
 
+    void compute_fluxes();
+    void compute_time_derivatives();
+    void apply_time_derivative();
+    void compute_block_dt();
+
     // getter methods
     const std::vector<Cell *> & cells() const;
     const std::vector<Vertex *> & vertices() const;
+    std::vector<Interface *> & interfaces();
     std::vector<BoundaryCondition *> bcs() {return _bcs;}
     const unsigned int id() const {return this->_id;}
 
@@ -66,6 +72,8 @@ private:
     // boundary conditions for this fluid block
     std::vector<BoundaryCondition *> _bcs;
 
+    // dt for the whole grid
+    double _dt;
 
     // check if the fluid block already has
     // a particular interface

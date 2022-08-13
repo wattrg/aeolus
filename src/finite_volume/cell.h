@@ -43,6 +43,12 @@ public:
     // the residual
     ConservedQuantity residual;
 
+    // encode conserved quantities
+    void encode_conserved();
+
+    // decode consered quantities
+    void decode_conserved();
+
 public:
     // compute the residual for a cell, assuming the fluxes have been calculated
     void compute_time_derivative();

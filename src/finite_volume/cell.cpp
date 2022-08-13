@@ -34,6 +34,9 @@ Cell::Cell(std::vector<Vertex*> vertices, std::vector<Interface*> interfaces, un
         inward_interface = interface->attach_cell(*this);
         this->_interfaces.push_back(CellFace(*interface, inward_interface)); 
     }
+    
+    // initialise conserved quantities
+    this->conserved_quantities = ConservedQuantity(2);
 }
 
 double Cell::compute_local_timestep(){
@@ -78,7 +81,7 @@ void Cell::_compute_volume(){
 
 void Cell::compute_time_derivative(){
     double surface_integral = 0.0;
-    int n_conserved = this->conserved_quantities.n_conserved_quantities();
+    int n_conserved = this->conserved_quantities.n_conserved();
     for (int i = 0; i < n_conserved; i++){
         for (CellFace face : this->_interfaces){
             Interface * fvface = face.interface;
@@ -87,6 +90,25 @@ void Cell::compute_time_derivative(){
         }
         this->residual.conserved_quantities[i] = surface_integral / this->_volume;
     }
+}
+
+void Cell::encode_conserved(){
+    ConservedQuantity cq = this->conserved_quantities;
+    cq.rho() = this->fs.gas_state.rho;
+    cq.momentum()[0] = this->fs.gas_state.rho * this->fs.velocity.x;
+    cq.momentum()[1] = this->fs.gas_state.rho * this->fs.velocity.y;
+    double ke = 0.5 * (this->fs.velocity.x*this->fs.velocity.x + this->fs.velocity.y*this->fs.velocity.y);
+    cq.energy() = this->fs.gas_state.u + ke;
+}
+
+void Cell::decode_conserved(){
+    ConservedQuantity cq = this->conserved_quantities;
+    this->fs.gas_state.rho = cq.rho();
+    this->fs.velocity.x = cq.momentum()[0] / cq.rho();
+    this->fs.velocity.y = cq.momentum()[1] / cq.rho();
+    double ke = 0.5*(fs.velocity.x*fs.velocity.x + fs.velocity.y*fs.velocity.y);
+    this->fs.gas_state.u = cq.energy() - ke;
+    fs.gas_state.update_from_rhou();
 }
 
 Vector3 & Cell::get_pos(){

@@ -21,6 +21,7 @@ GasModel & GasState::get_gas_model(){
 void GasState::update_from_pT() { this->_gm->update_from_pT(*this); }
 void GasState::update_from_prho() { this->_gm->update_from_prho(*this); }
 void GasState::update_from_rhoT() { this->_gm->update_from_rhoT(*this); }
+void GasState::update_from_rhou() {this->_gm->update_from_rhou(*this); }
 
 double GasState::internal_energy() {return this->_gm->internal_energy(*this); }
 

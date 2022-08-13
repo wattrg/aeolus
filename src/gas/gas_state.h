@@ -25,6 +25,7 @@ public:
     void update_from_pT();
     void update_from_prho();
     void update_from_rhoT();
+    void update_from_rhou();
 
     // copy the values from some other gas state
     void copy(GasState & other);

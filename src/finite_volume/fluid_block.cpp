@@ -28,6 +28,35 @@ FluidBlock::FluidBlock(const char * file_name, Simulation & config, unsigned int
     this->_grid_io->read_grid(file_name, *this, bc_map);
 }
 
+void FluidBlock::compute_fluxes(){
+    for (Interface * interface : this->_interfaces){
+        interface->compute_flux(); 
+    }
+}
+
+void FluidBlock::compute_time_derivatives(){
+    for (Cell * cell : this->_cells){
+        cell->compute_time_derivative();
+    }
+}
+
+void FluidBlock::compute_block_dt(){
+    double dt = 10000;
+    for (Cell * cell : this->_cells){
+        dt = std::min(cell->compute_local_timestep(), dt); 
+    }
+    this->_dt = dt;
+}
+
+void FluidBlock::apply_time_derivative(){
+    for (Cell * cell : this->_cells){
+        ConservedQuantity cq = cell->conserved_quantities;
+        for (unsigned int i=0; i < cq.n_conserved(); i++){
+            cq.conserved_quantities[i] += cell->residual.conserved_quantities[i] * this->_dt; 
+        }
+    }
+}
+
 void FluidBlock::fill_function(std::function<FlowState(double, double, double)> &func){
     for (Cell * cell : this->_cells) {
         Vector3 pos = cell->get_pos();
