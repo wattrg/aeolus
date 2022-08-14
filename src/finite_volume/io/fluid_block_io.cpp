@@ -7,9 +7,6 @@ FluidBlockWriter::FluidBlockWriter(){
    this->add_variable("density", &access_density, 1);
    this->add_variable("temperature", &access_temperature, 1);
    this->add_variable("velocity", &access_velocity, 3);
-   this->add_variable("vel.x", &access_x_velocity, 1);
-   this->add_variable("vel.y", &access_y_velocity, 1);
-   this->add_variable("vel.z", &access_z_velocity, 1);
    this->add_variable("volume", &access_volume, 1);
 }
 

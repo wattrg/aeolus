@@ -54,6 +54,7 @@ void FluidBlock::apply_time_derivative(){
         for (unsigned int i=0; i < cq.n_conserved(); i++){
             cq.conserved_quantities[i] += cell->residual.conserved_quantities[i] * this->_dt; 
         }
+        cell->decode_conserved();
     }
 }
 

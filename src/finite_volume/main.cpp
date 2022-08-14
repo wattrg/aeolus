@@ -9,27 +9,32 @@
 FlowState initial_conditions(double x, double y, double z){
     GasModel gm = GasModel(287.0);
     GasState gs = GasState(gm);
-    gs.p = 101325.0;
-    gs.T = 300.0;
+    if (x < 1.5){
+        gs.p = 101325.0;
+        gs.T = 300.0;
+    }
+    else{
+        gs.p = 1e6;
+        gs.T = 1000.0;
+    }
     gm.update_from_pT(gs);
-    FlowState fs = FlowState(gs, Vector3(1000, 100));
+    FlowState fs = FlowState(gs, Vector3(1000));
     return fs;
 }
 
 int main(int argc, char *argv[]) {
     std::cout << "Hello world!\n";
 
-    GasState gas_state = GasState();
     GasModel g_model = GasModel(287.0);
-
-    gas_state.p = 1e5;
-    gas_state.T = 300;
-    g_model.update_from_pT(gas_state);
-    FlowState flow_state = FlowState(gas_state, Vector3(1000.0));
-    FlowState inflow = FlowState(gas_state, Vector3(2000.0));
 
     Simulation config = Simulation();
     config.set_flux_calculator(FluxCalculators::hanel);
+
+    GasState inflow_gs = GasState();
+    inflow_gs.p = 1e6;
+    inflow_gs.T = 1000;
+    g_model.update_from_pT(inflow_gs);
+    FlowState inflow = FlowState(inflow_gs, Vector3(2000.0));
 
     std::map<std::string, BoundaryCondition> bc_map;
     bc_map.insert(std::pair<std::string, BoundaryCondition>("slip_wall", SlipWall("slip_wall")));
@@ -42,7 +47,7 @@ int main(int argc, char *argv[]) {
     config.write_fluid_blocks();
 
     ExplicitSolver solver = ExplicitSolver(config);
-    solver.set_max_step(100);
+    solver.set_max_step(1);
     solver.solve();
 
     config.write_fluid_blocks();
