@@ -70,6 +70,7 @@ void FluidBlock::fill_function(std::function<FlowState(double, double, double)> 
         Vector3 pos = cell->get_pos();
         FlowState fs = func(pos.x, pos.y, pos.z);
         cell->fs.copy(fs);
+        cell->encode_conserved();
     }
 }
 
