@@ -62,7 +62,7 @@ public:
     // does not perform reconstruction. Assumes `_left` and `_right` are
     // correctly set
     void compute_flux();
-    const ConservedQuantity & flux() const;
+    ConservedQuantity & flux();
 
     // Return a reference to the valid cell. Will throw an error if the cells
     // on both sides of the interface are valid

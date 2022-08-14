@@ -8,17 +8,18 @@ class ConservedQuantity{
 public:
     ConservedQuantity();
     ConservedQuantity(unsigned int number_dimensions);
-    std::vector<double> conserved_quantities;
-    double & rho() {return conserved_quantities[_rho_idx];}
-    double * momentum() {return  &conserved_quantities[_momentum_idx];}
-    double & energy() { return conserved_quantities[_energy_idx]; }
-    unsigned int n_conserved() {return _n_conserved_quantities; }
+    unsigned int rho() {return _rho_idx;}
+    unsigned int momentum() {return _momentum_idx;}
+    unsigned int energy() { return _energy_idx; }
+    int n_conserved_quantities() {return _n_conserved_quantities; }
     const unsigned int dimensions() const;
+    double &operator [] (unsigned int index) { return _conserved_quantities[index]; }
 
 private:
-    int _rho_idx = 0;
-    int _momentum_idx = 1;
-    int _energy_idx;
+    std::vector<double> _conserved_quantities;
+    unsigned int _rho_idx = 0;
+    unsigned int _momentum_idx = 1;
+    unsigned int _energy_idx;
     unsigned int _n_conserved_quantities;
     unsigned int _number_dimensions;
 };

@@ -49,7 +49,7 @@ const double Interface::area() const {
     return _area;
 }
 
-const ConservedQuantity & Interface::flux() const {
+ConservedQuantity & Interface::flux() {
     return _flux;
 }
 
@@ -65,19 +65,19 @@ void Interface::compute_flux(){
 }
 
 void Interface::_transform_flux_to_global_frame(){
-    double * momentum = this->_flux.momentum();
+    unsigned int momentum = this->_flux.momentum();
     double p_x = 0.0, p_y = 0.0, p_z = 0.0;
-    p_x = this->_norm.x*momentum[0] + this->_tan1.x*momentum[1];
-    p_y = this->_norm.y*momentum[0] + this->_tan1.y*momentum[1];
+    p_x = this->_norm.x*this->_flux[momentum] + this->_tan1.x*this->_flux[momentum+1];
+    p_y = this->_norm.y*this->_flux[momentum] + this->_tan1.y*this->_flux[momentum+1];
     if (this->_my_config.dimensions() == 3){
-        p_x += this->_tan2.x*momentum[2];
-        p_y += this->_tan2.y*momentum[2];
-        p_z = this->_norm.z*momentum[0] + this->_tan1.z*momentum[1] + this->_tan2.z*momentum[2];
+        p_x += this->_tan2.x*this->_flux[momentum+2];
+        p_y += this->_tan2.y*this->_flux[momentum+2];
+        p_z = this->_norm.z*this->_flux[momentum] + this->_tan1.z*this->_flux[momentum+1] + this->_tan2.z*this->_flux[momentum+2];
     }
-    momentum[0] = p_x;
-    momentum[1] = p_y;
+    this->_flux[momentum] = p_x;
+    this->_flux[momentum+1] = p_y;
     if (this->_my_config.dimensions() == 3){
-        momentum[2] = p_z;
+        this->_flux[momentum+2] = p_z;
     }
 }
 

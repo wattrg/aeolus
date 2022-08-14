@@ -57,22 +57,16 @@ void hanel(FlowState &left, FlowState &right, ConservedQuantity &flux){
     double p_half = pLplus + pRminus;
 
     // assemble components into the flux vector
-    flux.rho() = uLplus * rL + uRminus * rR;
-    double * momentum = flux.momentum();
-    momentum[0] = uLplus * rL * uL + uRminus * rR * uR + p_half;
-    momentum[1] = uLplus * rL * vL + uRminus * rL * vR;
+    flux[flux.rho()] = uLplus * rL + uRminus * rR;
+    unsigned int momentum = flux.momentum();
+    flux[momentum] = uLplus * rL * uL + uRminus * rR * uR + p_half;
+    flux[momentum+1] = uLplus * rL * vL + uRminus * rL * vR;
     if (flux.dimensions() > 2){
-        momentum[2] = uLplus * rL * wL + uRminus * rR * wR;
+        flux[momentum+2] = uLplus * rL * wL + uRminus * rR * wR;
     }
     flux.energy() = uLplus *rL * HL + uRminus * rR * HR; 
 
     return;
-}
-
-void zero_flux(FlowState & left, FlowState & right, ConservedQuantity & flux){
-    for (double & u : flux.conserved_quantities){
-        u = 0.0;
-    }
 }
 
 }
