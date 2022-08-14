@@ -37,6 +37,7 @@ Cell::Cell(std::vector<Vertex*> vertices, std::vector<Interface*> interfaces, un
     
     // initialise conserved quantities
     this->conserved_quantities = ConservedQuantity(2);
+    this->residual = ConservedQuantity(2);
 }
 
 double Cell::compute_local_timestep(){

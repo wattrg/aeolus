@@ -32,6 +32,7 @@ Interface::Interface(std::vector<Vertex *> vertices, Simulation & config, unsign
             this->_compute_flux = &FluxCalculator::hanel;
             break;
     }
+    _flux = ConservedQuantity(config.dimensions());
 }
 
 void Interface::set_left_flow_state(FlowState fs){
