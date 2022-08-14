@@ -64,7 +64,7 @@ void hanel(FlowState &left, FlowState &right, ConservedQuantity &flux){
     if (flux.dimensions() > 2){
         flux[momentum+2] = uLplus * rL * wL + uRminus * rR * wR;
     }
-    flux.energy() = uLplus *rL * HL + uRminus * rR * HR; 
+    flux[flux.energy()] = uLplus *rL * HL + uRminus * rR * HR; 
 
     return;
 }
