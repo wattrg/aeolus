@@ -27,6 +27,7 @@ bcs = {
     "inflow": SupersonicInflow(fill_func(0,0,0), "inflow")
 }
 
+config.gas_model = GasModel(287)
 config.add_fluid_block("test_grid.su2", bcs)
 
 config.fluid_blocks[0].fill_function(fill_func)

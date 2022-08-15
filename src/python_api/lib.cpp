@@ -48,6 +48,7 @@ PYBIND11_MODULE(aeolus, m) {
         .def_property("dimensions", &Simulation::dimensions, &Simulation::set_dimensions, "The number of spatial dimensions")
         .def_property("fluid_blocks", &Simulation::fluid_blocks, nullptr, "The fluid blocks")
         .def_property("flux_calculator", &Simulation::flux_calculator, &Simulation::set_flux_calculator, "The flux calculator")
+        .def_property("gas_model", &Simulation::g_model, &Simulation::set_gas_model, "The gas model")
         .def("add_fluid_block", &Simulation::add_fluid_block, "Add a fluid block")
         .def("write_fluid_blocks", &Simulation::write_fluid_blocks, "Write the fluid blocks to file");
 
