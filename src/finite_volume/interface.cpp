@@ -35,12 +35,12 @@ Interface::Interface(std::vector<Vertex *> vertices, Simulation & config, unsign
     _flux = ConservedQuantity(config.dimensions());
 }
 
-void Interface::set_left_flow_state(FlowState fs){
-    this->_left = fs;
+void Interface::copy_left_flow_state(FlowState & fs){
+    this->_left.copy(fs);
 }
 
-void Interface::set_right_flow_state(FlowState fs){
-    this->_right = fs;
+void Interface::copy_right_flow_state(FlowState & fs){
+    this->_right.copy(fs);
 }
 
 const bool Interface::is_on_boundary() const { return this->_is_on_boundary; }

@@ -24,6 +24,8 @@ public:
     void set_flux_calculator(FluxCalculators::FluxCalculators flux_calc) {_flux_calculator = flux_calc;}
     void write_fluid_blocks();
     void solve();
+    GasModel & g_model() {return _g_model;}
+    void set_gas_model(GasModel gas_model) {_g_model = gas_model;}
 
 private:
     int _time_index = 0;
@@ -31,6 +33,7 @@ private:
     std::vector<FluidBlock *> _fluid_blocks;
     FluidBlockIO * _fluid_block_io = nullptr;
     FluxCalculators::FluxCalculators _flux_calculator;
+    GasModel _g_model;
     //std::vector<Solver> _solver;
 };
 

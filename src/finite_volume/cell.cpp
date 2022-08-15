@@ -1,11 +1,15 @@
 #include "cell.h"
 
-Cell::Cell(Interface * face, bool valid) : _valid_cell(valid) {
+Cell::Cell(Interface * face, Simulation & config, bool valid) : _valid_cell(valid), _config(config) {
     this->_interfaces.push_back(CellFace(*face, false)); 
 }
 
-Cell::Cell(std::vector<Vertex*> vertices, std::vector<Interface*> interfaces, unsigned int id, bool valid)
- : _vertices(vertices), _valid_cell(valid), _id(id)
+Cell::Cell(std::vector<Vertex*> vertices, 
+           std::vector<Interface*> interfaces, 
+           Simulation & config,
+           unsigned int id, 
+           bool valid)
+ : _vertices(vertices), _valid_cell(valid), _config(config), _id(id)
 {
     // TODO do we need to have vertices passed to the constructor?
     // we could get away with just the interfaces
@@ -83,18 +87,18 @@ void Cell::_compute_volume(){
 void Cell::compute_time_derivative(){
     double surface_integral = 0.0;
     int n_conserved = this->conserved_quantities.n_conserved();
-    for (CellFace face : this->_interfaces){
-        for (int i = 0; i < n_conserved; i++){
+    for (int i = 0; i < n_conserved; i++){
+        for (CellFace face : this->_interfaces){
             Interface * fvface = face.interface;
             double area = (face.inwards ? -1 : 1) * fvface->area(); 
             surface_integral += area * fvface->flux()[i];
-            this->residual[i] = surface_integral / this->_volume;
         }
+        this->residual[i] = surface_integral / this->_volume;
     }
 }
 
 void Cell::encode_conserved(){
-    ConservedQuantity cq = this->conserved_quantities;
+    ConservedQuantity & cq = this->conserved_quantities;
     cq[cq.rho()] = this->fs.gas_state.rho;
     cq[cq.momentum()] = this->fs.gas_state.rho * this->fs.velocity.x;
     cq[cq.momentum()+1] = this->fs.gas_state.rho * this->fs.velocity.y;
@@ -109,7 +113,7 @@ void Cell::decode_conserved(){
     this->fs.velocity.y = cq[cq.momentum()+1] / cq[cq.rho()];
     double ke = 0.5*(fs.velocity.x*fs.velocity.x + fs.velocity.y*fs.velocity.y);
     this->fs.gas_state.u = cq.energy() - ke;
-    fs.gas_state.update_from_rhou();
+    this->_config.g_model().update_from_rhou(fs.gas_state);
 }
 
 Vector3 & Cell::get_pos(){

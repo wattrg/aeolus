@@ -49,8 +49,8 @@ public:
     Cell * get_left_cell();
     Cell * get_right_cell();
     
-    void set_left_flow_state(FlowState fs);
-    void set_right_flow_state(FlowState fs);
+    void copy_left_flow_state(FlowState & fs);
+    void copy_right_flow_state(FlowState & fs);
 
     // Mark the interface as being on the boundary
     void mark_on_boundary(std::string tag);

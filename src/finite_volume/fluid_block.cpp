@@ -50,7 +50,7 @@ void FluidBlock::compute_block_dt(){
 
 void FluidBlock::apply_time_derivative(){
     for (Cell * cell : this->_cells){
-        ConservedQuantity cq = cell->conserved_quantities;
+        ConservedQuantity & cq = cell->conserved_quantities;
         for (unsigned int i=0; i < cq.n_conserved(); i++){
             cq[i] += cell->residual[i] * this->_dt; 
         }
@@ -60,8 +60,8 @@ void FluidBlock::apply_time_derivative(){
 
 void FluidBlock::reconstruct(){
     for (Interface * face : this->_interfaces){
-        face->set_left_flow_state(face->get_left_cell()->fs);
-        face->set_right_flow_state(face->get_right_cell()->fs);
+        face->copy_left_flow_state(face->get_left_cell()->fs);
+        face->copy_right_flow_state(face->get_right_cell()->fs);
     }
 }
 

@@ -30,6 +30,7 @@ void GasState::copy(GasState & other){
     this->T = other.T;
     this->rho = other.rho;
     this->u = other.u;
+    this->a = other.a;
     this->_gm = &other.get_gas_model();
 }
 

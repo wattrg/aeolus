@@ -43,7 +43,7 @@ void hanel(FlowState &left, FlowState &right, ConservedQuantity &flux){
     }
 
     // right state pressure and velocity splitting
-    double pRminus, uRminus;
+    double pRminus=0, uRminus=0;
     if (fabs(uR) <= aR){
         uRminus = -1.0/(4.0*aR) * (uR-aR)*(uR-aR);
         pRminus = pR*uRminus * (1.0/aR * (-2.0-uR/aR));

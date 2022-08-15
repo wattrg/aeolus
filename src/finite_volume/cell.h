@@ -6,6 +6,7 @@
 #include "../util/volume.h"
 #include "../gas/flow_state.h"
 #include "interface.h"
+#include "config.h"
 #include "vertex.h"
 #include <vector>
 #include <cmath>
@@ -31,8 +32,12 @@ struct CellFace {
 
 class Cell {
 public:
-    Cell(Interface * face, bool valid=true);
-    Cell(std::vector<Vertex*> verticies, std::vector<Interface*>, unsigned int id, bool valid=true);
+    Cell(Interface * face, Simulation & config, bool valid=true);
+    Cell(std::vector<Vertex*> verticies, 
+         std::vector<Interface*>,
+         Simulation & config,
+         unsigned int id, 
+         bool valid=true);
 
     // the flow state in the cell centre
     FlowState fs;
@@ -95,6 +100,9 @@ private:
 
     // keep track of if the cell is a valid cell
     bool _valid_cell;
+
+    // the simulation config
+    Simulation & _config;
 
     // cell volume
     double _volume = std::nan("");
