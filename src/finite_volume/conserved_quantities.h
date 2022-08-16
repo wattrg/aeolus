@@ -10,10 +10,10 @@ public:
     ConservedQuantity(unsigned int number_dimensions);
     unsigned int rho() {return _rho_idx;}
     unsigned int momentum() {return _momentum_idx;}
-    unsigned int energy() { return _energy_idx; }
-    unsigned int n_conserved() {return _n_conserved_quantities; }
+    unsigned int energy() { return _energy_idx;}
+    unsigned int n_conserved() {return _n_conserved_quantities;}
     const unsigned int dimensions() const;
-    double &operator [] (unsigned int index) { return _conserved_quantities[index]; }
+    double &operator [] (unsigned int index) {return _conserved_quantities[index];}
 
 private:
     std::vector<double> _conserved_quantities;

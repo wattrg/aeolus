@@ -39,7 +39,7 @@ void Vector3::scale(double scale){
 }
 
 Vector3 Vector3::cross(const Vector3& other){
-    double x = this->x*other.z - this->z*other.y;
+    double x = this->y*other.z - this->z*other.y;
     double y = this->z*other.x - this->x*other.z;
     double z = this->x*other.y - this->y*other.x;
     return Vector3(x, y, z);
