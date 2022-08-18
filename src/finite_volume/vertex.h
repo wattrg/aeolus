@@ -3,7 +3,7 @@
 
 #include <ostream>
 #include <cmath>
-#include "../util/vector.h"
+#include "../util/vector3.h"
 
 class Vertex {
 public:

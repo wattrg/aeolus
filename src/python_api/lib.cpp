@@ -1,7 +1,7 @@
 #include "../gas/gas_state.h"
 #include "../gas/gas_model.h"
 #include "../gas/flow_state.h"
-#include "../util/vector.h"
+#include "../util/vector3.h"
 #include "../finite_volume/fluid_block.h"
 #include "../finite_volume/io/fluid_block_io.h"
 #include "../solvers/explicit.h"

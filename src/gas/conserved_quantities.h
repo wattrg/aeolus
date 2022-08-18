@@ -1,7 +1,7 @@
 #ifndef __CONSERVED_QUANTITIES_H_
 #define __CONSERVED_QUANTITIES_H_
 
-#include "../util/vector.h"
+#include "../util/vector3.h"
 #include "config.h"
 #include <vector>
 

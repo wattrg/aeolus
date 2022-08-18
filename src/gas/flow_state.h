@@ -2,7 +2,7 @@
 #define __FLOW_STATE_H_
 
 #include "../gas/gas_state.h"
-#include "../util/vector.h"
+#include "../util/vector3.h"
 
 class FlowState {
 public:

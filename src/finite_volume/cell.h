@@ -2,7 +2,7 @@
 #define __CELL_H_
 
 #include "conserved_quantities.h"
-#include "../util/vector.h"
+#include "../util/vector3.h"
 #include "../util/volume.h"
 #include "../gas/flow_state.h"
 #include "interface.h"

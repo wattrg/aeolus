@@ -5,7 +5,7 @@
 #include "flux_calc.h"
 #include "cell.h"
 #include "../gas/flow_state.h"
-#include "../util/vector.h"
+#include "../util/vector3.h"
 #include "vertex.h"
 #include "config.h"
 #include <vector>
