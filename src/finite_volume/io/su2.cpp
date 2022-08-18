@@ -84,8 +84,8 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block,
         // first comes the tag
         std::string tag = read_string(line);
 
-        // grab the boundary condition
-        BoundaryCondition & bc = bc_map[tag];
+        // Make a copy of the boundary condition
+        BoundaryCondition * bc = new BoundaryCondition(bc_map[tag]);
 
         // next comes the number of elements on this boundary
         std::getline(su2_file, line);
@@ -127,10 +127,10 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block,
 
             // add the boundary cell and interface to the boundary condition
             interface->mark_on_boundary(tag);
-            bc.add_interface(interface);
-            bc.add_ghost_cell(cell);
+            bc->add_interface(interface);
+            bc->add_ghost_cell(cell);
         }
-        this->_bcs.push_back(&bc);
+        this->_bcs.push_back(bc);
     }
     // All done
     su2_file.close();
