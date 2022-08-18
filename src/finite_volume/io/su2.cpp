@@ -5,7 +5,7 @@ void get_next_line(std::fstream & is, std::string & line){
     // read next valid line of the file (e.g. ignoring blank lines and comments)
     while (true){
         std::getline(is, line);
-        if (line.rfind("#", 0) != 0 && !line.empty()){
+        if (line.rfind("%", 0) != 0 && !line.empty()){
             break;
         }
     }
