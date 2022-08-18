@@ -1,6 +1,16 @@
 #include "grid_io.h"
 #include "su2.h"
 
+void get_next_line(std::fstream & is, std::string & line){
+    // read next valid line of the file (e.g. ignoring blank lines and comments)
+    while (true){
+        std::getline(is, line);
+        if (line.rfind("#", 0) != 0 && !line.empty()){
+            break;
+        }
+    }
+}
+
 void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block,
         std::map<std::string, BoundaryCondition> & bc_map){
     std::fstream su2_file;
@@ -10,7 +20,7 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block,
     }
     std::string line;
     // Read the first line. Assume it is the number of dimensions
-    std::getline(su2_file, line);
+    get_next_line(su2_file, line);
     if (line.find("NDIME") != 0) {
         throw std::runtime_error("File doesn't begin with NDIME");
     }
@@ -24,11 +34,11 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block,
     }
 
     // Read the vertices
-    std::getline(su2_file, line);
+    get_next_line(su2_file, line);
     int n_points = read_integer(line);
     for ( int vertex_id=0; vertex_id < n_points; vertex_id++ ){
         double x, y;
-        std::getline(su2_file, line);
+        get_next_line(su2_file, line);
         int sep = line.find(" ");
         x = std::stod(line.substr(0, sep));
         y = std::stod(line.substr(sep));
@@ -36,13 +46,13 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block,
     }
 
     // Read the cells
-    std::getline(su2_file, line);
+    get_next_line(su2_file, line);
     if (line.find("NELEM") != 0) {
         throw std::runtime_error("Could not find number of cells");
     }
     int n_elems = read_integer(line);
     for ( int index=0; index < n_elems; index++ ) {
-        std::getline(su2_file, line);
+        get_next_line(su2_file, line);
         Element element = read_element(line);
         if (element.shape == ElementShape::Line){
             throw std::runtime_error("A cell cannot be a line");
@@ -73,14 +83,14 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block,
     }
 
     // read the boundary conditions
-    std::getline(su2_file, line);
+    get_next_line(su2_file, line);
     if (line.find("NMARK") != 0){
         throw std::runtime_error("Could not find number of boundaries");
     }
     int n_boundaries = read_integer(line);
     this->_bcs.reserve(n_boundaries);
     for (int i_boundary = 0; i_boundary < n_boundaries; i_boundary++){
-        std::getline(su2_file, line);
+        get_next_line(su2_file, line);
         // first comes the tag
         std::string tag = read_string(line);
 
@@ -88,14 +98,14 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block,
         BoundaryCondition * bc = new BoundaryCondition(bc_map[tag]);
 
         // next comes the number of elements on this boundary
-        std::getline(su2_file, line);
+        get_next_line(su2_file, line);
         if (line.find("MARKER_ELEMS") != 0){
             throw std::runtime_error("Could not find the number of elements on boundary");
         }
         int n_elements = read_integer(line);
         // finally, the actual elements
         for (int i_element = 0; i_element < n_elements; i_element++){
-            std::getline(su2_file, line);
+            get_next_line(su2_file, line);
             Element element = read_element(line);
             if (element.shape != ElementShape::Line){
                 throw std::runtime_error("Boundary element should only be a line");

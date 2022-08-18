@@ -1,3 +1,5 @@
+# test comment followed by a blank line, to check if comments and blank lines work.
+
 NDIME= 2
 NPOIN= 16
 0.0 0.0
