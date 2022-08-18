@@ -22,9 +22,9 @@ config.dimensions = 2
 config.flux_calculator = FluxCalculators.hanel
 
 bcs = {
-    "slipwall": SlipWall("slipwall"),
-    "outflow": SupersonicOutflow("outflow"),
-    "inflow": SupersonicInflow(fill_func(0,0,0), "inflow")
+    "slipwall": SlipWall(),
+    "outflow": SupersonicOutflow(),
+    "inflow": SupersonicInflow(fill_func(0,0,0))
 }
 
 config.gas_model = GasModel(287)
@@ -37,3 +37,4 @@ solver = ExplicitSolver(config)
 solver.max_step = 1
 
 solver.solve()
+config.write_fluid_blocks()
