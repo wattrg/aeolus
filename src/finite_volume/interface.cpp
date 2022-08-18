@@ -11,7 +11,7 @@ Interface::Interface(std::vector<Vertex *> vertices, Simulation & config, unsign
 
     if (this->_vertices.size() == 2){
         // signals two dimensional grid
-        this->_tan1 = this->_vertices[1] - this->_vertices[0];
+        this->_tan1 = this->_vertices[1]->get_pos() - this->_vertices[0]->get_pos();
         double length = this->_tan1.length();
         this->_tan1.scale(1.0 / length);
         this->_tan2 = Vector3(0.0, 0.0, 1.0);

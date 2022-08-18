@@ -12,19 +12,19 @@ void Vector3::copy(Vector3 & other){
     this->z = other.z;
 }
 
-Vector3 Vector3::operator + (const Vector3& other){
+Vector3 Vector3::operator + (const Vector3& other) const {
     return Vector3(this->x + other.x, this->y + other.y, this->z + other.z);    
 }
 
-Vector3 Vector3::operator - (const Vector3& other){
+Vector3 Vector3::operator - (const Vector3& other) const{
     return Vector3(this->x - other.x, this->y - other.y, this->z - other.z);    
 }
 
-Vector3 Vector3::operator * (const double c){
+Vector3 Vector3::operator * (const double c) const {
     return Vector3(c*this->x, c*this->y, c*this->z);    
 }
 
-Vector3 Vector3::operator / (const double c){
+Vector3 Vector3::operator / (const double c) const {
     return Vector3(this->x/c, this->y/c, this->z/c);    
 }
 

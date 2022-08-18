@@ -22,12 +22,12 @@ namespace CellShape {
 // keep track of the interface, as well as if the interface is facing the cell
 // or not
 struct CellFace {
-    CellFace(Interface & interface, bool inwards) : interface(&interface), inwards(inwards){}
+    CellFace(Interface & interface, bool outwards) : interface(&interface), outwards(outwards){}
     // the interface
     Interface * interface;
 
     // if this interface points inwards from the cell or not
-    bool inwards;
+    bool outwards;
 };
 
 class Cell {

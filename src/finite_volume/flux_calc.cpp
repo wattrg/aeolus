@@ -14,7 +14,7 @@ void hanel(FlowState &left, FlowState &right, ConservedQuantity &flux){
     double uL = left.velocity.x;
     double vL = left.velocity.y;
     double wL = left.velocity.z;
-    double eL = left.gas_state.internal_energy();
+    double eL = left.gas_state.u;
     double aL = left.gas_state.a;
     double keL = 0.5 * (uL*uL + vL*vL + wL*wL);
     double HL = eL + pLrL + keL;
@@ -26,13 +26,13 @@ void hanel(FlowState &left, FlowState &right, ConservedQuantity &flux){
     double uR = left.velocity.x;
     double vR = left.velocity.y;
     double wR = left.velocity.z;
-    double eR = left.gas_state.internal_energy();
+    double eR = left.gas_state.u;
     double aR = left.gas_state.a;
-    double keR = 0.5 * (uL*uL + vL*vL + wL*wL);
+    double keR = 0.5 * (uR*uR + vR*vR + wR*wR);
     double HR = eR + pRrR + keR;
 
     // left state pressure and velocity splitting
-    double pLplus, uLplus;
+    double pLplus=0, uLplus=0;
     if (fabs(uL) <= aL){
         uLplus = 1.0/(4.0*aL) * (uL+aL)*(uL+aL);
         pLplus = pL*uLplus * (1.0/aL * (2.0-uL/aL));
@@ -50,7 +50,7 @@ void hanel(FlowState &left, FlowState &right, ConservedQuantity &flux){
     }
     else{
         uRminus = 0.5*(uR-fabs(uR));
-        pLplus = pR*uRminus * (1.0/uR);
+        pRminus = pR*uRminus * (1.0/uR);
     }
 
     // pressure flux

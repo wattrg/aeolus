@@ -33,10 +33,10 @@ Cell::Cell(std::vector<Vertex*> vertices,
     this->_compute_volume();
 
     //  attach the cell to the interfaces
-    bool inward_interface;
+    bool outward_interface;
     for (Interface * interface : interfaces) {
-        inward_interface = interface->attach_cell(*this);
-        this->_interfaces.push_back(CellFace(*interface, inward_interface)); 
+        outward_interface = interface->attach_cell(*this);
+        this->_interfaces.push_back(CellFace(*interface, outward_interface)); 
     }
     
     // initialise conserved quantities
@@ -85,12 +85,12 @@ void Cell::_compute_volume(){
 }
 
 void Cell::compute_time_derivative(){
-    double surface_integral = 0.0;
     int n_conserved = this->conserved_quantities.n_conserved();
     for (int i = 0; i < n_conserved; i++){
+        double surface_integral = 0.0;
         for (CellFace face : this->_interfaces){
             Interface * fvface = face.interface;
-            double area = (face.inwards ? -1 : 1) * fvface->area(); 
+            double area = (face.outwards ? 1 : -1) * fvface->area(); 
             surface_integral += area * fvface->flux()[i];
         }
         this->residual[i] = surface_integral / this->_volume;

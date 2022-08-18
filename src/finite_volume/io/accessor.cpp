@@ -17,16 +17,8 @@ std::vector<double> access_velocity(const Cell & cell){
     return std::vector<double> {vel.x, vel.y, vel.z};
 }
 
-std::vector<double> access_x_velocity(const Cell & cell){
-    return std::vector<double> {cell.fs.velocity.x};
-}
-
-std::vector<double> access_y_velocity(const Cell & cell){
-    return std::vector<double> {cell.fs.velocity.y};
-}
-
-std::vector<double> access_z_velocity(const Cell & cell){
-    return std::vector<double> {cell.fs.velocity.z};
+std::vector<double> access_energy(const Cell & cell){
+    return std::vector<double> {cell.fs.gas_state.u};
 }
 
 std::vector<double> access_volume(const Cell & cell){

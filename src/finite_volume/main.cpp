@@ -31,9 +31,9 @@ int main(int argc, char *argv[]) {
     FlowState inflow = FlowState(inflow_gs, Vector3(1000.0));
 
     std::map<std::string, BoundaryCondition> bc_map;
-    bc_map.insert(std::pair<std::string, BoundaryCondition>("slip_wall", SlipWall("slip_wall")));
-    bc_map.insert(std::pair<std::string, BoundaryCondition>("outflow", SupersonicOutflow("outflow")));
-    bc_map.insert(std::pair<std::string, BoundaryCondition>("inflow", SupersonicInflow(inflow, "inflow")));
+    bc_map.insert(std::pair<std::string, BoundaryCondition>("slip_wall", SlipWall()));
+    bc_map.insert(std::pair<std::string, BoundaryCondition>("outflow", SupersonicOutflow()));
+    bc_map.insert(std::pair<std::string, BoundaryCondition>("inflow", SupersonicInflow(inflow)));
 
     config.set_gas_model(g_model);
     config.add_fluid_block("test_grid.su2", bc_map);

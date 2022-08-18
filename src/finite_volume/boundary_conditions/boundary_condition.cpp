@@ -7,8 +7,6 @@ BoundaryCondition::BoundaryCondition(std::vector<std::shared_ptr<GhostCellEffect
 {}
 
 
-BoundaryCondition::BoundaryCondition(std::string tag) : _tag(tag) {}
-
 void BoundaryCondition::add_interface(Interface * face){
     this->_interfaces.push_back(face);
 }
@@ -34,15 +32,15 @@ void BoundaryCondition::apply_pre_reconstruction(){
 
 // specific implementation of some common boundary conditions
 // this should only be a matter of constructing the boundary condition
-SlipWall::SlipWall(std::string tag) : BoundaryCondition(tag) {
+SlipWall::SlipWall() {
     this->_pre_recon_actions.push_back(std::shared_ptr<GhostCellEffect>(new InternalCopy()));
     this->_pre_recon_actions.push_back(std::shared_ptr<GhostCellEffect>(new ReflectNormal()));
 }
 
-SupersonicOutflow::SupersonicOutflow(std::string tag) : BoundaryCondition(tag) {
+SupersonicOutflow::SupersonicOutflow() {
     this->_pre_recon_actions.push_back(std::shared_ptr<GhostCellEffect>(new InternalCopy()));
 }
 
-SupersonicInflow::SupersonicInflow(FlowState fs, std::string tag) : BoundaryCondition(tag) {
+SupersonicInflow::SupersonicInflow(FlowState fs) {
     this->_pre_recon_actions.push_back(std::shared_ptr<GhostCellEffect>(new FlowStateCopy(fs))); 
 }

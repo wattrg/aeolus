@@ -13,9 +13,9 @@ FluidBlock::~FluidBlock(){
     for (Vertex * vertex : this->_vertices){
         delete vertex;
     }
-    //for (BoundaryCondition * bc : this->_bcs){
-    //    delete bc;
-    //}
+    for (BoundaryCondition * bc : this->_bcs){
+        delete bc;
+    }
     if (_grid_io) delete _grid_io;
 }
 

@@ -27,7 +27,6 @@ class BoundaryCondition{
 public:
     ~BoundaryCondition();
     BoundaryCondition();
-    BoundaryCondition(std::string tag);
     BoundaryCondition(std::vector<std::shared_ptr<GhostCellEffect>> pre_recon, std::string tag);
 
     // apply the pre-reconstruction actions
@@ -54,17 +53,17 @@ protected:
 // There are some specific boundaries specified here
 class SlipWall : public BoundaryCondition {
 public:
-    SlipWall(std::string tag);
+    SlipWall();
 };
 
 class SupersonicInflow : public BoundaryCondition {
 public:
-    SupersonicInflow(FlowState fs, std::string tag);
+    SupersonicInflow(FlowState fs);
 };
 
 class SupersonicOutflow : public BoundaryCondition {
 public:
-    SupersonicOutflow(std::string tag);
+    SupersonicOutflow();
 };
 
 

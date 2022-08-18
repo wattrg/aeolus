@@ -76,11 +76,11 @@ PYBIND11_MODULE(aeolus, m) {
     pybind11::module_ bc = m.def_submodule("bc", "Boundary conditions");
     pybind11::class_<BoundaryCondition>(bc, "BoundaryCondition");
     pybind11::class_<SlipWall, BoundaryCondition>(bc, "SlipWall")
-        .def(pybind11::init<const char *>());
+        .def(pybind11::init<>());
 
     pybind11::class_<SupersonicInflow, BoundaryCondition>(bc, "SupersonicInflow")
-        .def(pybind11::init<FlowState, const char *>());
+        .def(pybind11::init<FlowState>());
 
     pybind11::class_<SupersonicOutflow, BoundaryCondition>(bc, "SupersonicOutflow")
-        .def(pybind11::init<const char *>());
+        .def(pybind11::init<>());
 }

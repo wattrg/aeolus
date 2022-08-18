@@ -17,9 +17,9 @@ def fill_func(x, y, _):
     vel = Vector3(1000+200*x, 500*(y-1.5))
     return FlowState(gas_state, vel)
 
-config = Simulation()
-config.dimensions = 2
-config.flux_calculator = FluxCalculators.hanel
+sim = Simulation()
+sim.dimensions = 2
+sim.flux_calculator = FluxCalculators.hanel
 
 bcs = {
     "slipwall": SlipWall(),
@@ -27,14 +27,14 @@ bcs = {
     "inflow": SupersonicInflow(fill_func(0,0,0))
 }
 
-config.gas_model = GasModel(287)
-config.add_fluid_block("test_grid.su2", bcs)
+sim.gas_model = GasModel(287)
+sim.add_fluid_block("test_grid.su2", bcs)
 
-config.fluid_blocks[0].fill_function(fill_func)
-config.write_fluid_blocks()
+sim.fluid_blocks[0].fill_function(fill_func)
+sim.write_fluid_blocks()
 
-solver = ExplicitSolver(config)
+solver = ExplicitSolver(sim)
 solver.max_step = 1
 
 solver.solve()
-config.write_fluid_blocks()
+sim.write_fluid_blocks()

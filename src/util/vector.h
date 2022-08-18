@@ -22,10 +22,10 @@ public:
     std::string to_string () const;
     friend std::ostream& operator << (std::ostream& os, const Vector3 vec);
     
-    Vector3 operator + (const Vector3& other);
-    Vector3 operator - (const Vector3& other);
-    Vector3 operator * (const double c);
-    Vector3 operator / (const double c);
+    Vector3 operator + (const Vector3& other) const;
+    Vector3 operator - (const Vector3& other) const;
+    Vector3 operator * (const double c) const;
+    Vector3 operator / (const double c) const;
 
     // calculate the length of the vector
     double length();
