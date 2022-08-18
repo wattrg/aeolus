@@ -107,12 +107,12 @@ void Cell::encode_conserved(){
 }
 
 void Cell::decode_conserved(){
-    ConservedQuantity cq = this->conserved_quantities;
-    this->fs.gas_state.rho = cq.rho();
+    ConservedQuantity & cq = this->conserved_quantities;
+    this->fs.gas_state.rho = cq[cq.rho()];
     this->fs.velocity.x = cq[cq.momentum()] / cq[cq.rho()];
     this->fs.velocity.y = cq[cq.momentum()+1] / cq[cq.rho()];
     double ke = 0.5*(fs.velocity.x*fs.velocity.x + fs.velocity.y*fs.velocity.y);
-    this->fs.gas_state.u = cq.energy() - ke;
+    this->fs.gas_state.u = cq[cq.energy()] - ke;
     this->_config.g_model().update_from_rhou(fs.gas_state);
 }
 
