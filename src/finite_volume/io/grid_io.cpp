@@ -63,6 +63,8 @@ ElementShape::ElementShape int_to_element_shape(int shape){
     switch (shape) {
         case 3:
             return ElementShape::Line;
+        case 5:
+            return ElementShape::Triangle;
         case 9:
             return ElementShape::Quad;
         default:
@@ -74,11 +76,26 @@ int element_shape_to_number_vertices(ElementShape::ElementShape shape){
     switch (shape) {
         case ElementShape::Line:
             return 2;
+        case ElementShape::Triangle:
+            return 3;
         case ElementShape::Quad:
             return 4;
         default:
             throw std::runtime_error("Invalid ElementShape");
     }
+}
+
+std::string trim_whitespace(std::string str){
+    // remove whitespace from the beginning and end
+    // trim the left
+    size_t start = str.find_first_not_of(" ");
+    str = (start == std::string::npos) ? "" : str.substr(start);
+
+    // trim the right
+    size_t end = str.find_last_not_of(" ");
+    str = (end == std::string::npos) ? "" : str.substr(0, end+1);
+
+    return str;
 }
 
 std::string read_string(std::string str){
@@ -87,15 +104,14 @@ std::string read_string(std::string str){
     // Discard anything before the equal sign
     size_t sep = str.find("=");
     str = str.substr(sep+1);
-    sep = str.find(" ");
-    if (sep != std::string::npos){
-        str = str.substr(sep);
-    }
+    // trim any white space from around the value
+    str = trim_whitespace(str);
     return str;
 }
 
 int read_integer(std::string str){
-    return std::stoi(read_string(str));
+    str = read_string(str);
+    return std::stoi(str);
 }
 
 Element read_element(std::string line) {
@@ -104,6 +120,7 @@ Element read_element(std::string line) {
     int elem_shape = std::stoi(line.substr(0, pos));
     ElementShape::ElementShape shape = int_to_element_shape(elem_shape);
     int n_vertices = element_shape_to_number_vertices(shape);
+
     // discard the element type
     line = line.substr(pos+1, std::string::npos);
 
@@ -111,6 +128,7 @@ Element read_element(std::string line) {
     int vertex;
     std::vector<int> element_vertices{};
     for (int i_vertex=0; i_vertex < n_vertices; i_vertex++){
+        line = trim_whitespace(line);
         pos = line.find(" ");
         vertex = std::stoi(line.substr(0, pos));
         line = line.substr(pos+1, std::string::npos);

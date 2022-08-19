@@ -19,7 +19,7 @@ class GridIO;
 class FluidBlockIO;
 
 namespace ElementShape {
-    enum ElementShape : unsigned short { Quad, Line, };
+    enum ElementShape : unsigned short { Triangle, Quad, Line, };
 }
 
 class FluidBlock {
@@ -40,7 +40,7 @@ public:
     void compute_fluxes();
     void compute_time_derivatives();
     void apply_time_derivative();
-    void compute_block_dt();
+    double compute_block_dt();
     void reconstruct();
 
     // getter methods

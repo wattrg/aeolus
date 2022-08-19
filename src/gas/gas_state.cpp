@@ -13,7 +13,7 @@ void GasState::set_gmodel(GasModel & gmodel){
     this->_gm = &gmodel;
 }
 
-GasModel & GasState::get_gas_model(){
+GasModel & GasState::get_gas_model() const {
     return *this->_gm;
 }
 
@@ -25,7 +25,7 @@ void GasState::update_from_rhou() {this->_gm->update_from_rhou(*this); }
 
 double GasState::internal_energy() {return this->_gm->internal_energy(*this); }
 
-void GasState::copy(GasState & other){
+void GasState::copy(const GasState & other){
     this->p = other.p;
     this->T = other.T;
     this->rho = other.rho;

@@ -94,6 +94,7 @@ ElementShape::ElementShape int_to_element_shape(int shape);
 int element_shape_to_number_vertices(ElementShape::ElementShape shape);
 std::string read_string(std::string str);
 int read_integer(std::string str);
+std::string trim_whitespace(std::string str);
 Element read_element(std::string line);
 
 #endif

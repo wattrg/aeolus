@@ -8,7 +8,7 @@ public:
     ExplicitSolver(Simulation & config) : Solver(config) {};
 
 protected:
-    void _step();
+    double _step();
 };
 
 #endif

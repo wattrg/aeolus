@@ -40,12 +40,13 @@ void FluidBlock::compute_time_derivatives(){
     }
 }
 
-void FluidBlock::compute_block_dt(){
+double FluidBlock::compute_block_dt(){
     double dt = 10000;
     for (Cell * cell : this->_cells){
         dt = std::min(cell->compute_local_timestep(), dt); 
     }
     this->_dt = dt;
+    return dt;
 }
 
 void FluidBlock::apply_time_derivative(){

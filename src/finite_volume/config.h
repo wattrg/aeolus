@@ -26,9 +26,11 @@ public:
     void solve();
     GasModel & g_model() {return _g_model;}
     void set_gas_model(GasModel gas_model) {_g_model = gas_model;}
+    void add_time_increment(double dt) {_time_index += dt;}
 
 private:
     int _time_index = 0;
+    double _time = 0.0;
     unsigned short _dimensions = 2;
     std::vector<FluidBlock *> _fluid_blocks;
     FluidBlockIO * _fluid_block_io = nullptr;

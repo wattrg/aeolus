@@ -5,7 +5,7 @@ FlowState::FlowState() : gas_state(GasState()), velocity(Vector3()){}
 FlowState::FlowState(GasState gs, Vector3 vel) : gas_state(gs), velocity(vel) {}
 FlowState::~FlowState(){}
 
-void FlowState::copy(FlowState & other){
+void FlowState::copy(const FlowState & other){
     this->gas_state.copy(other.gas_state);
     this->velocity.copy(other.velocity);
 }

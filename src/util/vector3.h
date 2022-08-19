@@ -4,7 +4,7 @@
 #include <cmath>
 #include <iostream>
 
-const double TOL=1e-10;
+const double TOL=1e-14;
 
 class Vector3 {
 public:
@@ -17,7 +17,7 @@ public:
     double distance_to(Vector3 & other);
     bool is_close(Vector3 & other);
 
-    void copy(Vector3 & other);
+    void copy(const Vector3 & other);
 
     std::string to_string () const;
     friend std::ostream& operator << (std::ostream& os, const Vector3 vec);

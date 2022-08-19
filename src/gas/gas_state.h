@@ -28,10 +28,10 @@ public:
     void update_from_rhou();
 
     // copy the values from some other gas state
-    void copy(GasState & other);
+    void copy(const GasState & other);
 
     void set_gmodel(GasModel & gmodel);
-    GasModel & get_gas_model();
+    GasModel & get_gas_model() const;
 
     // compute the internal energy
     double internal_energy();

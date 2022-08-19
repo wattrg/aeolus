@@ -11,9 +11,10 @@ void get_next_line(std::fstream & is, std::string & line){
     }
 
     // we've found the next line, do some cleaning up
-    //size_t start = line.find_first_not_of(" ");
-    //size_t end = line.find_last_not_of(" ");
-    //line = line.substr(start, end);
+    // size_t start = line.find_first_not_of(" ");
+    // size_t end = line.find_last_not_of(" ");
+    // line = line.substr(start, end);
+    line = trim_whitespace(line);
 }
 
 void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block,

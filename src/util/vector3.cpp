@@ -6,7 +6,7 @@ Vector3::Vector3(double x) : x(x), y(0.0), z(0.0) {}
 Vector3::Vector3(double x, double y) : x(x), y(y), z(0.0) {}
 Vector3::Vector3(double x, double y, double z) : x(x), y(y), z(z) {}
 
-void Vector3::copy(Vector3 & other){
+void Vector3::copy(const Vector3 & other){
     this->x = other.x;
     this->y = other.y;
     this->z = other.z;
@@ -29,7 +29,7 @@ Vector3 Vector3::operator / (const double c) const {
 }
 
 double Vector3::length(){
-   return this->x*this->x + this->y*this->y + this->z*this->z; 
+   return sqrt(this->x*this->x + this->y*this->y + this->z*this->z); 
 }
 
 void Vector3::scale(double scale){

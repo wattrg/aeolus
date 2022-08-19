@@ -130,6 +130,8 @@ void VTKReader::read_fluid_block(const char & file_name, FluidBlock & fb){
 // convert CellShape to VTK cell type
 int cell_shape_to_vtk_type (CellShape::CellShape shape){
     switch (shape){
+        case CellShape::Triangle:
+            return 5;
         case CellShape::Quad:
             return 9;
         default:

@@ -15,6 +15,7 @@ class Interface;
 
 namespace CellShape {
     enum CellShape {
+        Triangle,
         Quad
     };
 }

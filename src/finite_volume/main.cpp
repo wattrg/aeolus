@@ -12,7 +12,7 @@ FlowState initial_conditions(double x, double y, double z){
     gs.p = 101325.0;
     gs.T = 300.0;
     gm.update_from_pT(gs);
-    FlowState fs = FlowState(gs, Vector3(1000));
+    FlowState fs = FlowState(gs, Vector3(1000.0));
     return fs;
 }
 
@@ -31,9 +31,9 @@ int main(int argc, char *argv[]) {
     FlowState inflow = FlowState(inflow_gs, Vector3(1000.0));
 
     std::map<std::string, BoundaryCondition> bc_map;
-    bc_map.insert(std::pair<std::string, BoundaryCondition>("slip_wall", SlipWall()));
-    bc_map.insert(std::pair<std::string, BoundaryCondition>("outflow", SupersonicOutflow()));
-    bc_map.insert(std::pair<std::string, BoundaryCondition>("inflow", SupersonicInflow(inflow)));
+    bc_map.insert(std::pair<std::string, BoundaryCondition>("SLIP_WALL", SlipWall()));
+    bc_map.insert(std::pair<std::string, BoundaryCondition>("OUTFLOW", SupersonicOutflow()));
+    bc_map.insert(std::pair<std::string, BoundaryCondition>("INFLOW", SupersonicInflow(inflow)));
 
     config.set_gas_model(g_model);
     config.add_fluid_block("cone20.su2", bc_map);

@@ -57,6 +57,9 @@ double Cell::compute_local_timestep(){
 
 void Cell::_compute_shape(){
     switch (this->_vertices.size()){
+        case 3:
+            this->_shape = CellShape::Triangle;
+            break;
         case 4:
             this->_shape = CellShape::Quad;
             break;
@@ -69,6 +72,16 @@ const double Cell::volume() const {return this->_volume;}
 
 void Cell::_compute_volume(){
     switch (this->_shape){
+        case CellShape::Triangle:
+            {
+            std::vector<Vector3> points;
+            points.reserve(3);
+            for (Vertex * vertex : this->_vertices){
+                points.push_back(vertex->get_pos());
+            }
+            this->_volume = triangle_area(points);
+            break;
+            }
         case CellShape::Quad:
             {
             std::vector<Vector3> points;
