@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
     config.write_fluid_blocks();
 
     ExplicitSolver solver = ExplicitSolver(config);
-    solver.set_max_step(100);
+    solver.set_max_step(50);
     solver.solve();
 
     config.write_fluid_blocks();
