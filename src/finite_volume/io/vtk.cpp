@@ -2,7 +2,20 @@
 
 
 // VTK writer
-VTKWriter::~VTKWriter() {}
+VTKWriter::~VTKWriter() {
+    // on the way out, write a pvd file to so paraview can open 
+    // all the time values at once
+    std::ofstream pvd_file("flow/flow.pvd");
+    pvd_file << "<?xml version='1.0'?>\n";
+    pvd_file << "<VTKFile type='Collection' version='0.1' byte_order='LittleEndian'>\n";
+    pvd_file << "<Collection>\n";
+    for (unsigned int i = 0; i < this->_times.size(); i++){
+        pvd_file << "<DataSet timestep='" << this->_times[i] << "' group='' part='0' ";
+        pvd_file << "file='" << this->_block_names[i] << "'/>\n";
+    }
+    pvd_file << "</Collection>\n";
+    pvd_file << "</VTKFile>\n";
+}
 
 VTKWriter::VTKWriter():
     _points(GridData<double> ("points", 3, "Float32")),
@@ -13,9 +26,10 @@ VTKWriter::VTKWriter():
     _number_cells(0)
 {}
 
-void VTKWriter::write_fluid_block(const char & file_name, const FluidBlock & fb){
+void VTKWriter::write_fluid_block(const char & file_name, const FluidBlock & fb, double time){
     this->_read_data(fb);
-    std::ofstream vtk_file(&file_name);
+    std::string f_name = std::string("flow/") + std::string(&file_name);
+    std::ofstream vtk_file(f_name);
     vtk_file << "<VTKFile type='UnstructuredGrid' byte_order='BigEndian'>\n";
     vtk_file << "<UnstructuredGrid>\n"; 
     vtk_file << "<Piece NumberOfPoints='" << this->_number_points << "' ";
@@ -38,6 +52,9 @@ void VTKWriter::write_fluid_block(const char & file_name, const FluidBlock & fb)
     vtk_file << "</VTKFile>\n";
     vtk_file.close();
     this->_clear_data();
+
+    this->_times.push_back(time);
+    this->_block_names.push_back(std::string(&file_name));
 }
 
 void VTKWriter::_clear_data(){

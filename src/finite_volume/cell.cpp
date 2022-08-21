@@ -103,7 +103,7 @@ void Cell::compute_time_derivative(){
         double surface_integral = 0.0;
         for (CellFace face : this->_interfaces){
             Interface * fvface = face.interface;
-            double area = (face.outwards ? 1 : -1) * fvface->area(); 
+            double area = (face.outwards ? -1 : 1) * fvface->area(); 
             surface_integral += area * fvface->flux()[i];
         }
         this->residual[i] = surface_integral / this->_volume;

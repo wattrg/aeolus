@@ -62,9 +62,9 @@ void FluidBlockIO::read_fluid_block(const char * file_name, FluidBlock & fb) {
     }
 }
 
-void FluidBlockIO::write_fluid_block(const char * file_name, const FluidBlock & fb) {
+void FluidBlockIO::write_fluid_block(const char * file_name, const FluidBlock & fb, double time) {
     if (this->_writer){
-        this->_writer->write_fluid_block(*file_name, fb);
+        this->_writer->write_fluid_block(*file_name, fb, time);
     }
     else {
         throw std::runtime_error("No fluid block writer configured");

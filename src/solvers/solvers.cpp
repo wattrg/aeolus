@@ -13,5 +13,6 @@ void Solver::solve(){
             throw std::runtime_error(e);
         }
         this->_config.add_time_increment(dt);
+        this->_config.write_fluid_blocks();
     }
 }

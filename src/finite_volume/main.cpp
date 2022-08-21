@@ -9,7 +9,7 @@
 FlowState initial_conditions(double x, double y, double z){
     GasModel gm = GasModel(287.0);
     GasState gs = GasState(gm);
-    gs.p = 101325.0 / 2;
+    gs.p = 101325.0/2;
     gs.T = 300.0;
     gm.update_from_pT(gs);
     FlowState fs = FlowState(gs, Vector3(1000.0));
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 
     GasState inflow_gs = GasState();
     inflow_gs.p = 101325.0;
-    inflow_gs.T = 500.0;
+    inflow_gs.T = 600.0;
     g_model.update_from_pT(inflow_gs);
     FlowState inflow = FlowState(inflow_gs, Vector3(2000.0));
 
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
     config.write_fluid_blocks();
 
     ExplicitSolver solver = ExplicitSolver(config);
-    solver.set_max_step(1);
+    solver.set_max_step(100);
     solver.solve();
 
     config.write_fluid_blocks();

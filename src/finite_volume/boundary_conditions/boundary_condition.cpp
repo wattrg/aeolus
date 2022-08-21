@@ -38,14 +38,22 @@ void BoundaryCondition::apply_pre_reconstruction(){
 // specific implementation of some common boundary conditions
 // this should only be a matter of constructing the boundary condition
 SlipWall::SlipWall() {
-    this->_pre_recon_actions.push_back(std::shared_ptr<GhostCellEffect>(new InternalCopy()));
-    this->_pre_recon_actions.push_back(std::shared_ptr<GhostCellEffect>(new ReflectNormal()));
+    this->_pre_recon_actions.push_back(
+        std::shared_ptr<GhostCellEffect>(new InternalCopy())
+    );
+    this->_pre_recon_actions.push_back(
+        std::shared_ptr<GhostCellEffect>(new ReflectNormal())
+    );
 }
 
 SupersonicOutflow::SupersonicOutflow() {
-    this->_pre_recon_actions.push_back(std::shared_ptr<GhostCellEffect>(new InternalCopy()));
+    this->_pre_recon_actions.push_back(
+        std::shared_ptr<GhostCellEffect>(new InternalCopy())
+    );
 }
 
 SupersonicInflow::SupersonicInflow(FlowState fs) {
-    this->_pre_recon_actions.push_back(std::shared_ptr<GhostCellEffect>(new FlowStateCopy(fs))); 
+    this->_pre_recon_actions.push_back(
+        std::shared_ptr<GhostCellEffect>(new FlowStateCopy(fs))
+    ); 
 }

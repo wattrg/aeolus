@@ -26,7 +26,7 @@ public:
     void solve();
     GasModel & g_model() {return _g_model;}
     void set_gas_model(GasModel gas_model) {_g_model = gas_model;}
-    void add_time_increment(double dt) {_time_index += dt;}
+    void add_time_increment(double dt) {_time += dt;}
 
 private:
     int _time_index = 0;

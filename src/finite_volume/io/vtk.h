@@ -10,7 +10,7 @@ class VTKWriter : public FluidBlockWriter {
 public:
     ~VTKWriter();
     VTKWriter();
-    void write_fluid_block(const char & file_name, const FluidBlock & fb);
+    void write_fluid_block(const char & file_name, const FluidBlock & fb, double time);
 
 private:
     GridData<double> _points;
@@ -29,6 +29,10 @@ private:
 
     // write a data array
     template <typename T> void _write_data_array(const GridData<T> & data, std::ofstream & vtk_file);
+
+    // time values
+    std::vector<double> _times;
+    std::vector<std::string> _block_names;
 };
 
 
