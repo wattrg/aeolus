@@ -41,5 +41,6 @@ solver = ExplicitSolver(sim)
 solver.cfl = 0.5
 solver.max_step = 100
 
-solver.solve()
+sim.add_solver(solver)
+sim.run()
 # sim.write_fluid_blocks()

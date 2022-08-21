@@ -3,6 +3,8 @@
 
 #include "../finite_volume/config.h"
 
+class Simulation;
+
 class Solver {
 public:
     Solver(Simulation & config);

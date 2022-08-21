@@ -50,6 +50,8 @@ PYBIND11_MODULE(aeolus, m) {
         .def_property("flux_calculator", &Simulation::flux_calculator, &Simulation::set_flux_calculator, "The flux calculator")
         .def_property("gas_model", &Simulation::g_model, &Simulation::set_gas_model, "The gas model")
         .def("add_fluid_block", &Simulation::add_fluid_block, "Add a fluid block")
+        .def("add_solver", &Simulation::add_solver, "Add a solver")
+        .def("run", &Simulation::run, "Run the simulation")
         .def("write_fluid_blocks", &Simulation::write_fluid_blocks, "Write the fluid blocks to file");
 
     pybind11::class_<FluidBlock>(m, "FluidBlock")
@@ -61,11 +63,12 @@ PYBIND11_MODULE(aeolus, m) {
         .def(pybind11::init<>())
         .def("write_fluid_block", &FluidBlockIO::write_fluid_block, "Write the fluid block to file");
 
-    pybind11::class_<ExplicitSolver>(m, "ExplicitSolver")
+    pybind11::class_<Solver>(m, "Solver");
+
+    pybind11::class_<ExplicitSolver, Solver>(m, "ExplicitSolver")
         .def(pybind11::init<Simulation&>())
         .def_property("cfl", &ExplicitSolver::cfl, &ExplicitSolver::set_cfl, "CFL number")
-        .def_property("max_step", &ExplicitSolver::max_step, &ExplicitSolver::set_max_step, "The maximum number of steps")
-        .def("solve", &ExplicitSolver::solve, "Begin solving");
+        .def_property("max_step", &ExplicitSolver::max_step, &ExplicitSolver::set_max_step, "The maximum number of steps");
 
     pybind11::enum_<FluxCalculators::FluxCalculators>(m, "FluxCalculators")
         .value("roe", FluxCalculators::FluxCalculators::roe)

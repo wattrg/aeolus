@@ -43,7 +43,7 @@ void FluidBlock::compute_time_derivatives(){
 double FluidBlock::compute_block_dt(){
     double dt = 10000;
     for (Cell * cell : this->_cells){
-        dt = std::min(cell->compute_local_timestep(), dt); 
+        dt = std::min(cell->compute_local_timestep(fb_config.solver().cfl()), dt); 
     }
     this->_dt = dt;
     return dt;

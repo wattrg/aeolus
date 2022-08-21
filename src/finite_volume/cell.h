@@ -82,7 +82,7 @@ public:
     const unsigned int id() const;
 
     // used for computing maximum allowable time step
-    double compute_local_timestep();
+    double compute_local_timestep(double cfl);
 
 
 private:

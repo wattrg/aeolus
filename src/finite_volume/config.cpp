@@ -37,3 +37,19 @@ void Simulation::set_dimensions(unsigned short number_dim) {
     this->_dimensions = number_dim;
 }
 
+const Solver & Simulation::solver() const {
+    if (this->_solvers.size() == 0)
+        throw std::runtime_error("No solvers initialised");
+    return *this->_solvers[_solver_idx];
+}
+
+void Simulation::run() {
+    for (Solver * solver : this->_solvers){
+        solver->solve();
+        this->_solver_idx += 1;
+    }
+}
+
+void Simulation::add_solver(Solver & solver){
+    this->_solvers.push_back(&solver);
+}

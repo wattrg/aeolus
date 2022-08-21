@@ -4,12 +4,15 @@
 #include "io/fluid_block_io.h"
 #include "fluid_block.h"
 #include "boundary_conditions/boundary_condition.h"
+#include "../solvers/solvers.h"
 #include <sys/stat.h>
 #include <map>
 
 
 class FluidBlock;
 class FluidBlockIO;
+
+class Solver;
 
 class Simulation{
 
@@ -23,7 +26,9 @@ public:
     FluxCalculators::FluxCalculators flux_calculator() {return _flux_calculator;}
     void set_flux_calculator(FluxCalculators::FluxCalculators flux_calc) {_flux_calculator = flux_calc;}
     void write_fluid_blocks();
-    void solve();
+    void run();
+    const Solver & solver () const;
+    void add_solver(Solver & solver);
     GasModel & g_model() {return _g_model;}
     void set_gas_model(GasModel gas_model) {_g_model = gas_model;}
     void add_time_increment(double dt) {_time += dt;}
@@ -36,7 +41,8 @@ private:
     FluidBlockIO * _fluid_block_io = nullptr;
     FluxCalculators::FluxCalculators _flux_calculator;
     GasModel _g_model;
-    //std::vector<Solver> _solver;
+    std::vector<Solver *> _solvers;
+    unsigned int _solver_idx=0;
 };
 
 #endif
