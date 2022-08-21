@@ -11,7 +11,7 @@ def fill_func(x, y, _):
     gas_state.T = 304.0
     gas_state.p = 5955.0
     gm.update_from_pT(gas_state)
-    vel = Vector3(0.0)
+    vel = Vector3(0.0, 0.0)
     return FlowState(gas_state, vel)
 
 sim = Simulation()
@@ -21,6 +21,7 @@ sim.flux_calculator = FluxCalculators.hanel
 inflow_gs = GasState()
 inflow_gs.p = 95.84e3
 inflow_gs.T = 1103.0
+
 gm.update_from_pT(inflow_gs)
 inflow = FlowState(inflow_gs, Vector3(1000.0))
 
@@ -31,17 +32,13 @@ bcs = {
 }
 
 sim.gas_model = GasModel(287)
-sim.add_fluid_block("cone20.su2", bcs)
-sim.fluid_blocks[0].fill_function(fill_func)
-
-print("Writing initial condition")
-sim.write_fluid_blocks()
+sim.add_fluid_block("cone20.su2", fill_func, bcs)
 
 solver = ExplicitSolver(sim)
 solver.max_step = 100
 solver.cfl = 0.5
+solver.print_step = 50
+solver.plot_step = 100
 
 sim.add_solver(solver)
-
-print("Beginning solve")
 sim.run()

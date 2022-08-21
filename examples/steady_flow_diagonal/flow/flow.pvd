@@ -3,22 +3,6 @@
 <Collection>
 <DataSet timestep='0' group='' part='0' file='blk0t0.vtu'/>
 <DataSet timestep='0.000329977' group='' part='0' file='blk0t1.vtu'/>
-<DataSet timestep='0.000414737' group='' part='0' file='blk0t2.vtu'/>
-<DataSet timestep='0.000496144' group='' part='0' file='blk0t3.vtu'/>
-<DataSet timestep='0.000575711' group='' part='0' file='blk0t4.vtu'/>
-<DataSet timestep='0.000654288' group='' part='0' file='blk0t5.vtu'/>
-<DataSet timestep='0.000732411' group='' part='0' file='blk0t6.vtu'/>
-<DataSet timestep='0.000810454' group='' part='0' file='blk0t7.vtu'/>
-<DataSet timestep='0.000888699' group='' part='0' file='blk0t8.vtu'/>
-<DataSet timestep='0.000966395' group='' part='0' file='blk0t9.vtu'/>
-<DataSet timestep='0.00104385' group='' part='0' file='blk0t10.vtu'/>
-<DataSet timestep='0.00112045' group='' part='0' file='blk0t11.vtu'/>
-<DataSet timestep='0.00119659' group='' part='0' file='blk0t12.vtu'/>
-<DataSet timestep='0.00127255' group='' part='0' file='blk0t13.vtu'/>
-<DataSet timestep='0.00134856' group='' part='0' file='blk0t14.vtu'/>
-<DataSet timestep='0.0014248' group='' part='0' file='blk0t15.vtu'/>
-<DataSet timestep='0.00150143' group='' part='0' file='blk0t16.vtu'/>
-<DataSet timestep='0.0015786' group='' part='0' file='blk0t17.vtu'/>
-<DataSet timestep='0.0015786' group='' part='0' file='blk0t18.vtu'/>
+<DataSet timestep='0.0015786' group='' part='0' file='blk0t2.vtu'/>
 </Collection>
 </VTKFile>

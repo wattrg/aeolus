@@ -49,15 +49,15 @@ PYBIND11_MODULE(aeolus, m) {
         .def_property("fluid_blocks", &Simulation::fluid_blocks, nullptr, "The fluid blocks")
         .def_property("flux_calculator", &Simulation::flux_calculator, &Simulation::set_flux_calculator, "The flux calculator")
         .def_property("gas_model", &Simulation::g_model, &Simulation::set_gas_model, "The gas model")
-        .def("add_fluid_block", &Simulation::add_fluid_block, "Add a fluid block")
+        .def("add_fluid_block", static_cast<void (Simulation::*)(const char *, FlowState &, std::map<std::string, BoundaryCondition>&)>(&Simulation::add_fluid_block), "Add a fluid block")
+        .def("add_fluid_block", static_cast<void (Simulation::*)(const char *, std::function<FlowState(double, double, double)>&, std::map<std::string, BoundaryCondition>&)>(&Simulation::add_fluid_block), "Add a fluid block")
         .def("add_solver", &Simulation::add_solver, "Add a solver")
         .def("run", &Simulation::run, "Run the simulation")
         .def("write_fluid_blocks", &Simulation::write_fluid_blocks, "Write the fluid blocks to file");
 
     pybind11::class_<FluidBlock>(m, "FluidBlock")
         .def(pybind11::init<const char *, Simulation &, unsigned int, std::map<std::string, BoundaryCondition> &>())
-        .def("__repr__", &FluidBlock::to_string)
-        .def("fill_function", &FluidBlock::fill_function, "fill the fluid block with FlowState as a function of position");
+        .def("__repr__", &FluidBlock::to_string);
 
     pybind11::class_<FluidBlockIO>(m, "FluidBlockIO")
         .def(pybind11::init<>())

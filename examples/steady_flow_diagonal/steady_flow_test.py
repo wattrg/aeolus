@@ -32,14 +32,14 @@ bcs = {
 }
 
 sim.gas_model = gm
-sim.add_fluid_block("test_grid.su2", bcs)
-
-sim.fluid_blocks[0].fill_function(fill_func)
+sim.add_fluid_block("test_grid.su2", fill_func, bcs)
 sim.write_fluid_blocks()
 
 solver = ExplicitSolver(sim)
 solver.cfl = 0.5
 solver.max_step = 1000
+solver.print_step = 50
+solver.plot_step = 100
 
 sim.add_solver(solver)
 sim.run()

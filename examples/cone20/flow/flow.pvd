@@ -2,6 +2,5 @@
 <VTKFile type='Collection' version='0.1' byte_order='LittleEndian'>
 <Collection>
 <DataSet timestep='0' group='' part='0' file='blk0t0.vtu'/>
-<DataSet timestep='0' group='' part='0' file='blk0t1.vtu'/>
 </Collection>
 </VTKFile>

@@ -36,9 +36,8 @@ int main(int argc, char *argv[]) {
     bc_map.insert(std::pair<std::string, BoundaryCondition>("inflow", SupersonicInflow(inflow)));
 
     config.set_gas_model(g_model);
-    config.add_fluid_block(argv[1], bc_map);
     std::function<FlowState(double, double, double)> ic = initial_conditions;
-    config.fluid_blocks()[0]->fill_function(ic);
+    config.add_fluid_block(argv[1], ic, bc_map);
     config.write_fluid_blocks();
 
     ExplicitSolver solver = ExplicitSolver(config);

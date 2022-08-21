@@ -11,6 +11,8 @@ void Solver::solve(){
             dt = this->_step(); 
         }
         catch (std::runtime_error & e) {
+            // if there's an error, write a solution
+            // and bail out
             this->_config.write_fluid_blocks();
             throw std::runtime_error(e);
         }
@@ -21,7 +23,11 @@ void Solver::solve(){
         }
 
         if (step % this->_print_step == 0){
-            this->_config.log.info("   step " + std::to_string(step) + " time = " + std::to_string(this->_config.time()));
+            this->_config.log.info(
+                "   step " + std::to_string(step) + 
+                " time = " + std::to_string(this->_config.time()) + 
+                " dt = " + std::to_string(dt)
+            );
         }
     }
     this->_config.log.info("Finished stepping with " + this->_name() + " solver.");

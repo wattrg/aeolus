@@ -33,7 +33,8 @@ public:
     friend std::ostream& operator << (std::ostream& os, const FluidBlock fluid_block);
 
     // set the function to use to fill the fluid block with data
-    void fill_function(std::function<FlowState(double, double, double)> &func);
+    void fill(std::function<FlowState(double, double, double)> &func);
+    void fill(const FlowState &);
 
     Simulation & fb_config;
 

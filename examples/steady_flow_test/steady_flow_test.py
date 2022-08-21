@@ -11,7 +11,7 @@ def fill_func(x, y, _):
     gas_state.T = 300
     gas_state.p = 101325/2
     gm.update_from_pT(gas_state)
-    vel = Vector3(1000)
+    vel = Vector3(1000, 100)
     return FlowState(gas_state, vel)
 
 sim = Simulation()
@@ -32,9 +32,7 @@ bcs = {
 }
 
 sim.gas_model = gm
-sim.add_fluid_block("test_grid.su2", bcs)
-
-sim.fluid_blocks[0].fill_function(fill_func)
+sim.add_fluid_block("test_grid.su2", fill_func, bcs)
 sim.write_fluid_blocks()
 
 solver = ExplicitSolver(sim)
@@ -45,4 +43,3 @@ solver.plot_step = 100
 
 sim.add_solver(solver)
 sim.run()
-# sim.write_fluid_blocks()

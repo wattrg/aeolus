@@ -66,10 +66,17 @@ void FluidBlock::reconstruct(){
     }
 }
 
-void FluidBlock::fill_function(std::function<FlowState(double, double, double)> &func){
+void FluidBlock::fill(std::function<FlowState(double, double, double)> &func){
     for (Cell * cell : this->_cells) {
         Vector3 pos = cell->get_pos();
         FlowState fs = func(pos.x, pos.y, pos.z);
+        cell->fs.copy(fs);
+        cell->encode_conserved();
+    }
+}
+
+void FluidBlock::fill(const FlowState & fs){
+    for (Cell * cell : this->_cells) {
         cell->fs.copy(fs);
         cell->encode_conserved();
     }
