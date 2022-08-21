@@ -1,8 +1,0 @@
-<?xml version='1.0'?>
-<VTKFile type='Collection' version='0.1' byte_order='LittleEndian'>
-<Collection>
-<DataSet timestep='0' group='' part='0' file='blk0t0.vtu'/>
-<DataSet timestep='0.000329977' group='' part='0' file='blk0t1.vtu'/>
-<DataSet timestep='0.0015786' group='' part='0' file='blk0t2.vtu'/>
-</Collection>
-</VTKFile>

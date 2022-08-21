@@ -9,9 +9,9 @@ def fill_func(x, y, _):
     """ compute the flow state as a function of position """
     gas_state = GasState()
     gas_state.T = 300
-    gas_state.p = 101325
+    gas_state.p = 101325/2
     gm.update_from_pT(gas_state)
-    vel = Vector3(0.0)
+    vel = Vector3(1000, 1000)
     return FlowState(gas_state, vel)
 
 sim = Simulation()
@@ -19,7 +19,7 @@ sim.dimensions = 2
 sim.flux_calculator = FluxCalculators.hanel
 
 inflow_gs = GasState()
-inflow_gs.p = 2*101325
+inflow_gs.p = 101325
 inflow_gs.T = 600
 gm.update_from_pT(inflow_gs)
 inflow = FlowState(inflow_gs, Vector3(1000, 1000))
