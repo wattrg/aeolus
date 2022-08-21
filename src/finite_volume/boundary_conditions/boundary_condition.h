@@ -27,6 +27,7 @@ class BoundaryCondition{
 public:
     ~BoundaryCondition();
     BoundaryCondition();
+    BoundaryCondition(const BoundaryCondition &);
     BoundaryCondition(std::vector<std::shared_ptr<GhostCellEffect>> pre_recon, std::string tag);
 
     // apply the pre-reconstruction actions

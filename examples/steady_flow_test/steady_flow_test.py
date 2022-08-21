@@ -18,10 +18,17 @@ sim = Simulation()
 sim.dimensions = 2
 sim.flux_calculator = FluxCalculators.hanel
 
+inflow_gs = GasState()
+inflow_gs.T = 500
+inflow_gs.p = 110000
+gm.update_from_pT(inflow_gs)
+inflow = FlowState(inflow_gs, Vector3(1500))
+
+
 bcs = {
     "slipwall": SlipWall(),
     "outflow": SupersonicOutflow(),
-    "inflow": SupersonicInflow(fill_func(0,0,0))
+    "inflow": SupersonicInflow(inflow)
 }
 
 sim.gas_model = GasModel(287)

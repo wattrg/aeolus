@@ -6,6 +6,11 @@ BoundaryCondition::BoundaryCondition(std::vector<std::shared_ptr<GhostCellEffect
     : _tag(tag), _pre_recon_actions(pre_recon)
 {}
 
+BoundaryCondition::BoundaryCondition(const BoundaryCondition & other)
+    : _tag(other._tag), _pre_recon_actions(other._pre_recon_actions)
+{
+}
+
 
 void BoundaryCondition::add_interface(Interface * face){
     this->_interfaces.push_back(face);

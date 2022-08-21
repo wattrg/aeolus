@@ -101,7 +101,14 @@ void Su2GridInput::read_grid(const char * file_name, FluidBlock & fluid_block,
         std::string tag = read_string(line);
 
         // Make a copy of the boundary condition
-        BoundaryCondition * bc = new BoundaryCondition(bc_map[tag]);
+        BoundaryCondition * bc;
+        if (bc_map.find(tag) != bc_map.end()){
+            bc = new BoundaryCondition(bc_map[tag]);
+        }
+        else {
+            std::string msg = "Boundary tag '" + tag + "' not found in available boundary conditions"; 
+            throw std::runtime_error(msg);
+        }
 
         // next comes the number of elements on this boundary
         get_next_line(su2_file, line);

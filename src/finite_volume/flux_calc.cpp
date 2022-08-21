@@ -20,14 +20,14 @@ void hanel(FlowState &left, FlowState &right, ConservedQuantity &flux){
     double HL = eL + pLrL + keL;
 
     // unpack right state
-    double rR = left.gas_state.rho;
-    double pR = left.gas_state.p;
+    double rR = right.gas_state.rho;
+    double pR = right.gas_state.p;
     double pRrR = pL / rL;
-    double uR = left.velocity.x;
-    double vR = left.velocity.y;
-    double wR = left.velocity.z;
-    double eR = left.gas_state.u;
-    double aR = left.gas_state.a;
+    double uR = right.velocity.x;
+    double vR = right.velocity.y;
+    double wR = right.velocity.z;
+    double eR = right.gas_state.u;
+    double aR = right.gas_state.a;
     double keR = 0.5 * (uR*uR + vR*vR + wR*wR);
     double HR = eR + pRrR + keR;
 
