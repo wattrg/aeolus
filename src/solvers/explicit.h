@@ -5,10 +5,11 @@
 
 class ExplicitSolver : public Solver {
 public:
-    ExplicitSolver(Simulation & config) : Solver(config) {};
+    ExplicitSolver(Simulation & config) : Solver(config){};
 
 protected:
     double _step();
+    std::string _name() {return "explicit";}
 };
 
 #endif

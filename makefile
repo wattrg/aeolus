@@ -66,6 +66,7 @@ directories:
 	@mkdir -p $(LIBDIR)
 	@mkdir -p $(BUILDDIR)/gas
 	@mkdir -p $(BUILDDIR)/util
+	@mkdir -p $(BUILDDIR)/io
 	@mkdir -p $(BUILDDIR)/finite_volume
 	@mkdir -p $(BUILDDIR)/solvers
 	@mkdir -p $(BUILDDIR)/finite_volume/boundary_conditions

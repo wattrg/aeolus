@@ -63,12 +63,14 @@ PYBIND11_MODULE(aeolus, m) {
         .def(pybind11::init<>())
         .def("write_fluid_block", &FluidBlockIO::write_fluid_block, "Write the fluid block to file");
 
-    pybind11::class_<Solver>(m, "Solver");
+    pybind11::class_<Solver>(m, "Solver")
+        .def_property("cfl", &Solver::cfl, &Solver::set_cfl, "CFL number")
+        .def_property("max_step", &Solver::max_step, &Solver::set_max_step, "maximum number of steps")
+        .def_property("print_step", &Solver::print_step, &Solver::set_print_step, "How often to print the progress")
+        .def_property("plot_step", &Solver::plot_step, &Solver::set_plot_step, "How many steps to write the solution");
 
     pybind11::class_<ExplicitSolver, Solver>(m, "ExplicitSolver")
-        .def(pybind11::init<Simulation&>())
-        .def_property("cfl", &ExplicitSolver::cfl, &ExplicitSolver::set_cfl, "CFL number")
-        .def_property("max_step", &ExplicitSolver::max_step, &ExplicitSolver::set_max_step, "The maximum number of steps");
+        .def(pybind11::init<Simulation&>());
 
     pybind11::enum_<FluxCalculators::FluxCalculators>(m, "FluxCalculators")
         .value("roe", FluxCalculators::FluxCalculators::roe)

@@ -4,7 +4,9 @@ Solver::Solver(Simulation & config) : _config(config) {}
 
 void Solver::solve(){
     double dt;
+    this->_config.log.info("Beginning stepping with " + this->_name() + " solver.");
     for (unsigned int step=0; step < this->_max_step; step++){
+        // try to take a step
         try{
             dt = this->_step(); 
         }
@@ -13,6 +15,14 @@ void Solver::solve(){
             throw std::runtime_error(e);
         }
         this->_config.add_time_increment(dt);
-        this->_config.write_fluid_blocks();
+
+        if (step % this->_plot_step == 0){
+            this->_config.write_fluid_blocks();
+        }
+
+        if (step % this->_print_step == 0){
+            this->_config.log.info("   step " + std::to_string(step) + " time = " + std::to_string(this->_config.time()));
+        }
     }
+    this->_config.log.info("Finished stepping with " + this->_name() + " solver.");
 }
