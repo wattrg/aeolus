@@ -25,6 +25,10 @@ std::vector<double> access_volume(const Cell & cell){
     return std::vector<double> {cell.volume()};
 }
 
+std::vector<double> access_speed_of_sound(const Cell & cell){
+    return std::vector<double> {cell.fs.gas_state.a};
+}
+
 Accessor::Accessor(std::string name,
                    std::vector<double> (*access_from_cell)(const Cell &), 
                    int number_of_components):

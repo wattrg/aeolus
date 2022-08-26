@@ -37,5 +37,6 @@ std::vector<double> access_temperature(const Cell &);
 std::vector<double> access_velocity(const Cell &);
 std::vector<double> access_energy(const Cell &);
 std::vector<double> access_volume(const Cell &);
+std::vector<double> access_speed_of_sound(const Cell &);
 
 #endif

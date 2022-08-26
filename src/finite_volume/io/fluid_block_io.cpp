@@ -9,6 +9,7 @@ FluidBlockWriter::FluidBlockWriter(){
    this->add_variable("u", &access_energy, 1);
    this->add_variable("velocity", &access_velocity, 3);
    this->add_variable("volume", &access_volume, 1);
+   this->add_variable("a", &access_speed_of_sound, 1);
 }
 
 FluidBlockIO::FluidBlockIO() {

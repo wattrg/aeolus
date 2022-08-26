@@ -3,8 +3,8 @@
 
 
 GasModel::GasModel(double R) : _R(R) {
-    _Cv = 3.0 / 2.0 * _R;
-    _Cp = 5.0 / 2.0 * _R;
+    _Cv = 1.0/0.4 * _R;
+    _Cp = _Cv + _R;
 }
 
 GasModel::GasModel() {
@@ -13,8 +13,7 @@ GasModel::GasModel() {
 }
 
 void GasModel::_update_sound_speed(GasState & gas_state) {
-   double cp = _Cv + _R;
-   double gamma = cp / _Cv;
+   double gamma = _Cp / _Cv;
    gas_state.a = sqrt(gamma * _R * gas_state.T);
 }
 

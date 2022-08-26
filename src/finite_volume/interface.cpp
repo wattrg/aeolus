@@ -31,6 +31,9 @@ Interface::Interface(std::vector<Vertex *> vertices, Simulation & config, unsign
         case FluxCalculators::hanel:
             this->_compute_flux = &FluxCalculator::hanel;
             break;
+        case FluxCalculators::ausmdv:
+            this->_compute_flux = &FluxCalculator::ausmdv;
+            break;
     }
     _flux = ConservedQuantity(config.dimensions());
 }
