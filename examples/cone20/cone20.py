@@ -14,7 +14,7 @@ inflow_gs.p = 95.84e3
 inflow_gs.T = 1103.0
 
 gm.update_from_pT(inflow_gs)
-inflow = FlowState(inflow_gs, Vector3(2000.0))
+inflow = FlowState(inflow_gs, Vector3(inflow_gs.a*5))
 
 bcs = {
     "SLIP_WALL": SlipWall(),
@@ -23,13 +23,13 @@ bcs = {
 }
 
 sim.gas_model = GasModel(287)
-sim.add_fluid_block("cone20.su2", inflow, bcs)
+sim.add_fluid_block("cone20.su2", FlowState(inflow_gs, Vector3(0.0)), bcs)
 
 solver = ExplicitSolver(sim)
-solver.max_step = 10000
+solver.max_step = 7000
 solver.cfl = 0.5
-solver.print_step = 100
-solver.plot_step = 1000
+solver.print_step = 1000
+solver.plot_step = 100
 
 sim.write_fluid_blocks()
 

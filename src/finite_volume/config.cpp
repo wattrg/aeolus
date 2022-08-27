@@ -61,7 +61,6 @@ const Solver & Simulation::solver() const {
 
 void Simulation::run() {
     for (Solver * solver : this->_solvers){
-        
         solver->solve();
         this->_solver_idx += 1;
     }

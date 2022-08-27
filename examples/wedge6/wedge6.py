@@ -23,13 +23,13 @@ bcs = {
 }
 
 sim.gas_model = GasModel(287)
-sim.add_fluid_block("wedge6_coarse.su2", inflow, bcs)
+sim.add_fluid_block("wedge6_coarse.su2", FlowState(inflow_gs, Vector3(1000)), bcs)
 
 solver = ExplicitSolver(sim)
-solver.max_step = 100000
+solver.max_step = 1000
 solver.cfl = 0.5
-solver.print_step = 1
-solver.plot_step = 2
+solver.print_step = 100
+solver.plot_step = 10
 
 sim.write_fluid_blocks()
 

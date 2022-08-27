@@ -10,11 +10,12 @@ void Solver::solve(){
         try{
             dt = this->_step(); 
         }
-        catch (std::runtime_error & e) {
+        catch (GasModelException & e) {
             // if there's an error, write a solution
             // and bail out
             this->_config.write_fluid_blocks();
-            throw std::runtime_error(e);
+            this->_config.log.error("Some went wrong");
+            throw e;
         }
         this->_config.add_time_increment(dt);
 
@@ -31,4 +32,5 @@ void Solver::solve(){
         }
     }
     this->_config.log.info("Finished stepping with " + this->_name() + " solver.");
+
 }

@@ -111,21 +111,31 @@ void Cell::compute_time_derivative(){
 }
 
 void Cell::encode_conserved(){
+    double vx = this->fs.velocity.x;
+    double vy = this->fs.velocity.y;
+    double vz = this->fs.velocity.z;
+    double p = this->fs.gas_state.p;
+    double rho = this->fs.gas_state.rho;
+    double u = this->fs.gas_state.u;
+    double ke = 0.5 * (vx*vx + vy*vy + vz*vz);
     ConservedQuantity & cq = this->conserved_quantities;
-    cq[cq.rho()] = this->fs.gas_state.rho;
-    cq[cq.momentum()] = this->fs.gas_state.rho * this->fs.velocity.x;
-    cq[cq.momentum()+1] = this->fs.gas_state.rho * this->fs.velocity.y;
-    double ke = 0.5 * (this->fs.velocity.x*this->fs.velocity.x + this->fs.velocity.y*this->fs.velocity.y);
-    cq[cq.energy()] = this->fs.gas_state.u + ke;
+    cq[cq.rho()] = rho;
+    cq[cq.momentum()] = rho*vx;
+    cq[cq.momentum()+1] = rho*vy;
+    cq[cq.energy()] = u + ke + p/rho;
 }
 
 void Cell::decode_conserved(){
+    double vx = this->fs.velocity.x;
+    double vy = this->fs.velocity.y;
+    double vz = this->fs.velocity.z;
+    double ke = 0.5 * (vx*vx + vy*vy + vz*vz);
     ConservedQuantity & cq = this->conserved_quantities;
     this->fs.gas_state.rho = cq[cq.rho()];
     this->fs.velocity.x = cq[cq.momentum()] / cq[cq.rho()];
     this->fs.velocity.y = cq[cq.momentum()+1] / cq[cq.rho()];
-    double ke = 0.5*(fs.velocity.x*fs.velocity.x + fs.velocity.y*fs.velocity.y);
-    this->fs.gas_state.u = cq[cq.energy()] - ke;
+    double e = cq[cq.energy()]/fs.gas_state.rho;
+    this->fs.gas_state.u = e - ke;
     this->_config.g_model().update_from_rhou(fs.gas_state);
 }
 
