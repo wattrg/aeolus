@@ -14,12 +14,12 @@ public:
 class FlowStateCopy : public GhostCellEffect{
 public:
     ~FlowStateCopy() {};
-    FlowStateCopy(FlowState fs) : _fs(fs) {};
+    FlowStateCopy(const FlowState fs) : _fs(fs) {};
     FlowStateCopy(const FlowStateCopy & other);
     void apply(Cell & ghost_cell);
 
 private:
-    FlowState _fs;
+    const FlowState _fs;
 };
 
 class InternalCopy : public GhostCellEffect{
