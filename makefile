@@ -25,13 +25,22 @@ LIB         := -fopenmp -lm
 INC         := -I$(INCDIR) -I/usr/local/include 
 INCDEP      := -I$(INCDIR)
 
-ifeq ($(flavour), debug)
-	TARGET = aeolus_debug
-endif
 
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
+# debug build
+ifeq ($(flavour), debug)
+	TARGET = aeolus_debug
+else 
+	CFLAGS += -o3
+endif
+
+# profiling
+ifneq (,$(findstring profile, $(MAKEFALGS)))
+	CFLAGS += -pg
+endif
+
 SOURCES     := $(shell find $(SRCDIR) -path src/python_api -prune -o -type f -name *.$(SRCEXT) -print)
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
 LIBSOURCES  := $(shell find $(SRCDIR)/python_api -type f -name *.$(SRCEXT))
