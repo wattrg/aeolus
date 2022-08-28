@@ -64,6 +64,9 @@ echo_objects:
 echo_cflags:
 	@echo $(CFLAGS)
 
+echo_makeflags:
+	@echo $(MAKEFLAGS)
+
 install: build $(TARGET) 
 	@mkdir -p $(INSTALLDIR)
 	cp $(TARGETDIR)/* $(INSTALLDIR)
