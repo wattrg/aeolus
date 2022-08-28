@@ -24,6 +24,7 @@ PYBIND11_MODULE(aeolus, m) {
 
     pybind11::class_<GasModel>(m, "GasModel")
         .def(pybind11::init<double>())
+        .def_property("gamma", &GasModel::gamma, nullptr, "Ratio of specific heats")
         .def("update_from_pT", &GasModel::update_from_pT, "update thermodynamic state assuming pressure and temperature are correct")
         .def("update_from_rhoT", &GasModel::update_from_rhoT, "update thermodynamic state assuming density and temperature are correct")
         .def("update_from_prho", &GasModel::update_from_prho, "update thermodynamics state assuming pressue and density are correct");
