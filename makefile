@@ -20,8 +20,8 @@ DEPEXT     := d
 OBJEXT     := o
 
 #Flags, Libraries and Includes
-CFLAGS      := -fopenmp -Wall -g -fPIC -std=c++17
-LIB         := -fopenmp -lm
+CFLAGS      := -Wall -fPIC
+LIB         := -lm
 INC         := -I$(INCDIR) -I/usr/local/include 
 INCDEP      := -I$(INCDIR)
 
@@ -32,14 +32,19 @@ INCDEP      := -I$(INCDIR)
 # debug build
 ifeq ($(flavour), debug)
 	TARGET = aeolus_debug
+	CFLAGS := $(CFLAGS) -g
 else 
-	CFLAGS += -o3
+	CFLAGS := $(CFLAGS) -o3
 endif
 
 # profiling
-ifneq (,$(findstring profile, $(MAKEFALGS)))
-	CFLAGS += -pg
+ifeq ($(profile), 1)
+	ifneq ($(flavour), debug)
+		CFLAGS := $(CFLAGS) -g
+	endif
+	CFLAGS := $(CFLAGS) -pg
 endif
+
 
 SOURCES     := $(shell find $(SRCDIR) -path src/python_api -prune -o -type f -name *.$(SRCEXT) -print)
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
@@ -55,6 +60,9 @@ echo_sources:
 
 echo_objects:
 	@echo $(OBJECTS)
+
+echo_cflags:
+	@echo $(CFLAGS)
 
 install: build $(TARGET) 
 	@mkdir -p $(INSTALLDIR)
@@ -95,7 +103,7 @@ cleaner:
 
 #Link
 $(TARGET): $(OBJECTS)
-	$(CC) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
+	$(CC) $(CFLAGS) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
 
 #Compile
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)

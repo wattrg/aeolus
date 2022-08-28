@@ -2,3 +2,4 @@ build/
 inst/
 flow/
 *.vtu
+gmon.out
