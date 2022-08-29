@@ -46,8 +46,9 @@ ifeq ($(profile), 1)
 endif
 
 GIT_HASH := $(shell git describe --always --dirty)
-COMPILE_TIME := $(shell date -u +'%Y-%m-%d %H:%M:%S AEST')
-export VERSION_FLAGS=-DGIT_HASH="\"$(GIT_HASH)\"" -DCOMPILE_TIME="\"$(COMPILE_TIME)\""
+GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+COMPILE_TIME := $(shell date +'%Y-%m-%d %H:%M:%S AEST')
+export VERSION_FLAGS=-DGIT_HASH="\"$(GIT_HASH)\"" -DCOMPILE_TIME="\"$(COMPILE_TIME)\"" -DGIT_BRANCH="\"$(GIT_BRANCH)\""
 
 SOURCES     := $(shell find $(SRCDIR) -path src/python_api -prune -o -type f -name *.$(SRCEXT) -print)
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
