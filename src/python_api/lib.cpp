@@ -5,6 +5,7 @@
 #include "../finite_volume/fluid_block.h"
 #include "../finite_volume/io/fluid_block_io.h"
 #include "../solvers/explicit.h"
+#include "../util/header.h"
 //#include "../finite_volume/boundary_conditions/boundary_conditions.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
@@ -95,4 +96,6 @@ PYBIND11_MODULE(aeolus, m) {
 
     pybind11::class_<SupersonicOutflow, BoundaryCondition>(bc, "SupersonicOutflow")
         .def(pybind11::init<>());
+    
+    std::cout << generate_header() << std::endl;
 }

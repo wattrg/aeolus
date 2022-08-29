@@ -45,6 +45,9 @@ ifeq ($(profile), 1)
 	CFLAGS := $(CFLAGS) -pg
 endif
 
+GIT_HASH := $(shell git describe --always --dirty)
+COMPILE_TIME := $(shell date -u +'%Y-%m-%d %H:%M:%S AEST')
+export VERSION_FLAGS=-DGIT_HASH="\"$(GIT_HASH)\"" -DCOMPILE_TIME="\"$(COMPILE_TIME)\""
 
 SOURCES     := $(shell find $(SRCDIR) -path src/python_api -prune -o -type f -name *.$(SRCEXT) -print)
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
@@ -66,6 +69,9 @@ echo_cflags:
 
 echo_makeflags:
 	@echo $(MAKEFLAGS)
+
+echo_version_flags:
+	@echo $(VERSION_FLAGS)
 
 install: build $(TARGET) 
 	@mkdir -p $(INSTALLDIR)
@@ -110,8 +116,8 @@ $(TARGET): $(OBJECTS)
 
 #Compile
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
-	$(CC) $(CFLAGS) $(INC) -c -o $@ $< 
-	$(CC) $(CFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
+	$(CC) $(CFLAGS) $(VERSION_FLAGS) $(INC) -c -o $@ $< 
+	$(CC) $(CFLAGS) $(VERSION_FLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
 	@cp -f $(BUILDDIR)/$*.$(DEPEXT) $(BUILDDIR)/$*.$(DEPEXT).tmp
 	@sed -e 's|.*:|$(BUILDDIR)/$*.$(OBJEXT):|' < $(BUILDDIR)/$*.$(DEPEXT).tmp > $(BUILDDIR)/$*.$(DEPEXT)
 	@sed -e 's/.*://' -e 's/\\$$//' < $(BUILDDIR)/$*.$(DEPEXT).tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >> $(BUILDDIR)/$*.$(DEPEXT)
@@ -119,7 +125,7 @@ $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 
 # make the dynamic libraries
 $(BUILDDIR)/lib/aeolus.so: $(OBJECTS)
-	$(CC) -Wall -shared -std=c++11 -fPIC $(PYBIND11) $(SRCDIR)/python_api/lib.cpp -o $(LIBDIR)/aeolus.so $^ $(LIB)
+	$(CC) -Wall -shared -std=c++11 -fPIC $(VERSION_FLAGS) $(PYBIND11) $(SRCDIR)/python_api/lib.cpp -o $(LIBDIR)/aeolus.so $^ $(LIB)
 
 lib: directories $(BUILDDIR)/lib/aeolus.so
 	@echo Finished building python library
