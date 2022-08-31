@@ -20,7 +20,7 @@ DEPEXT     := d
 OBJEXT     := o
 
 #Flags, Libraries and Includes
-CFLAGS      := -Wall -fPIC
+CFLAGS      := -Wextra -fPIC
 LIB         := -lm
 INC         := -I$(INCDIR) -I/usr/local/include 
 INCDEP      := -I$(INCDIR)

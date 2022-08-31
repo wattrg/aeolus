@@ -21,7 +21,7 @@ public:
 
     // configuration options
     void set_log_level(LogLevel level) {_log_level = level;}
-    const LogLevel log_level() const {return _log_level;}
+    LogLevel log_level() const {return _log_level;}
 
 private:
     LogLevel _log_level = Info;

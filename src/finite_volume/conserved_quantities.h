@@ -12,7 +12,7 @@ public:
     unsigned int momentum() {return _momentum_idx;}
     unsigned int energy() { return _energy_idx;}
     unsigned int n_conserved() {return _n_conserved_quantities;}
-    const unsigned int dimensions() const;
+    unsigned int dimensions() const;
     double &operator [] (unsigned int index) {return _conserved_quantities[index];}
 
 private:

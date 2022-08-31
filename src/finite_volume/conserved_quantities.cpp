@@ -10,6 +10,6 @@ ConservedQuantity::ConservedQuantity(unsigned int number_dimensions):
     _conserved_quantities = std::vector<double>(this->_n_conserved_quantities);
 }
 
-const unsigned int ConservedQuantity::dimensions() const {
+unsigned int ConservedQuantity::dimensions() const {
     return this->_number_dimensions;
 }

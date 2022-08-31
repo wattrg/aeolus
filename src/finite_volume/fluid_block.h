@@ -49,7 +49,7 @@ public:
     const std::vector<Vertex *> & vertices() const;
     std::vector<Interface *> & interfaces();
     std::vector<BoundaryCondition *> bcs() {return _bcs;}
-    const unsigned int id() const {return this->_id;}
+    unsigned int id() const {return this->_id;}
 
     // setter method
     void set_grid(std::vector<Vertex *> vertices, 

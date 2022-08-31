@@ -60,7 +60,7 @@ public:
     void compute_time_derivative();
 
     // volume of the cell
-    const double volume() const;
+    double volume() const;
 
     // return the position of the cell
     Vector3 & get_pos();
@@ -72,14 +72,14 @@ public:
     friend std::ostream& operator << (std::ostream& os, const Cell gs);
 
     // give out some read only info about the vertices
-    const unsigned int number_vertices() const;
+    unsigned int number_vertices() const;
     const std::vector<Vertex *> & vertices() const;
     const std::vector<Vector3> & vertex_positions() const;
 
     // get info about the shape of the cell
-    const CellShape::CellShape get_shape() const;
+    CellShape::CellShape get_shape() const;
 
-    const unsigned int id() const;
+    unsigned int id() const;
 
     // used for computing maximum allowable time step
     double compute_local_timestep(double cfl);

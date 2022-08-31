@@ -6,9 +6,6 @@ GasState::GasState() : p(0.0), T(0.0), rho(0.0), u(0.0) {
 GasState::GasState(GasModel * gm) : p(0.0), T(0.0), rho(0.0), u(0.0), _gm(gm) {
 }
 
-GasState::GasState(double R): p(0.0), T(0.0), rho(0.0), u(0.0) {
-}
-
 void GasState::set_gmodel(GasModel & gmodel){
     this->_gm = &gmodel;
 }

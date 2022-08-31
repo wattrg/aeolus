@@ -23,7 +23,7 @@ public:
     ~Interface();
 
     // area of the interface
-    const double area() const;
+    double area() const;
 
     // check if two vertices are the same
     bool is(Interface & other);
@@ -54,7 +54,7 @@ public:
 
     // Mark the interface as being on the boundary
     void mark_on_boundary(std::string tag);
-    const bool is_on_boundary() const;
+    bool is_on_boundary() const;
 
     friend std::ostream& operator << (std::ostream& os, const Interface interface);
 
@@ -72,7 +72,7 @@ public:
     Vector3 & t1() { return this->_tan1; }
     Vector3 & t2() {return this->_tan2; }
 
-    const int id() const;
+    int id() const;
 
 private:
     //  Vertices on the end of the interface

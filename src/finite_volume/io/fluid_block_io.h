@@ -25,7 +25,7 @@ struct GridData{
              std::vector<T> data, 
              unsigned int number_components,
              std::string type) :
-        name(name), data(data), number_components(number_components), type_name(type_name)
+        name(name), data(data), number_components(number_components), type_name(type)
     {};
 
     GridData(std::string name, std::string type) : 

@@ -80,7 +80,6 @@ PYBIND11_MODULE(aeolus, m) {
         .def(pybind11::init<Simulation&>());
 
     pybind11::enum_<FluxCalculators::FluxCalculators>(m, "FluxCalculators")
-        .value("roe", FluxCalculators::FluxCalculators::roe)
         .value("hanel", FluxCalculators::FluxCalculators::hanel)
         .value("ausmdv", FluxCalculators::FluxCalculators::ausmdv)
         .export_values();

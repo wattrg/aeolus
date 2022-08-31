@@ -47,7 +47,7 @@ void Simulation::write_fluid_blocks(){
     this->_time_index += 1;
 }
 
-const unsigned short Simulation::dimensions() const {return this->_dimensions;}
+unsigned short Simulation::dimensions() const {return this->_dimensions;}
 
 void Simulation::set_dimensions(unsigned short number_dim) {
     this->_dimensions = number_dim;

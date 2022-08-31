@@ -30,7 +30,7 @@ public:
         std::function<FlowState(double, double, double)> &,
         std::map<std::string, BoundaryCondition> &
     );
-    const unsigned short dimensions() const;
+    unsigned short dimensions() const;
     void set_dimensions(unsigned short number_dim);
     std::vector<FluidBlock *> & fluid_blocks();
     FluxCalculators::FluxCalculators flux_calculator() {return _flux_calculator;}
@@ -42,7 +42,7 @@ public:
     GasModel & g_model() {return _g_model;}
     void set_gas_model(GasModel gas_model) {_g_model = gas_model;}
     void add_time_increment(double dt) {_time += dt;}
-    const double time() const {return _time;}
+    double time() const {return _time;}
     Logger log;
 
 private:

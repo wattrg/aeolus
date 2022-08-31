@@ -7,7 +7,6 @@
 namespace FluxCalculators {
 
 enum FluxCalculators {
-    roe,
     hanel,
     ausmdv,
 };
@@ -15,7 +14,6 @@ enum FluxCalculators {
 }
 
 namespace FluxCalculator{
-    void roe(FlowState & left, FlowState & right, ConservedQuantity & flux);
     void hanel(FlowState & left, FlowState & right, ConservedQuantity & flux);
     void ausmdv(FlowState & left, FlowState & right, ConservedQuantity & flux);
     void zero_flux(FlowState &left, FlowState & right, ConservedQuantity & flux);

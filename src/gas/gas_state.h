@@ -10,7 +10,6 @@ class GasState {
 public:
     GasState();
     GasState(GasModel * gm);
-    GasState(double R);
     double p;
     double T;
     double rho;

@@ -16,7 +16,7 @@ public:
     void update_from_rhou(GasState & gas_state);
 
     double internal_energy(GasState & gas_state);
-    const double gamma() const {return _gamma;}
+    double gamma() const {return _gamma;}
 
 private:
     double _R;

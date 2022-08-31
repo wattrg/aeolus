@@ -33,7 +33,7 @@ public:
     std::vector<Cell *> cells() {return _cells;}
     std::vector<Cell *> ghost_cells() {return _ghost_cells;}
     std::vector<BoundaryCondition *> boundary_conditions() {return _bcs;}
-    const unsigned int number_boundaries() const {return _number_boundaries;}
+    unsigned int number_boundaries() const {return _number_boundaries;}
 
 protected:
     // storage for the geometry elements

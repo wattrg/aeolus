@@ -38,12 +38,12 @@ public:
     void apply(Cell & ghost_cell);
 };
 
-class ReflectTangential : public GhostCellEffect {
-public:
-    ~ReflectTangential(){};
-    ReflectTangential() {};
-    ReflectTangential(const ReflectTangential & other);
-    void apply(Cell & ghost_cell) {}
-};
+//class ReflectTangential : public GhostCellEffect {
+//public:
+//    ~ReflectTangential(){};
+//    ReflectTangential() {};
+//    ReflectTangential(const ReflectTangential & other);
+//    void apply(Cell & ghost_cell) {}
+//};
 
 #endif

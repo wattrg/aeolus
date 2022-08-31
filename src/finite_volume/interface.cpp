@@ -25,9 +25,6 @@ Interface::Interface(std::vector<Vertex *> vertices, Simulation & config, unsign
     
     // set the flux calculator
     switch (flux_calc){
-        case FluxCalculators::roe:
-            this->_compute_flux = &FluxCalculator::roe; 
-            break;
         case FluxCalculators::hanel:
             this->_compute_flux = &FluxCalculator::hanel;
             break;
@@ -46,9 +43,9 @@ void Interface::copy_right_flow_state(FlowState & fs){
     this->_right.copy(fs);
 }
 
-const bool Interface::is_on_boundary() const { return this->_is_on_boundary; }
+bool Interface::is_on_boundary() const { return this->_is_on_boundary; }
 
-const double Interface::area() const {
+double Interface::area() const {
     return _area;
 }
 

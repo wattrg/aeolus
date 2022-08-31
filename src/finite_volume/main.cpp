@@ -7,6 +7,7 @@
 #include "boundary_conditions/boundary_condition.h"
 
 FlowState initial_conditions(double x, double y, double z){
+    (void) x; (void) y; (void) z;
     GasModel gm = GasModel(287.0);
     GasState gs = GasState(&gm);
     gs.p = 101325.0;
@@ -18,6 +19,7 @@ FlowState initial_conditions(double x, double y, double z){
 
 int main(int argc, char *argv[]) {
     std::cout << "Hello world!\n";
+    if (argc < 2) throw std::runtime_error("You need to supply the grid file");
 
     GasModel g_model = GasModel(287.0);
 

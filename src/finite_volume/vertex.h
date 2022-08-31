@@ -21,7 +21,7 @@ public:
     std::string to_string() const;
     friend std::ostream& operator << (std::ostream& os, const Vertex vertex);
 
-    const int id() const;
+    int id() const;
 
 private:
     Vector3 _pos;

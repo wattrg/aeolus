@@ -68,7 +68,7 @@ void Cell::_compute_shape(){
     }
 }
 
-const double Cell::volume() const {return this->_volume;}
+double Cell::volume() const {return this->_volume;}
 
 void Cell::_compute_volume(){
     switch (this->_shape){
@@ -143,7 +143,7 @@ Vector3 & Cell::get_pos(){
     return this->_pos;
 }
 
-const unsigned int Cell::number_vertices() const {
+unsigned int Cell::number_vertices() const {
     return this->_vertices.size();
 }
 
@@ -151,7 +151,7 @@ const std::vector<Vertex * > & Cell::vertices() const {
     return this->_vertices;
 }
 
-const CellShape::CellShape Cell::get_shape() const {
+CellShape::CellShape Cell::get_shape() const {
     return _shape; 
 }
 

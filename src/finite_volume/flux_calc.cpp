@@ -2,10 +2,6 @@
 
 namespace FluxCalculator{
 
-void roe(FlowState &left, FlowState &right, ConservedQuantity &flux){
-    return;
-}
-
 void ausmdv(FlowState & left, FlowState & right, ConservedQuantity & flux){
     double rL = left.gas_state.rho;
     double pL = left.gas_state.p;

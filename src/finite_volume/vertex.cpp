@@ -10,7 +10,7 @@ bool Vertex::is(Vertex & other) {
     return this->_id == other._id;
 }
 
-const int Vertex::id() const {
+int Vertex::id() const {
     return this->_id;
 }
 
