@@ -126,7 +126,7 @@ $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 
 # make the dynamic libraries
 $(BUILDDIR)/lib/aeolus.so: $(OBJECTS)
-	$(CC) -Wall -shared -std=c++11 -fPIC $(VERSION_FLAGS) $(PYBIND11) $(SRCDIR)/python_api/lib.cpp -o $(LIBDIR)/aeolus.so $^ $(LIB)
+	$(CC) -Wall -shared -fPIC $(VERSION_FLAGS) $(PYBIND11) $(SRCDIR)/python_api/lib.cpp -o $(LIBDIR)/aeolus.so $^ $(LIB)
 
 lib: directories $(BUILDDIR)/lib/aeolus.so
 	@echo Finished building python library
