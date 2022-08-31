@@ -9,7 +9,7 @@ class GasModel;
 class GasState {
 public:
     GasState();
-    GasState(GasModel gm);
+    GasState(GasModel * gm);
     GasState(double R);
     double p;
     double T;
@@ -39,11 +39,6 @@ public:
 
 private:
     GasModel * _gm;
-
-    // flag to keep track of if the gas state owns its gas model, and
-    // therefore is responsible for deleting it, or if it is provided elsewhere
-    // so we shouldn't delete it
-    bool _own_gmodel;
 };
 
 

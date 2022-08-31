@@ -51,12 +51,11 @@ double GasModel::internal_energy(GasState & gas_state) {
     return gas_state.u;
 }
 
-char const * GasModelException::what() {
-    std::string msg = std::string(message);
-    if (gs) {
-        msg += "\n The gas state was:\n";
-        msg += gs->to_string();
-    }
-    msg += "\0";
-    return msg.c_str();
+const char * GasModelException::what() const noexcept {
+    //std::string msg = std::string(message);
+    //if (gs) {
+    //    msg += "\n The gas state was:\n";
+    //    msg += gs->to_string();
+    //}
+    return message;
 }

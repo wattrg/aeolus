@@ -54,7 +54,6 @@ void FluidBlockWriter::add_variable(std::string name,
     this->_variable_accessors.push_back(Accessor(name, access_from_cell, number_of_components));
 }
 
-FluidBlockWriter::~FluidBlockWriter() {}
 FluidBlockReader::~FluidBlockReader() {}
 
 void FluidBlockIO::read_fluid_block(const char * file_name, FluidBlock & fb) {

@@ -136,14 +136,6 @@ void VTKWriter::_write_data_array(const GridData<T> & data, std::ofstream & vtk_
 }
 
 
-// VTK reader 
-VTKReader::~VTKReader() {}
-
-void VTKReader::read_fluid_block(const char & file_name, FluidBlock & fb){
-    std::runtime_error("Reading vtk files not implemented yet");
-}
-
-
 // convert CellShape to VTK cell type
 int cell_shape_to_vtk_type (CellShape::CellShape shape){
     switch (shape){

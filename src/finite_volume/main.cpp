@@ -8,7 +8,7 @@
 
 FlowState initial_conditions(double x, double y, double z){
     GasModel gm = GasModel(287.0);
-    GasState gs = GasState(gm);
+    GasState gs = GasState(&gm);
     gs.p = 101325.0;
     gs.T = 300.0;
     gm.update_from_pT(gs);

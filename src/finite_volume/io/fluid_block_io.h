@@ -54,7 +54,7 @@ struct GridData{
 // handles writing a fluid block to a file
 class FluidBlockWriter {
 public:
-    virtual ~FluidBlockWriter() = 0;
+    virtual ~FluidBlockWriter() {};
     FluidBlockWriter();
     virtual void write_fluid_block(const char & file_name, const FluidBlock & fb, double time) = 0;
 

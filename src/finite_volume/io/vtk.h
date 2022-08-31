@@ -38,12 +38,6 @@ private:
 
 
 
-class VTKReader : public FluidBlockReader {
-public:
-    ~VTKReader();
-    void read_fluid_block(const char & file_name, FluidBlock & fb);
-};
-
 
 // some useful functions for VTK files
 int cell_shape_to_vtk_type(CellShape::CellShape shape);

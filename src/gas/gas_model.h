@@ -30,15 +30,13 @@ private:
 // For exceptions relating to the gas model
 class GasModelException : public std::exception {
 public:
-    GasModelException(std::string msg) : message(msg) {}
-    GasModelException(std::string msg, GasState * gs) 
-        : message(msg), gs(gs)
+    GasModelException(const char * msg) : message(msg) {}
+    GasModelException(const char *  msg, GasState * gs) 
+        : gs(gs), message(msg)
     {}
-    virtual char const * what();
-
-private:
-    std::string message;
+    const char * what() const noexcept override;
     GasState * gs=nullptr;
+    const char * message;
 };
 
 #endif // __GAS_MODEL_H_
