@@ -14,6 +14,7 @@
 #include "io/grid_io.h"
 #include "io/fluid_block_io.h"
 #include "boundary_conditions/boundary_condition.h"
+#include "omp.h"
 
 class GridIO;
 class FluidBlockIO;

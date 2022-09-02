@@ -6,6 +6,7 @@
 #include "../finite_volume/io/fluid_block_io.h"
 #include "../solvers/explicit.h"
 #include "../util/header.h"
+#include "omp.h"
 //#include "../finite_volume/boundary_conditions/boundary_conditions.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>

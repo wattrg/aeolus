@@ -20,7 +20,7 @@ DEPEXT     := d
 OBJEXT     := o
 
 #Flags, Libraries and Includes
-CFLAGS      := -Wextra -fPIC
+CFLAGS      := -Wextra -fPIC -fopenmp
 LIB         := -lm
 INC         := -I$(INCDIR) -I/usr/local/include 
 INCDEP      := -I$(INCDIR)
@@ -126,7 +126,7 @@ $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 
 # make the dynamic libraries
 $(BUILDDIR)/lib/aeolus.so: $(OBJECTS)
-	$(CC) -Wall -shared -fPIC $(VERSION_FLAGS) $(PYBIND11) $(SRCDIR)/python_api/lib.cpp -o $(LIBDIR)/aeolus.so $^ $(LIB)
+	$(CC) -Wall -shared -fPIC -fopenmp $(VERSION_FLAGS) $(PYBIND11) $(SRCDIR)/python_api/lib.cpp -o $(LIBDIR)/aeolus.so $^ $(LIB)
 
 lib: directories $(BUILDDIR)/lib/aeolus.so
 	@echo Finished building python library
