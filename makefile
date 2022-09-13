@@ -45,7 +45,7 @@ endif
 
 # GPU
 ifeq ($(GPU), 1)
-	CFLAGS := $(CFLAGS) -fcf-protection=none -DGPU
+	CFLAGS := $(CFLAGS) -fcf-protection=none -DGPU -no-pie -fno-stack-protector
 endif
 
 GIT_HASH := $(shell git describe --always --dirty)
@@ -98,6 +98,7 @@ directories:
 	@mkdir -p $(BUILDDIR)/util
 	@mkdir -p $(BUILDDIR)/io
 	@mkdir -p $(BUILDDIR)/finite_volume
+	@mkdir -p $(BUILDDIR)/grid
 	@mkdir -p $(BUILDDIR)/solvers
 	@mkdir -p $(BUILDDIR)/finite_volume/boundary_conditions
 	@mkdir -p $(BUILDDIR)/finite_volume/io

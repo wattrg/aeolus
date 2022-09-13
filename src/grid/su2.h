@@ -2,7 +2,7 @@
 #define __SU2_H_
 
 #include "grid_io.h"
-#include "../fluid_block.h"
+#include "../finite_volume/fluid_block.h"
 
 
 class Su2GridInput : public GridInput {

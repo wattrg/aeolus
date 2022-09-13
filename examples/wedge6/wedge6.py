@@ -29,7 +29,7 @@ bcs = {
 }
 
 sim.gas_model = gm
-sim.add_fluid_block("wedge6_coarse.su2", initial, bcs)
+sim.add_fluid_block("wedge6.su2", initial, bcs)
 
 solver = ExplicitSolver(sim)
 solver.max_step = 1000

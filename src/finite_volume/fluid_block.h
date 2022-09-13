@@ -11,7 +11,7 @@
 #include "../gas/flow_state.h"
 #include "../gas/gas_model.h"
 #include "config.h"
-#include "io/grid_io.h"
+#include "../grid/grid_io.h"
 #include "io/fluid_block_io.h"
 #include "boundary_conditions/boundary_condition.h"
 #include "omp.h"

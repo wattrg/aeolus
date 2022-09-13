@@ -29,20 +29,20 @@ FluidBlock::FluidBlock(const char * file_name, Simulation & config, unsigned int
 }
 
 void FluidBlock::compute_fluxes(){
-#ifdef GPU
-#pragma omp target
-#endif
-#pragma omp parallel for
+    #ifdef GPU
+        #pragma omp target
+    #endif
+    #pragma omp parallel for
     for (Interface * interface : this->_interfaces){
         interface->compute_flux(); 
     }
 }
 
 void FluidBlock::compute_time_derivatives(){
-#ifdef GPU
-#pragma omp target
-#endif
-#pragma omp parallel for
+    #ifdef GPU
+        #pragma omp target
+    #endif
+    #pragma omp parallel for
     for (Cell * cell : this->_cells){
         cell->compute_time_derivative();
     }
@@ -50,6 +50,10 @@ void FluidBlock::compute_time_derivatives(){
 
 double FluidBlock::compute_block_dt(){
     double dt = 10000;
+    #ifdef GPU
+        #pragma omp target
+    #endif
+    #pragma omp parallel for reduction(min:dt)
     for (Cell * cell : this->_cells){
         dt = std::min(cell->compute_local_timestep(fb_config.solver().cfl()), dt); 
     }
@@ -58,10 +62,10 @@ double FluidBlock::compute_block_dt(){
 }
 
 void FluidBlock::apply_time_derivative(){
-#ifdef GPU
-#pragma omp target
-#endif
-#pragma omp parallel for
+    #ifdef GPU
+        #pragma omp target
+    #endif
+    #pragma omp parallel for
     for (Cell * cell : this->_cells){
         ConservedQuantity & cq = cell->conserved_quantities;
         for (unsigned int i=0; i < cq.n_conserved(); i++){
@@ -72,6 +76,10 @@ void FluidBlock::apply_time_derivative(){
 }
 
 void FluidBlock::reconstruct(){
+    #ifdef GPU
+        #pragma omp target
+    #endif
+    #pragma omp parallel for
     for (Interface * face : this->_interfaces){
         face->copy_left_flow_state(face->get_left_cell()->fs);
         face->copy_right_flow_state(face->get_right_cell()->fs);

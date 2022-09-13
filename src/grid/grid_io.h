@@ -1,9 +1,9 @@
 #ifndef __FLUIDBLOCK_IO_H_
 #define __FLUIDBLOCK_IO_H_
 
-#include "../fluid_block.h"
-#include "../config.h"
-#include "../boundary_conditions/boundary_condition.h"
+#include "../finite_volume/fluid_block.h"
+#include "../finite_volume/config.h"
+#include "../finite_volume/boundary_conditions/boundary_condition.h"
 #include <fstream>
 #include <map>
 
