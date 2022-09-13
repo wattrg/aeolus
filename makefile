@@ -2,6 +2,7 @@
 #Compiler and Linker
 CC          := g++
 flavour     ?= debug
+GPU         ?= 0
 
 #The Target Binary Program
 TARGET      := aeolus
@@ -26,10 +27,7 @@ INC         := -I$(INCDIR) -I/usr/local/include
 INCDEP      := -I$(INCDIR)
 
 
-#---------------------------------------------------------------------------------
-#DO NOT EDIT BELOW THIS LINE
-#---------------------------------------------------------------------------------
-# debug build
+# optimisation
 ifeq ($(flavour), debug)
 	TARGET = aeolus_debug
 	CFLAGS := $(CFLAGS) -g
@@ -43,6 +41,11 @@ ifeq ($(profile), 1)
 		CFLAGS := $(CFLAGS) -g
 	endif
 	CFLAGS := $(CFLAGS) -pg
+endif
+
+# GPU
+ifeq ($(GPU), 1)
+	CFLAGS := $(CFLAGS) -fcf-protection=none -DGPU
 endif
 
 GIT_HASH := $(shell git describe --always --dirty)

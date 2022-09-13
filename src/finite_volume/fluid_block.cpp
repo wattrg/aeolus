@@ -29,14 +29,20 @@ FluidBlock::FluidBlock(const char * file_name, Simulation & config, unsigned int
 }
 
 void FluidBlock::compute_fluxes(){
+#ifdef GPU
 #pragma omp target
+#endif
+#pragma omp parallel for
     for (Interface * interface : this->_interfaces){
         interface->compute_flux(); 
     }
 }
 
 void FluidBlock::compute_time_derivatives(){
+#ifdef GPU
 #pragma omp target
+#endif
+#pragma omp parallel for
     for (Cell * cell : this->_cells){
         cell->compute_time_derivative();
     }
@@ -52,7 +58,10 @@ double FluidBlock::compute_block_dt(){
 }
 
 void FluidBlock::apply_time_derivative(){
+#ifdef GPU
 #pragma omp target
+#endif
+#pragma omp parallel for
     for (Cell * cell : this->_cells){
         ConservedQuantity & cq = cell->conserved_quantities;
         for (unsigned int i=0; i < cq.n_conserved(); i++){
