@@ -1,4 +1,7 @@
 #include "config.h"
+#include "fluid_block.h"
+#include "io/fluid_block_io.h"
+#include "../solvers/solvers.h"
 
 Simulation::Simulation(){
     this->_fluid_block_io = new FluidBlockIO();

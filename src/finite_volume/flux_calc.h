@@ -4,19 +4,16 @@
 #include "conserved_quantities.h"
 
 
-namespace FluxCalculators {
 
-enum FluxCalculators {
+enum class FluxCalculators {
     hanel,
     ausmdv,
 };
 
-}
 
 namespace FluxCalculator{
     void hanel(FlowState & left, FlowState & right, ConservedQuantity & flux);
     void ausmdv(FlowState & left, FlowState & right, ConservedQuantity & flux);
-    void zero_flux(FlowState &left, FlowState & right, ConservedQuantity & flux);
 }
 
 #endif

@@ -1,11 +1,13 @@
 #ifndef __BOUNDARY_CONDITION_
 #define __BOUNDARY_CONDITION_
 
-#include "../cell.h"
-#include "../interface.h"
-#include "ghost_cell_effect.h"
+//#include "../cell.h"
+//#include "../interface.h"
+//#include "ghost_cell_effect.h"
 #include <vector>
 #include <memory>
+#include <string>
+#include "../../gas/flow_state.h"
 
 class GhostCellEffect;
 class Interface;

@@ -40,5 +40,5 @@ private:
 
 
 // some useful functions for VTK files
-int cell_shape_to_vtk_type(CellShape::CellShape shape);
+int cell_shape_to_vtk_type(Grid::CellShape shape);
 #endif

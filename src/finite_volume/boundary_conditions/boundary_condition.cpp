@@ -1,4 +1,7 @@
 #include "boundary_condition.h"
+#include "../cell.h"
+#include "../interface.h"
+#include "ghost_cell_effect.h"
 
 BoundaryCondition::BoundaryCondition(){};
 

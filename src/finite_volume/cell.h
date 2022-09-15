@@ -2,7 +2,7 @@
 #define __CELL_H_
 
 #include "conserved_quantities.h"
-#include "../util/vector3.h"
+#include "../grid/grid_cell.h"
 #include "../util/volume.h"
 #include "../gas/flow_state.h"
 #include "interface.h"
@@ -13,16 +13,11 @@
 
 class Interface;
 
-namespace CellShape {
-    enum CellShape {
-        Triangle,
-        Quad
-    };
-}
 
 // keep track of the interface, as well as if the interface is facing the cell
 // or not
 struct CellFace {
+    CellFace() {}
     CellFace(Interface & interface, bool outwards) : interface(&interface), outwards(outwards){}
     // the interface
     Interface * interface;
@@ -33,15 +28,14 @@ struct CellFace {
 
 class Cell {
 public:
-    Cell(Interface * face, Simulation & config, bool valid=true);
-    Cell(std::vector<Vertex*> verticies, 
-         std::vector<Interface*>,
-         Simulation & config,
-         unsigned int id, 
-         bool valid=true);
+    Cell(Interface * face, bool valid=true);
+    Cell(Grid::Cell & grid_cell, Array<Vertex>&, Array<Interface>&);
 
     // the flow state in the cell centre
     FlowState fs;
+
+    // set the gas model
+    void set_gas_model(GasModel * gas_model) {_gas_model = gas_model;}
 
     // the conserved quantities
     ConservedQuantity conserved_quantities;
@@ -73,11 +67,11 @@ public:
 
     // give out some read only info about the vertices
     unsigned int number_vertices() const;
-    const std::vector<Vertex *> & vertices() const;
-    const std::vector<Vector3> & vertex_positions() const;
+    const Array<Vertex *> & vertices() const;
+    const Array<Vector3> & vertex_positions() const;
 
     // get info about the shape of the cell
-    CellShape::CellShape get_shape() const;
+    Grid::CellShape get_shape() const;
 
     unsigned int id() const;
 
@@ -87,27 +81,25 @@ public:
 
 private:
     // the interfaces surrounding the cell
-    std::vector<CellFace> _interfaces;
+    Array<CellFace> _interfaces;
 
     // the vertices of the cell
-    std::vector<Vertex *> _vertices;
+    Array<Vertex *> _vertices;
 
     // position of the cell centre
     Vector3 _pos;
 
     // Cell shape
-    CellShape::CellShape _shape;
-    void _compute_shape();
+    Grid::CellShape _shape;
 
     // keep track of if the cell is a valid cell
     bool _valid_cell;
 
-    // the simulation config
-    Simulation & _config;
+    // gas model
+    GasModel * _gas_model = nullptr;
 
     // cell volume
     double _volume = std::nan("");
-    void _compute_volume();
 
     unsigned int _id;
 

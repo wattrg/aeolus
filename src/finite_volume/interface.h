@@ -1,25 +1,26 @@
 #ifndef __INTERFACE_H_
 #define __INTERFACE_H_
 
+#include "../util/array.h"
 #include "conserved_quantities.h"
 #include "flux_calc.h"
-#include "cell.h"
 #include "../gas/flow_state.h"
 #include "../util/vector3.h"
 #include "vertex.h"
-#include "config.h"
+#include "../grid/grid_interface.h"
 #include <vector>
 #include <cmath>
 
 class Cell;
 class Simulation;
 
-enum Side { left, right, centre };
-
 class Interface {
 public:
-    Interface(std::vector<Vertex *> vertices, Simulation & config, unsigned int id,
-            FluxCalculators::FluxCalculators flux_calc);
+    //Interface(std::vector<Vertex *> vertices, 
+    //          Simulation & config, 
+    //          unsigned int id,
+    //          FluxCalculators flux_calc);
+    Interface(Grid::Interface & grid_face, Array<Vertex> & vertices);
     ~Interface();
 
     // area of the interface
@@ -63,6 +64,7 @@ public:
     // correctly set
     void compute_flux();
     ConservedQuantity & flux();
+    void set_flux_calculator(FluxCalculators flux_calculator);
 
     // Return a reference to the valid cell. Will throw an error if the cells
     // on both sides of the interface are valid
@@ -76,7 +78,7 @@ public:
 
 private:
     //  Vertices on the end of the interface
-    std::vector<Vertex *> _vertices;
+    Array<Vertex *> _vertices;
 
     //    position of the centre of the interface
     Vector3 _pos;
@@ -109,16 +111,10 @@ private:
     bool _is_on_boundary = false;
     std::string _boundary_tag = "";
 
-    // Figure out if a cell is
-    Side _compute_side(Cell & cell);
-
-    // Figure out if a point is on the left or right of the interface
-    Side _compute_side(Vector3 & point);
-
     // pointer to flux calculator function. The actual function
     // takes the left and right `FlowState`, and fills in the 
     // ConservedQuantity flux value.
-    void (*_compute_flux)(FlowState&, FlowState&, ConservedQuantity&);
+    void (*_compute_flux)(FlowState&, FlowState&, ConservedQuantity&) = nullptr;
 
     // rotate left and right flow states to interface reference frame
     void _transform_flowstate_to_local_frame();
@@ -129,9 +125,9 @@ private:
     // rotate flux to global frame
     void _transform_flux_to_global_frame();
 
-    Simulation & _my_config;
-
     unsigned int _id;
+
+    unsigned short _dim;
 };
 
 #endif // __INTERFACE_H_

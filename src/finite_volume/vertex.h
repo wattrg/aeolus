@@ -3,11 +3,12 @@
 
 #include <ostream>
 #include <cmath>
-#include "../util/vector3.h"
+#include "../grid/grid_vertex.h"
 
 class Vertex {
 public:
-    Vertex(Vector3 x, int id);
+    //Vertex(Vector3 x, int id);
+    Vertex(Grid::Vertex &);
 
     // get the position
     const Vector3 & get_pos() const;

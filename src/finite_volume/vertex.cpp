@@ -1,6 +1,7 @@
 #include "vertex.h"
 
-Vertex::Vertex(Vector3 pos, int id): _pos(pos), _id(id) {}
+Vertex::Vertex(Grid::Vertex & grid_vertex) 
+    : _pos(grid_vertex.get_pos()), _id(grid_vertex.id()) {}
 
 double Vertex::distance_to(Vertex & other) {
     return this->_pos.distance_to(other._pos);

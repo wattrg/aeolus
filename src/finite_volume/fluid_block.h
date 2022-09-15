@@ -5,23 +5,18 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <map>
+#include "boundary_conditions/boundary_condition.h"
 #include "cell.h"
 #include "interface.h"
 #include "vertex.h"
 #include "../gas/flow_state.h"
 #include "../gas/gas_model.h"
-#include "config.h"
-#include "../grid/grid_io.h"
-#include "io/fluid_block_io.h"
-#include "boundary_conditions/boundary_condition.h"
 #include "omp.h"
 
-class GridIO;
 class FluidBlockIO;
+class Simulation;
 
-namespace ElementShape {
-    enum ElementShape : unsigned short { Triangle, Quad, Line, };
-}
 
 class FluidBlock {
 public:
@@ -88,7 +83,6 @@ private:
 
     void _print_interfaces();
 
-    GridIO * _grid_io;
     FluidBlockIO * _fb_io;
 
     // id of the fluid block

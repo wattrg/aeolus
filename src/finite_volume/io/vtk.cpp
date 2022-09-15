@@ -137,11 +137,11 @@ void VTKWriter::_write_data_array(const GridData<T> & data, std::ofstream & vtk_
 
 
 // convert CellShape to VTK cell type
-int cell_shape_to_vtk_type (CellShape::CellShape shape){
+int cell_shape_to_vtk_type (Grid::CellShape shape){
     switch (shape){
-        case CellShape::Triangle:
+        case Grid::CellShape::Triangle:
             return 5;
-        case CellShape::Quad:
+        case Grid::CellShape::Quad:
             return 9;
         default:
             throw std::runtime_error("Unknown CellShape");

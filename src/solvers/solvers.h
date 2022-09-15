@@ -2,6 +2,7 @@
 #define __SOLVERS_H_
 
 #include "../finite_volume/config.h"
+#include "../finite_volume/fluid_block.h"
 
 class Simulation;
 

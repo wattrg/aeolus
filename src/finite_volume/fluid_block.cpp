@@ -1,4 +1,6 @@
 #include "fluid_block.h"
+#include "io/fluid_block_io.h"
+#include "config.h"
 
 FluidBlock::~FluidBlock(){
     for (Cell * cell : this->_cells){
@@ -16,7 +18,6 @@ FluidBlock::~FluidBlock(){
     for (BoundaryCondition * bc : this->_bcs){
         delete bc;
     }
-    if (_grid_io) delete _grid_io;
 }
 
 FluidBlock::FluidBlock(const char * file_name, Simulation & config, unsigned int id, 
@@ -24,8 +25,8 @@ FluidBlock::FluidBlock(const char * file_name, Simulation & config, unsigned int
     fb_config(config),
     _id(id)
 {
-    this->_grid_io = new GridIO(GridFormat::su2, GridFormat::none);
-    this->_grid_io->read_grid(file_name, *this, bc_map);
+    //this->_grid_io = new GridIO(GridFormat::su2, GridFormat::none);
+    //this->_grid_io->read_grid(file_name, *this, bc_map);
 }
 
 void FluidBlock::compute_fluxes(){

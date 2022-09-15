@@ -1,13 +1,13 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
-#include "io/fluid_block_io.h"
-#include "fluid_block.h"
 #include "boundary_conditions/boundary_condition.h"
 #include "../io/io.h"
+#include "flux_calc.h"
 #include "../solvers/solvers.h"
 #include <sys/stat.h>
 #include <map>
+#include <functional>
 
 
 class FluidBlock;
@@ -33,8 +33,8 @@ public:
     unsigned short dimensions() const;
     void set_dimensions(unsigned short number_dim);
     std::vector<FluidBlock *> & fluid_blocks();
-    FluxCalculators::FluxCalculators flux_calculator() {return _flux_calculator;}
-    void set_flux_calculator(FluxCalculators::FluxCalculators flux_calc) {_flux_calculator = flux_calc;}
+    FluxCalculators flux_calculator() {return _flux_calculator;}
+    void set_flux_calculator(FluxCalculators flux_calc) {_flux_calculator = flux_calc;}
     void write_fluid_blocks();
     void run();
     const Solver & solver () const;
@@ -51,7 +51,7 @@ private:
     unsigned short _dimensions = 2;
     std::vector<FluidBlock *> _fluid_blocks;
     FluidBlockIO * _fluid_block_io = nullptr;
-    FluxCalculators::FluxCalculators _flux_calculator;
+    FluxCalculators _flux_calculator;
     GasModel _g_model;
     std::vector<Solver *> _solvers;
     unsigned int _solver_idx=0;

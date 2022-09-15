@@ -32,7 +32,7 @@ ifeq ($(flavour), debug)
 	TARGET = aeolus_debug
 	CFLAGS := $(CFLAGS) -g
 else 
-	CFLAGS := $(CFLAGS) -o3
+	CFLAGS := $(CFLAGS) -o3 -DNDEBUG
 endif
 
 # profiling
