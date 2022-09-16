@@ -8,8 +8,6 @@
 #include "grid_interface.h"
 #include "su2.h"
 
-class GridIO;
-
 namespace Grid {
 
 enum class GridFormats{

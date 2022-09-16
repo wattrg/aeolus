@@ -80,9 +80,9 @@ PYBIND11_MODULE(aeolus, m) {
     pybind11::class_<ExplicitSolver, Solver>(m, "ExplicitSolver")
         .def(pybind11::init<Simulation&>());
 
-    pybind11::enum_<FluxCalculators::FluxCalculators>(m, "FluxCalculators")
-        .value("hanel", FluxCalculators::FluxCalculators::hanel)
-        .value("ausmdv", FluxCalculators::FluxCalculators::ausmdv)
+    pybind11::enum_<FluxCalculators>(m, "FluxCalculators")
+        .value("hanel", FluxCalculators::hanel)
+        .value("ausmdv", FluxCalculators::ausmdv)
         .export_values();
 
 

@@ -42,6 +42,11 @@ void Grid::Interface::attach_cell_right(Cell & cell){
     this->_right_cell = &cell;
 }
 
+void Grid::Interface::mark_on_boundary(std::string tag){
+    this->_is_on_boundary = true;
+    this->_boundary_tag = tag;
+}
+
 Side Grid::Interface::_compute_side(Vector3 & point){
     //       B
     //      /

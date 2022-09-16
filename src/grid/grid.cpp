@@ -1,7 +1,7 @@
 #include "grid.h"
 
-Grid::GridFormats extension_to_grid_format(std::string extension){
-    if (extension == "su2") return Grid::GridFormats::su2;
+Grid::GridFormats Grid::extension_to_grid_format(std::string extension){
+    if (extension == "su2") return GridFormats::su2;
     throw std::runtime_error("Unknown grid format");
 }
 
