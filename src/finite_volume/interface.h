@@ -20,7 +20,7 @@ public:
     //          Simulation & config, 
     //          unsigned int id,
     //          FluxCalculators flux_calc);
-    Interface(Grid::Interface & grid_face, Array<Vertex> & vertices);
+    Interface(Grid::Interface & grid_face, std::vector<Vertex> & vertices);
     ~Interface();
 
     // area of the interface
@@ -78,7 +78,7 @@ public:
 
 private:
     //  Vertices on the end of the interface
-    Array<Vertex *> _vertices;
+    std::vector<Vertex *> _vertices;
 
     //    position of the centre of the interface
     Vector3 _pos;

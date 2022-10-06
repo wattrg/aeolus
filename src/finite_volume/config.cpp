@@ -16,23 +16,23 @@ Simulation::~Simulation(){
 }
 
 void Simulation::add_fluid_block(
-    const char * file_name, 
+    Grid::Grid & grid, 
     std::function<FlowState(double, double, double)> & fill_func,
     std::map<std::string, BoundaryCondition> & bc_map)
 {
     unsigned int id = this->_fluid_blocks.size();
-    FluidBlock * fb = new FluidBlock(file_name, *this, id, bc_map);
+    FluidBlock * fb = new FluidBlock(grid, id, bc_map);
     fb->fill(fill_func);
     this->_fluid_blocks.push_back(fb);
 }
 
 void Simulation::add_fluid_block(
-    const char * file_name, 
+    Grid::Grid & grid, 
     FlowState & fs,
     std::map<std::string, BoundaryCondition> & bc_map)
 {
     unsigned int id = this->_fluid_blocks.size();
-    FluidBlock * fb = new FluidBlock(file_name, *this, id, bc_map);
+    FluidBlock * fb = new FluidBlock(grid, id, bc_map);
     fb->fill(fs);
     this->_fluid_blocks.push_back(fb);
 }

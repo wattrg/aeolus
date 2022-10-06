@@ -15,7 +15,7 @@ public:
     }
 
     ~Array(){
-        if (_data) delete _data;
+        if (_data) delete[] _data;
     }
 
     void push_back(T value){

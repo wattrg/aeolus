@@ -6,6 +6,7 @@
 #include <vector>
 #include <functional>
 #include <map>
+#include "../util/array.h"
 #include "boundary_conditions/boundary_condition.h"
 #include "cell.h"
 #include "interface.h"
@@ -15,14 +16,14 @@
 #include "omp.h"
 
 class FluidBlockIO;
-class Simulation;
 
 
 class FluidBlock {
 public:
     ~FluidBlock();
-    FluidBlock(const char * file_name, Simulation & config, unsigned int id, 
-            std::map<std::string, BoundaryCondition> &);
+    FluidBlock(Grid::Grid & grid, 
+               unsigned int id, 
+               std::map<std::string, BoundaryCondition> &);
 
     /// String representation of the FluidBlock
     std::string to_string();
@@ -32,43 +33,34 @@ public:
     void fill(std::function<FlowState(double, double, double)> &func);
     void fill(const FlowState &);
 
-    Simulation & fb_config;
-
     void compute_fluxes();
     void compute_time_derivatives();
     void apply_time_derivative();
-    double compute_block_dt();
+    double compute_block_dt(double cfl);
     void reconstruct();
 
     // getter methods
-    const std::vector<Cell *> & cells() const;
-    const std::vector<Vertex *> & vertices() const;
-    std::vector<Interface *> & interfaces();
-    std::vector<BoundaryCondition *> bcs() {return _bcs;}
+    std::vector<Cell> & cells();
+    std::vector<Vertex> & vertices();
+    std::vector<Interface> & interfaces();
+    std::vector<BoundaryCondition> bcs() {return _bcs;}
     unsigned int id() const {return this->_id;}
-
-    // setter method
-    void set_grid(std::vector<Vertex *> vertices, 
-                  std::vector<Interface *> interfaces, 
-                  std::vector<Cell *> cells, 
-                  std::vector<Cell *> ghost_cells,
-                  std::vector<BoundaryCondition *> bcs);
 
 private:
     // Collection of cells
-    std::vector<Cell *> _cells;
+    std::vector<Cell> _cells;
 
     // ghost cells
-    std::vector<Cell *> _ghost_cells;
+    std::vector<Cell> _ghost_cells;
 
     // Collection of interfaces
-    std::vector<Interface *> _interfaces;
+    std::vector<Interface> _interfaces;
 
     // Collection of vertices
-    std::vector<Vertex *> _vertices;
+    std::vector<Vertex> _vertices;
 
     // boundary conditions for this fluid block
-    std::vector<BoundaryCondition *> _bcs;
+    std::vector<BoundaryCondition> _bcs;
 
     // dt for the whole grid
     double _dt;

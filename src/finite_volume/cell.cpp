@@ -3,11 +3,11 @@
 Cell::Cell(Interface * face, bool valid) 
 {
     _valid_cell = valid;
-    this->_interfaces = Array<CellFace> (1);
+    this->_interfaces = std::vector<CellFace> (1);
     this->_interfaces.push_back(CellFace(*face, false)); 
 }
 
-Cell::Cell(Grid::Cell & grid_cell, Array<Vertex> & vertices, Array<Interface> & interfaces)
+Cell::Cell(Grid::Cell & grid_cell, std::vector<Vertex> & vertices, std::vector<Interface> & interfaces)
     : _shape(grid_cell.get_shape()),
       _volume(grid_cell.volume()),
       _pos(grid_cell.get_pos())
@@ -18,8 +18,8 @@ Cell::Cell(Grid::Cell & grid_cell, Array<Vertex> & vertices, Array<Interface> & 
     // allocate memory for pointers to interfaces and vertices
     size_t num_interfaces = grid_interfaces.size();
     size_t num_vertices = grid_vertices.size();
-    this->_interfaces = Array<CellFace>(num_interfaces);
-    this->_vertices = Array<Vertex *>(num_vertices);
+    //this->_interfaces = std::vector<CellFace>(num_interfaces);
+    //this->_vertices = std::vector<Vertex *>(num_vertices);
 
     // assign pointers to interfaces and vertices
     for (size_t i = 0; i < num_vertices; i++){
@@ -102,7 +102,7 @@ unsigned int Cell::number_vertices() const {
     return this->_vertices.size();
 }
 
-const Array<Vertex *> & Cell::vertices() const {
+const std::vector<Vertex *> & Cell::vertices() const {
     return this->_vertices;
 }
 

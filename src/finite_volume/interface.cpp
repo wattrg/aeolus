@@ -2,7 +2,7 @@
 #include "cell.h"
 #include "config.h"
 
-Interface::Interface(Grid::Interface & grid_face, Array<Vertex> & vertices)
+Interface::Interface(Grid::Interface & grid_face, std::vector<Vertex> & vertices)
     : _id(grid_face.id()), 
       _norm(grid_face.norm()), 
       _tan1(grid_face.tan1()), 
@@ -11,7 +11,7 @@ Interface::Interface(Grid::Interface & grid_face, Array<Vertex> & vertices)
 {
     // set up the vertices of the interface
     size_t number_vertices = vertices.size();
-    this->_vertices = Array<Vertex *>(number_vertices);
+    //this->_vertices = std::vector<Vertex *>(number_vertices);
     for (size_t i = 0; i < number_vertices; i++){
         size_t id = grid_face.id();
         this->_vertices[i] = &vertices[id];

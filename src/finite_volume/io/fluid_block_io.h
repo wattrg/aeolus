@@ -56,7 +56,7 @@ class FluidBlockWriter {
 public:
     virtual ~FluidBlockWriter() {};
     FluidBlockWriter();
-    virtual void write_fluid_block(const char & file_name, const FluidBlock & fb, double time) = 0;
+    virtual void write_fluid_block(const char & file_name, const FluidBlock & fb, double time) {};
 
     void add_variable(std::string name, 
                       std::vector<double> (*access_from_cell)(const Cell &),

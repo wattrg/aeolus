@@ -1,6 +1,6 @@
 import faulthandler
 faulthandler.enable()
-from aeolus import GasState, GasModel, FlowState, Vector3, Simulation, ExplicitSolver, FluxCalculators
+from aeolus import GasState, GasModel, FlowState, Vector3, Simulation, ExplicitSolver, FluxCalculators, Grid
 from aeolus.bc import SlipWall, SupersonicInflow, SupersonicOutflow
 
 gm = GasModel(287)
@@ -16,6 +16,7 @@ inflow_gs.T = 1103.0
 gm.update_from_pT(inflow_gs)
 inflow = FlowState(inflow_gs, Vector3(inflow_gs.a*5))
 
+grid = Grid("cone20.su2")
 bcs = {
     "SLIP_WALL": SlipWall(),
     "OUTFLOW": SupersonicOutflow(),
@@ -23,7 +24,7 @@ bcs = {
 }
 
 sim.gas_model = GasModel(287)
-sim.add_fluid_block("cone20.su2", FlowState(inflow_gs, Vector3(0.0)), bcs)
+sim.add_fluid_block(grid, FlowState(inflow_gs, Vector3(0.0)), bcs)
 
 solver = ExplicitSolver(sim)
 solver.max_step = 7000

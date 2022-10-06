@@ -3,30 +3,44 @@
 #include "config.h"
 
 FluidBlock::~FluidBlock(){
-    for (Cell * cell : this->_cells){
-        delete cell;
-    }
-    for (Cell * cell : this->_ghost_cells){
-        delete cell;
-    }
-    for (Interface * interface : this->_interfaces){
-        delete interface;
-    }
-    for (Vertex * vertex : this->_vertices){
-        delete vertex;
-    }
-    for (BoundaryCondition * bc : this->_bcs){
-        delete bc;
-    }
+    //for (Cell * cell : this->_cells){
+    //    delete cell;
+    //}
+    //for (Cell * cell : this->_ghost_cells){
+    //    delete cell;
+    //}
+    //for (Interface * interface : this->_interfaces){
+    //    delete interface;
+    //}
+    //for (Vertex * vertex : this->_vertices){
+    //    delete vertex;
+    //}
+    //for (BoundaryCondition * bc : this->_bcs){
+    //    delete bc;
+    //}
 }
 
-FluidBlock::FluidBlock(const char * file_name, Simulation & config, unsigned int id, 
-        std::map<std::string, BoundaryCondition> & bc_map) :
-    fb_config(config),
+FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id, 
+                       std::map<std::string, BoundaryCondition> & bc_map) :
     _id(id)
 {
-    //this->_grid_io = new GridIO(GridFormat::su2, GridFormat::none);
-    //this->_grid_io->read_grid(file_name, *this, bc_map);
+    // read the vertices
+    std::vector<Grid::Vertex *> vertices = grid.vertices();
+    for (Grid::Vertex * grid_vertex : vertices){
+        this->_vertices.push_back(Vertex(*grid_vertex));
+    }
+
+    // read the interfaces
+    std::vector<Grid::Interface *> interfaces = grid.interfaces();
+    for (Grid::Interface * grid_interface : interfaces){
+        this->_interfaces.push_back(Interface(*grid_interface, this->_vertices));
+    }
+
+    // read the cells
+    std::vector<Grid::Cell *> cells = grid.cells();
+    for (Grid::Cell * grid_cell : cells){
+        this->_cells.push_back(Cell(*grid_cell, this->_vertices, this->_interfaces));
+    }
 }
 
 void FluidBlock::compute_fluxes(){
@@ -34,8 +48,8 @@ void FluidBlock::compute_fluxes(){
         #pragma omp target
     #endif
     #pragma omp parallel for
-    for (Interface * interface : this->_interfaces){
-        interface->compute_flux(); 
+    for (Interface interface : this->_interfaces){
+        interface.compute_flux(); 
     }
 }
 
@@ -44,19 +58,19 @@ void FluidBlock::compute_time_derivatives(){
         #pragma omp target
     #endif
     #pragma omp parallel for
-    for (Cell * cell : this->_cells){
-        cell->compute_time_derivative();
+    for (Cell cell : this->_cells){
+        cell.compute_time_derivative();
     }
 }
 
-double FluidBlock::compute_block_dt(){
+double FluidBlock::compute_block_dt(double cfl){
     double dt = 10000;
     #ifdef GPU
         #pragma omp target
     #endif
     #pragma omp parallel for reduction(min:dt)
-    for (Cell * cell : this->_cells){
-        dt = std::min(cell->compute_local_timestep(fb_config.solver().cfl()), dt); 
+    for (Cell cell : this->_cells){
+        dt = std::min(cell.compute_local_timestep(cfl), dt); 
     }
     this->_dt = dt;
     return dt;
@@ -67,12 +81,12 @@ void FluidBlock::apply_time_derivative(){
         #pragma omp target
     #endif
     #pragma omp parallel for
-    for (Cell * cell : this->_cells){
-        ConservedQuantity & cq = cell->conserved_quantities;
+    for (Cell cell : this->_cells){
+        ConservedQuantity & cq = cell.conserved_quantities;
         for (unsigned int i=0; i < cq.n_conserved(); i++){
-            cq[i] += cell->residual[i] * this->_dt; 
+            cq[i] += cell.residual[i] * this->_dt; 
         }
-        cell->decode_conserved();
+        cell.decode_conserved();
     }
 }
 
@@ -81,50 +95,36 @@ void FluidBlock::reconstruct(){
         #pragma omp target
     #endif
     #pragma omp parallel for
-    for (Interface * face : this->_interfaces){
-        face->copy_left_flow_state(face->get_left_cell()->fs);
-        face->copy_right_flow_state(face->get_right_cell()->fs);
+    for (Interface face : this->_interfaces){
+        face.copy_left_flow_state(face.get_left_cell()->fs);
+        face.copy_right_flow_state(face.get_right_cell()->fs);
     }
 }
 
 void FluidBlock::fill(std::function<FlowState(double, double, double)> &func){
-    for (Cell * cell : this->_cells) {
-        Vector3 pos = cell->get_pos();
+    for (Cell cell : this->_cells) {
+        Vector3 pos = cell.get_pos();
         FlowState fs = func(pos.x, pos.y, pos.z);
-        cell->fs.copy(fs);
-        cell->encode_conserved();
+        cell.fs.copy(fs);
+        cell.encode_conserved();
     }
 }
 
 void FluidBlock::fill(const FlowState & fs){
-    for (Cell * cell : this->_cells) {
-        cell->fs.copy(fs);
-        cell->encode_conserved();
+    for (Cell cell : this->_cells) {
+        cell.fs.copy(fs);
+        cell.encode_conserved();
     }
 }
 
-void FluidBlock::set_grid(std::vector<Vertex *> vertices, 
-                          std::vector<Interface *> interfaces, 
-                          std::vector<Cell *> cells,
-                          std::vector<Cell *> ghost_cells,
-                          std::vector<BoundaryCondition *> bcs){
-    this->_vertices = vertices;
-    this->_interfaces = interfaces;
-    this->_cells = cells;
-    this->_ghost_cells = ghost_cells;
-    this->_bcs = bcs;
-}
 
-
-const std::vector<Cell *> & FluidBlock::cells() const{
+std::vector<Cell> & FluidBlock::cells() {
     return this->_cells;
 }
 
-const std::vector<Vertex *> & FluidBlock::vertices() const {
+std::vector<Vertex> & FluidBlock::vertices() {
     return this->_vertices;
 }
-
-
 
 std::string FluidBlock::to_string() {
     std::string str = "FluidBlock(";
@@ -133,8 +133,8 @@ std::string FluidBlock::to_string() {
     str.append(", n_cells = ");
     str.append(std::to_string(this->_cells.size()));
     str.append(", cells = [");
-    for (Cell * cell : this->_cells){
-        str.append(cell->to_string());
+    for (Cell cell : this->_cells){
+        str.append(cell.to_string());
         str.append(",\n\n");
     }
     str.append(")");
@@ -144,15 +144,15 @@ std::string FluidBlock::to_string() {
 std::ostream& operator << (std::ostream& os, const FluidBlock fluid_block){
     os << "FluidBlock(";
     os << "n_interfaces = " << fluid_block._interfaces.size() << ", ";
-    for (Cell * cell : fluid_block._cells){
-        os << *cell << ", ";
+    for (Cell cell : fluid_block._cells){
+        os << cell << ", ";
     }
     os << ")\n";
     return os;
 }
 
 void FluidBlock::_print_interfaces(){
-    for (Interface * interface : this->_interfaces){
-        std::cout << *interface << "\n";
+    for (Interface interface : this->_interfaces){
+        std::cout << interface << "\n";
     }
 }

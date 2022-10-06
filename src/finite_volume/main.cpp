@@ -40,7 +40,8 @@ int main(int argc, char *argv[]) {
 
     config.set_gas_model(g_model);
     std::function<FlowState(double, double, double)> ic = initial_conditions;
-    config.add_fluid_block(argv[1], ic, bc_map);
+    Grid::Grid grid = Grid::Grid(argv[1]);
+    config.add_fluid_block(grid, ic, bc_map);
     config.write_fluid_blocks();
 
     ExplicitSolver solver = ExplicitSolver(config);

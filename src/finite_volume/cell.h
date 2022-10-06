@@ -29,7 +29,7 @@ struct CellFace {
 class Cell {
 public:
     Cell(Interface * face, bool valid=true);
-    Cell(Grid::Cell & grid_cell, Array<Vertex>&, Array<Interface>&);
+    Cell(Grid::Cell & grid_cell, std::vector<Vertex>&, std::vector<Interface>&);
 
     // the flow state in the cell centre
     FlowState fs;
@@ -67,8 +67,8 @@ public:
 
     // give out some read only info about the vertices
     unsigned int number_vertices() const;
-    const Array<Vertex *> & vertices() const;
-    const Array<Vector3> & vertex_positions() const;
+    const std::vector<Vertex *> & vertices() const;
+    const std::vector<Vector3> & vertex_positions() const;
 
     // get info about the shape of the cell
     Grid::CellShape get_shape() const;
@@ -81,10 +81,10 @@ public:
 
 private:
     // the interfaces surrounding the cell
-    Array<CellFace> _interfaces;
+    std::vector<CellFace> _interfaces;
 
     // the vertices of the cell
-    Array<Vertex *> _vertices;
+    std::vector<Vertex *> _vertices;
 
     // position of the cell centre
     Vector3 _pos;

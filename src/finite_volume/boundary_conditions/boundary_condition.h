@@ -7,6 +7,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include "../../util/array.h"
 #include "../../gas/flow_state.h"
 
 class GhostCellEffect;

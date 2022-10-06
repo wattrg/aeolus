@@ -1,6 +1,6 @@
 import faulthandler
 faulthandler.enable()
-from aeolus import GasState, GasModel, FlowState, Vector3, Simulation, ExplicitSolver, FluxCalculators
+from aeolus import GasState, GasModel, FlowState, Vector3, Simulation, ExplicitSolver, FluxCalculators, Grid
 from aeolus.bc import SlipWall, SupersonicInflow, SupersonicOutflow
 
 gm = GasModel(287.0)
@@ -21,6 +21,7 @@ initial_gs.T = 300.0
 gm.update_from_pT(initial_gs)
 initial = FlowState(initial_gs, Vector3(1000.0))
 
+grid = Grid("wedge6.su2")
 bcs = {
     "south": SlipWall(),
     "north": SupersonicOutflow(),
@@ -29,7 +30,7 @@ bcs = {
 }
 
 sim.gas_model = gm
-sim.add_fluid_block("wedge6.su2", initial, bcs)
+sim.add_fluid_block(grid, initial, bcs)
 
 solver = ExplicitSolver(sim)
 solver.max_step = 1000

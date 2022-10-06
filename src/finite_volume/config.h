@@ -5,6 +5,7 @@
 #include "../io/io.h"
 #include "flux_calc.h"
 #include "../solvers/solvers.h"
+#include "../grid/grid.h"
 #include <sys/stat.h>
 #include <map>
 #include <functional>
@@ -21,12 +22,12 @@ public:
     Simulation();
     ~Simulation();
     void add_fluid_block(
-        const char *, 
+        Grid::Grid & grid, 
         FlowState &,
         std::map<std::string, BoundaryCondition> &
     );
     void add_fluid_block(
-        const char *,
+        Grid::Grid & grid,
         std::function<FlowState(double, double, double)> &,
         std::map<std::string, BoundaryCondition> &
     );

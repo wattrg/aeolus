@@ -10,19 +10,19 @@ class VTKWriter : public FluidBlockWriter {
 public:
     ~VTKWriter();
     VTKWriter();
-    void write_fluid_block(const char & file_name, const FluidBlock & fb, double time);
+    void write_fluid_block(const char & file_name, FluidBlock & fb, double time);
 
 private:
     GridData<double> _points;
     GridData<int> _connectivity;
     GridData<int> _offsets;
     GridData<int> _types;
-    const std::vector<Cell *> * _cells;
+    std::vector<Cell> * _cells;
     unsigned int _number_points;
     unsigned int _number_cells;
 
     // read all the data
-    void _read_data(const FluidBlock & fb);
+    void _read_data(FluidBlock & fb);
 
     // clear the data
     void _clear_data();
@@ -34,10 +34,6 @@ private:
     std::vector<double> _times;
     std::vector<std::string> _block_names;
 };
-
-
-
-
 
 // some useful functions for VTK files
 int cell_shape_to_vtk_type(Grid::CellShape shape);
