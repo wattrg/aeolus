@@ -19,6 +19,39 @@ Grid::Interface::Interface(std::vector<Vertex *> vertices, unsigned int id)
     }
 }
 
+int Grid::Interface::get_left_cell_id() {
+    Cell * left_cell = this->_left_cell;
+    if (left_cell){
+        return left_cell->id();
+    }
+    else {
+        return -1;
+    }
+}
+int Grid::Interface::get_right_cell_id() {
+    Cell * right_cell = this->_left_cell;
+    if (right_cell){
+        return right_cell->id();
+    }
+    else {
+        return -1;
+    }
+}
+
+bool Grid::Interface::is(std::vector<Vertex *> & vertices){
+    for (Vertex * other_vertex : vertices){
+        bool has_vertex = false;
+        for (Vertex * this_vertex : this->_vertices) {
+            if (*other_vertex == *this_vertex) {
+                has_vertex = true;
+                break;
+            }
+        }
+        if (!has_vertex) return false;
+    }
+    return true;
+}
+
 bool Grid::Interface::attach_cell(Cell & cell){
     Side side = this->_compute_side(cell);
     switch (side){

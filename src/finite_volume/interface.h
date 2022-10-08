@@ -95,9 +95,11 @@ private:
 
     // cell to the left
     Cell * _left_cell = nullptr;
+    int _left_cell_id = -1;
 
     // cell to the right
     Cell * _right_cell = nullptr;
+    int _right_cell_id = -1;
 
     // The left and right flow states to use to compute the 
     // fluxes. These states are possibly the result of reconstruction

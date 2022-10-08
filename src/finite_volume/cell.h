@@ -28,7 +28,7 @@ struct CellFace {
 
 class Cell {
 public:
-    Cell(Interface * face, bool valid=true);
+    Cell(Interface & face, bool valid=true);
     Cell(Grid::Cell & grid_cell, std::vector<Vertex>&, std::vector<Interface>&);
 
     // the flow state in the cell centre
@@ -49,7 +49,6 @@ public:
     // decode consered quantities
     void decode_conserved();
 
-public:
     // compute the residual for a cell, assuming the fluxes have been calculated
     void compute_time_derivative();
 
@@ -77,7 +76,6 @@ public:
 
     // used for computing maximum allowable time step
     double compute_local_timestep(double cfl);
-
 
 private:
     // the interfaces surrounding the cell

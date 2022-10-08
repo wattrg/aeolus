@@ -26,6 +26,7 @@ public:
     std::vector<Vertex *> vertices() {return this->_vertices;}
     std::vector<Interface *> interfaces () {return this->_interfaces;}
     std::vector<Cell *> cells() {return this->_cells;}
+    std::map<std::string, std::vector<Interface *>> & bcs() {return this->_bcs;}
     unsigned int number_boundaries() const {return this->_bcs.size();}
     void set_grid(std::vector<Vertex *>, 
                   std::vector<Interface *>, 

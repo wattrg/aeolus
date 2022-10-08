@@ -17,18 +17,15 @@ class Interface{
 public:
     Interface(std::vector<Vertex *> vertices, unsigned int id);
 
-    bool is (std::vector<Vertex *> & vertices){
-        for (Vertex * other_vertex : vertices){
-            for (Vertex * this_vertex : this->_vertices) {
-                if (other_vertex != this_vertex) return false;
-            }
-        }
-        return true;
-    }
+    bool is (std::vector<Vertex *> & vertices);
 
     bool attach_cell(Cell & cell);
     void attach_cell_left(Cell & cell);
     void attach_cell_right(Cell & cell);
+    Cell * get_left_cell() {return this->_left_cell;}
+    Cell * get_right_cell() {return this->_right_cell;}
+    int get_left_cell_id();
+    int get_right_cell_id();
     void mark_on_boundary(std::string tag);
     unsigned int id() const {return _id;}
     std::string boundary_tag() {return _boundary_tag;}

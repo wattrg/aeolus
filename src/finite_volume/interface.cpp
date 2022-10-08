@@ -12,10 +12,15 @@ Interface::Interface(Grid::Interface & grid_face, std::vector<Vertex> & vertices
     // set up the vertices of the interface
     size_t number_vertices = vertices.size();
     //this->_vertices = std::vector<Vertex *>(number_vertices);
+    this->_vertices.reserve(number_vertices);
     for (size_t i = 0; i < number_vertices; i++){
         size_t id = grid_face.id();
-        this->_vertices[i] = &vertices[id];
+        this->_vertices.push_back(&vertices[id]);
     }
+
+    // the id's of the cells that will be attached
+    this->_left_cell_id = grid_face.get_left_cell_id();
+    this->_right_cell_id = grid_face.get_right_cell_id();
 
     // set up the storage for the flux
     this->_dim = (this->_vertices.size() == 2) ? 2 : 3;
@@ -141,13 +146,13 @@ bool Interface::has_vertex(Vertex & other_vertex){
 }
 
 bool Interface::is(std::vector<Vertex *> & vertices){
-    // chceck `vertices` form this interface
-    bool is_same = true;
+    // check `vertices` form this interface
     for (Vertex * other_vertex : vertices) {
-        if (!this->has_vertex(*other_vertex)) is_same = false;
+        if (!this->has_vertex(*other_vertex)) return false;
     }
-    return is_same;
+    return true;
 }
+
 
 void Interface::attach_cell_left(Cell & cell){
     this->_left_cell = &cell;

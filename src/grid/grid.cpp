@@ -11,14 +11,16 @@ Grid::Grid::Grid (std::string file_name){
     std::string extension = file_name.substr(ext_start+1);
     GridFormats grid_format = extension_to_grid_format(extension);
 
-    GridInput * grid_reader = nullptr;
-    switch (grid_format){
-        case GridFormats::su2:
-            grid_reader = new Su2GridInput();
-            break;
-        default:
-            throw std::runtime_error("Unknown grid format");
-    }
+    GridIO grid_io = GridIO();
+    grid_io.read_grid(file_name, *this);
+}
 
-    grid_reader->read_grid(file_name, *this);
+void Grid::Grid::set_grid(std::vector<Vertex *> vertices, 
+                          std::vector<Interface *> interfaces,
+                          std::vector<Cell *> cells,
+                          std::map<std::string, std::vector<Interface *>> bcs) {
+    this->_vertices = vertices;
+    this->_interfaces = interfaces;
+    this->_cells = cells;
+    this->_bcs = bcs;
 }

@@ -15,12 +15,12 @@ BoundaryCondition::BoundaryCondition(const BoundaryCondition & other)
 }
 
 
-void BoundaryCondition::add_interface(Interface * face){
-    this->_interfaces.push_back(face);
+void BoundaryCondition::add_interface(Interface & face){
+    this->_interfaces.push_back(&face);
 }
 
-void BoundaryCondition::add_ghost_cell(Cell * cell){
-    this->_ghost_cells.push_back(cell);
+void BoundaryCondition::add_ghost_cell(Cell & cell){
+    this->_ghost_cells.push_back(&cell);
 }
 
 BoundaryCondition::~BoundaryCondition(){

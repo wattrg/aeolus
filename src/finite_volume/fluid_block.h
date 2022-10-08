@@ -43,7 +43,7 @@ public:
     std::vector<Cell> & cells();
     std::vector<Vertex> & vertices();
     std::vector<Interface> & interfaces();
-    std::vector<BoundaryCondition> bcs() {return _bcs;}
+    std::vector<BoundaryCondition> & bcs() {return _bcs;}
     unsigned int id() const {return this->_id;}
 
 private:
@@ -74,8 +74,6 @@ private:
     bool _has_vertex(Vertex vertex);
 
     void _print_interfaces();
-
-    FluidBlockIO * _fb_io;
 
     // id of the fluid block
     unsigned int _id;

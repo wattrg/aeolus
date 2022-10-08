@@ -1,10 +1,10 @@
 #include "cell.h"
 
-Cell::Cell(Interface * face, bool valid) 
+Cell::Cell(Interface & face, bool valid) 
 {
     _valid_cell = valid;
     this->_interfaces = std::vector<CellFace> (1);
-    this->_interfaces.push_back(CellFace(*face, false)); 
+    this->_interfaces.push_back(CellFace(face, false)); 
 }
 
 Cell::Cell(Grid::Cell & grid_cell, std::vector<Vertex> & vertices, std::vector<Interface> & interfaces)
@@ -15,21 +15,21 @@ Cell::Cell(Grid::Cell & grid_cell, std::vector<Vertex> & vertices, std::vector<I
     std::vector<Grid::CellFace> grid_interfaces = grid_cell.interfaces();
     std::vector<Grid::Vertex *> grid_vertices = grid_cell.vertices();
 
-    // allocate memory for pointers to interfaces and vertices
     size_t num_interfaces = grid_interfaces.size();
     size_t num_vertices = grid_vertices.size();
-    //this->_interfaces = std::vector<CellFace>(num_interfaces);
-    //this->_vertices = std::vector<Vertex *>(num_vertices);
 
     // assign pointers to interfaces and vertices
+    this->_vertices.reserve(num_vertices);
     for (size_t i = 0; i < num_vertices; i++){
         size_t id = grid_vertices[i]->id();
-        this->_vertices[i] = &vertices[id];
+        this->_vertices.push_back(&vertices[id]);
     }
+
+    this->_interfaces.reserve(num_interfaces);
     for (size_t i = 0; i < num_interfaces; i++){
         Grid::CellFace grid_interface = grid_interfaces[i];
         size_t id = grid_interface.interface->id();
-        this->_interfaces[i] = CellFace(interfaces[id], grid_interface.outwards);
+        this->_interfaces.push_back(CellFace(interfaces[id], grid_interface.outwards));
     }
 
     // initialise conserved quantities and residuals

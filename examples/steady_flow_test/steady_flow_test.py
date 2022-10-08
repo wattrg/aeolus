@@ -1,6 +1,6 @@
 import faulthandler
 faulthandler.enable()
-from aeolus import GasState, GasModel, FlowState, Vector3, Simulation, ExplicitSolver, FluxCalculators, Grid
+from aeolus import GasState, GasModel, FlowState, Vector3, Simulation, ExplicitSolver, FluxCalculators, Grid, FluidBlock
 from aeolus.bc import SlipWall, SupersonicInflow, SupersonicOutflow
 
 gm = GasModel(287)

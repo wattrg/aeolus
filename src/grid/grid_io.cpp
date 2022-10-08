@@ -1,6 +1,10 @@
 #include "grid_io.h"
 #include "su2.h"
 
+GridIO::GridIO() {
+    this->_grid_input = new Su2GridInput();
+    this->_grid_output = nullptr;
+}
 
 //GridIO::GridIO(Grid::GridFormats input, Grid::GridFormats output)
 //{
@@ -25,26 +29,26 @@
 //            throw std::runtime_error("Unknown grid output format");
 //    }
 //}
-//
-//GridOutput::~GridOutput(){};
-//
-//GridIO::~GridIO(){
-//    if (_grid_input) delete _grid_input;
-//    if (_grid_output) delete _grid_output;
-//}
-//
-//void GridIO::read_grid(std::string file_name, Grid::Grid & grid){
-//    if (_grid_input){
-//        _grid_input->read_grid(file_name, grid);
-//        grid.set_grid(_grid_input->vertices(), 
-//                      _grid_input->interfaces(), 
-//                      _grid_input->cells(),
-//                      _grid_input->bcs());
-//    }
-//    else {
-//        throw std::runtime_error("Grid input not initialised");
-//    }
-//}
+
+GridOutput::~GridOutput(){};
+
+GridIO::~GridIO(){
+    if (_grid_input) delete _grid_input;
+    if (_grid_output) delete _grid_output;
+}
+
+void GridIO::read_grid(std::string file_name, Grid::Grid & grid){
+    if (_grid_input){
+        _grid_input->read_grid(file_name);
+        grid.set_grid(_grid_input->vertices(), 
+                      _grid_input->interfaces(), 
+                      _grid_input->cells(),
+                      _grid_input->bcs());
+    }
+    else {
+        throw std::runtime_error("Grid input not initialised");
+    }
+}
 //
 //void GridIO::write_grid(std::string file_name, Grid::Grid & grid){
 //    if (_grid_output){

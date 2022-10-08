@@ -19,7 +19,7 @@ namespace Grid {
 class GridInput{
 public:
     virtual ~GridInput() {};
-    virtual void read_grid(std::string file_name, Grid::Grid & grid) {};
+    virtual void read_grid(std::string file_name) {};
     std::vector<Grid::Vertex *> vertices() {return _vertices;}
     std::vector<Grid::Interface *> interfaces() {return _interfaces;}
     std::vector<Grid::Cell *> cells() {return _cells;}
@@ -56,34 +56,33 @@ public:
 };
 
 // Public interface to handling grid input/output
-//class GridIO {
-//public:
-//    ~GridIO();
-//    GridIO();
-//    GridIO(Grid::GridFormats input, Grid::GridFormats output);
-//
-//    // read a grid from file
-//    void read_grid(std::string file_name, Grid::Grid & grid);
-//
-//    // write a grid to file
-//    void write_grid(std::string file_name, Grid::Grid & grid);
-//
-//
-//private:
-//    GridInput * _grid_input = nullptr;
-//    GridOutput * _grid_output = nullptr; 
-//};
-//
-//// some useful things for reading grids
-//struct Element {
-//
-//    Grid::ElementShape shape;
-//    std::vector<int> vertices;
-//
-//    Element(Grid::ElementShape shape, std::vector<int> vertices)
-//        : shape(shape), vertices(vertices)
-//    {};
-//};
+class GridIO {
+public:
+    ~GridIO();
+    GridIO();
+
+    // read a grid from file
+    void read_grid(std::string file_name, Grid::Grid & grid);
+
+    // write a grid to file
+    void write_grid(std::string file_name, Grid::Grid & grid);
+
+
+private:
+    GridInput * _grid_input = nullptr;
+    GridOutput * _grid_output = nullptr; 
+};
+
+// some useful things for reading grids
+struct Element {
+
+    Grid::ElementShape shape;
+    std::vector<int> vertices;
+
+    Element(Grid::ElementShape shape, std::vector<int> vertices)
+        : shape(shape), vertices(vertices)
+    {};
+};
 
 Grid::ElementShape int_to_element_shape(int shape);
 int element_shape_to_number_vertices(Grid::ElementShape shape);

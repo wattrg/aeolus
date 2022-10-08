@@ -17,7 +17,7 @@ private:
     GridData<int> _connectivity;
     GridData<int> _offsets;
     GridData<int> _types;
-    std::vector<Cell> * _cells;
+    std::vector<Cell> _cells;
     unsigned int _number_points;
     unsigned int _number_cells;
 

@@ -42,7 +42,7 @@ std::vector<FluidBlock *> & Simulation::fluid_blocks() {
 }
 
 void Simulation::write_fluid_blocks(){
-    for (const FluidBlock * fb : this->_fluid_blocks){
+    for (FluidBlock * fb : this->_fluid_blocks){
         std::string file_name = "blk" + std::to_string(fb->id()) + "t" + std::to_string(this->_time_index) + ".vtu";
         mkdir("flow", 0777);
         this->_fluid_block_io->write_fluid_block(file_name.c_str(), *fb, this->_time);
