@@ -19,7 +19,7 @@ namespace Grid {
 class GridInput{
 public:
     virtual ~GridInput() {};
-    virtual void read_grid(std::string file_name) {};
+    virtual void read_grid(std::string file_name) =0;
     std::vector<Grid::Vertex *> vertices() {return _vertices;}
     std::vector<Grid::Interface *> interfaces() {return _interfaces;}
     std::vector<Grid::Cell *> cells() {return _cells;}

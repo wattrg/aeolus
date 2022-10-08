@@ -24,35 +24,40 @@ FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id,
                        std::map<std::string, BoundaryCondition> & bc_map) :
     _id(id)
 {
-    // read the vertices
+    // allocate memory for the vertices, interfaces, and cells
     std::vector<Grid::Vertex *> vertices = grid.vertices();
+    std::vector<Grid::Interface *> interfaces = grid.interfaces();
+    std::vector<Grid::Cell *> cells = grid.cells();
     this->_vertices.reserve(vertices.size());
+    this->_interfaces.reserve(interfaces.size());
+    this->_cells.reserve(cells.size());
+
+    // read the vertices
     for (Grid::Vertex * grid_vertex : vertices){
         this->_vertices.push_back(Vertex(*grid_vertex));
     }
 
     // read the interfaces
-    std::vector<Grid::Interface *> interfaces = grid.interfaces();
-    this->_interfaces.reserve(interfaces.size());
+    int n_boundaries = 0;
     for (Grid::Interface * grid_interface : interfaces){
         this->_interfaces.push_back(Interface(*grid_interface, this->_vertices));
+        if (grid_interface->is_on_boundary()) n_boundaries += 1;
     }
 
     // read the cells
-    std::vector<Grid::Cell *> cells = grid.cells();
-    this->_cells.reserve(cells.size());
     for (Grid::Cell * grid_cell : cells){
         this->_cells.push_back(Cell(*grid_cell, this->_vertices, this->_interfaces));
     }
 
     // circle back and attach cells to interfaces
+    // there may not be a valid cell on the boundaries, so double
+    // check before de-refereincing the pointer
+    // we have to attach valid cells first, because attaching ghost
+    // cells relies on the valid cells already being attached to know
+    // which side they should attach to
     for (unsigned int i = 0; i < interfaces.size(); i++){
         int left_cell_id = interfaces[i]->get_left_cell_id();
         int right_cell_id = interfaces[i]->get_right_cell_id();
-        // there may not be a valid cell on the boundaries
-        // we have to attach valid cells first, because attaching ghost
-        // cells relies on the valid cells already being attached to know
-        // which side they should attach to
         if (left_cell_id >= 0){
             Cell & left_cell = this->_cells[left_cell_id];
             this->_interfaces[i].attach_cell_left(left_cell);
@@ -62,32 +67,48 @@ FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id,
             this->_interfaces[i].attach_cell_right(right_cell);
         }
     }
-    
 
     // read the boundary conditions
+    this->_ghost_cells.reserve(n_boundaries);
+    this->_bcs.reserve(grid.bcs().size());
     for (auto & pair : grid.bcs()){
         std::string bc_key = pair.first;
         std::vector<Grid::Interface *> bc_interfaces = pair.second;
+        this->_bcs.push_back(bc_map[bc_key]);
+        BoundaryCondition & bc = this->_bcs.back();
         for (Grid::Interface * bc_face : bc_interfaces){
-            BoundaryCondition & bc = bc_map[bc_key];
             Interface & fv_interface = this->_interfaces[bc_face->id()];
+            fv_interface.mark_on_boundary(bc_key);
             bc.add_interface(fv_interface);
-            this->_ghost_cells.push_back(Cell(this->_interfaces[bc_face->id()]));
+            this->_ghost_cells.push_back(Cell(this->_interfaces[bc_face->id()], false));
 
-            // attach the ghost cell to the interface
-            Cell & ghost_cell = this->_ghost_cells[this->_ghost_cells.size()-1];
+            // attach ghost cells to the boundaries
+            Cell & ghost_cell = this->_ghost_cells.back();
             bc.add_ghost_cell(ghost_cell);
-            Cell & valid_cell = fv_interface.get_valid_cell();
-            if (fv_interface.get_left_cell()){
+            Cell * left_cell = fv_interface.get_left_cell();
+            Cell * right_cell = fv_interface.get_right_cell();
+            if (left_cell && right_cell){
+                std::string msg = "Internal cell on both sides of boundary\n";
+                msg += "left cell = " + left_cell->to_string();
+                msg += "\nright cell = " + right_cell->to_string();
+                throw std::runtime_error(msg);
+            }
+            if (left_cell){
                 fv_interface.attach_cell_right(ghost_cell);
             }
-            else if (fv_interface.get_right_cell()){
-                fv_interface.attach_cell_right(ghost_cell);
+            else if (right_cell){
+                fv_interface.attach_cell_left(ghost_cell);
             }
             else {
                 throw std::runtime_error("No valid cell attached to boundary interface");
             }
         }
+    }
+}
+
+void FluidBlock::set_flux_calculator(FluxCalculators flux_calc){
+    for (Interface & interface : this->_interfaces){
+        interface.set_flux_calculator(flux_calc);
     }
 }
 

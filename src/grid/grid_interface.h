@@ -33,6 +33,9 @@ public:
     Vector3 tan1() const {return _t1;}
     Vector3 tan2() const {return _t2;}
     double area() const { return _area; }
+    std::string to_string() const;
+    std::vector<Vertex *> & vertices() {return _vertices;}
+    bool is_on_boundary() const {return _is_on_boundary;}
 
 private:
     std::vector<Vertex *> _vertices;

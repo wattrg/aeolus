@@ -12,8 +12,9 @@ public:
     Vector3 & get_pos() { return this->_pos; }
     std::string to_string() const { 
         return std::string("Vertex(x = " + std::to_string(this->_pos.x) + 
-                                  "y = " + std::to_string(this->_pos.y) + 
-                                  "z = " + std::to_string(this->_pos.z) + ")");
+                                  " y = " + std::to_string(this->_pos.y) + 
+                                  " z = " + std::to_string(this->_pos.z) +
+                                  " id = " + std::to_string(this->_id)) + ")";
     }
 private:
     Vector3 _pos;

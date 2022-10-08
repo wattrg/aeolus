@@ -26,12 +26,6 @@ public:
     // area of the interface
     double area() const;
 
-    // check if two vertices are the same
-    bool is(Interface & other);
-    bool is(std::vector<Vertex *> & vertices);
-
-    // Check if `vertex` is in an interface
-    bool has_vertex(Vertex & other_vertex);
 
     // return vertices
     std::vector<Vertex *> & vertices();
@@ -83,15 +77,16 @@ private:
     //    position of the centre of the interface
     Vector3 _pos;
 
-    // area
-    double _area = std::nan("");
-    void _compute_area();
 
     // direction normal to the interface
     Vector3 _norm;
 
     // the two directions tangent to the interface
     Vector3 _tan1, _tan2;
+
+    // area
+    double _area = std::nan("");
+    void _compute_area();
 
     // cell to the left
     Cell * _left_cell = nullptr;

@@ -21,7 +21,7 @@ DEPEXT     := d
 OBJEXT     := o
 
 #Flags, Libraries and Includes
-CFLAGS      := -Wextra -fPIC -fopenmp
+CFLAGS      := -Wextra -Wall -fPIC -fopenmp
 LIB         := -lm
 INC         := -I$(INCDIR) -I/usr/local/include 
 INCDEP      := -I$(INCDIR)
@@ -46,6 +46,11 @@ endif
 # GPU
 ifeq ($(GPU), 1)
 	CFLAGS := $(CFLAGS) -fcf-protection=none -DGPU -no-pie -fno-stack-protector
+endif
+
+# clang needs some extra flags to make openmp work
+ifeq ($(CC), clang++)
+	-fopenmp=libomp
 endif
 
 GIT_HASH := $(shell git describe --always --dirty)
@@ -130,7 +135,7 @@ $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 
 # make the dynamic libraries
 $(BUILDDIR)/lib/aeolus.so: $(OBJECTS)
-	$(CC) -Wall -shared -fPIC -fopenmp $(VERSION_FLAGS) $(PYBIND11) $(SRCDIR)/python_api/lib.cpp -o $(LIBDIR)/aeolus.so $^ $(LIB)
+	$(CC) $(CFLAGS) -shared $(VERSION_FLAGS) $(PYBIND11) $(SRCDIR)/python_api/lib.cpp -o $(LIBDIR)/aeolus.so $^ $(LIB)
 
 lib: directories $(BUILDDIR)/lib/aeolus.so
 	@echo Finished building python library

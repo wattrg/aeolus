@@ -3,18 +3,18 @@
 #include "config.h"
 
 Interface::Interface(Grid::Interface & grid_face, std::vector<Vertex> & vertices)
-    : _id(grid_face.id()), 
-      _norm(grid_face.norm()), 
+    : _norm(grid_face.norm()), 
       _tan1(grid_face.tan1()), 
       _tan2(grid_face.tan2()), 
-      _area(grid_face.area())
+      _area(grid_face.area()),
+      _id(grid_face.id())
 {
     // set up the vertices of the interface
-    size_t number_vertices = vertices.size();
+    size_t number_vertices = grid_face.vertices().size();
     //this->_vertices = std::vector<Vertex *>(number_vertices);
     this->_vertices.reserve(number_vertices);
-    for (size_t i = 0; i < number_vertices; i++){
-        size_t id = grid_face.id();
+    for (Grid::Vertex * grid_vertex : grid_face.vertices()){
+        size_t id = grid_vertex->id();
         this->_vertices.push_back(&vertices[id]);
     }
 
@@ -123,42 +123,23 @@ Cell * Interface::get_right_cell() {
     return this->_right_cell;
 }
 
-bool Interface::is(Interface & other) {
-    // check if `other` is the same interface as this one
-    bool is_same;
-    for (Vertex * this_vertex : this->_vertices){
-        is_same = true;
-        for (Vertex * other_vertex : other._vertices){
-            if (!this_vertex->is(*other_vertex)) is_same = false;
-        }
-        if (is_same) return true;
-    }
-    return false;
-}
-
-bool Interface::has_vertex(Vertex & other_vertex){
-    // check if `other_vertex` is in this interface
-    bool is_in = false;
-    for (Vertex * this_vertex : this->_vertices) {
-        if (this_vertex->is(other_vertex)) is_in = true;
-    }
-    return is_in;
-}
-
-bool Interface::is(std::vector<Vertex *> & vertices){
-    // check `vertices` form this interface
-    for (Vertex * other_vertex : vertices) {
-        if (!this->has_vertex(*other_vertex)) return false;
-    }
-    return true;
-}
 
 
 void Interface::attach_cell_left(Cell & cell){
+    if (_left_cell){
+        std::string msg = "There is already a cell here:\n";
+        msg += _left_cell->to_string();
+        throw std::runtime_error(msg);
+    }
     this->_left_cell = &cell;
 }
 
 void Interface::attach_cell_right(Cell & cell){
+    if (_right_cell){
+        std::string msg = "There is already a cell here:\n";
+        msg += _right_cell->to_string();
+        throw std::runtime_error(msg);
+    }
     this->_right_cell = &cell;
 }
 

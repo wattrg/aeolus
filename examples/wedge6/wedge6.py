@@ -21,7 +21,7 @@ initial_gs.T = 300.0
 gm.update_from_pT(initial_gs)
 initial = FlowState(initial_gs, Vector3(1000.0))
 
-grid = Grid("wedge6.su2")
+grid = Grid("wedge6_coarse.su2")
 bcs = {
     "south": SlipWall(),
     "north": SupersonicOutflow(),

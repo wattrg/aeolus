@@ -32,6 +32,7 @@ public:
                   std::vector<Interface *>, 
                   std::vector<Cell *>,
                   std::map<std::string, std::vector<Interface *>>);
+    std::string to_string();
 
 private:
     std::vector<Vertex *> _vertices;

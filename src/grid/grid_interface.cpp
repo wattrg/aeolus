@@ -29,7 +29,7 @@ int Grid::Interface::get_left_cell_id() {
     }
 }
 int Grid::Interface::get_right_cell_id() {
-    Cell * right_cell = this->_left_cell;
+    Cell * right_cell = this->_right_cell;
     if (right_cell){
         return right_cell->id();
     }
@@ -80,6 +80,7 @@ void Grid::Interface::mark_on_boundary(std::string tag){
     this->_boundary_tag = tag;
 }
 
+
 Side Grid::Interface::_compute_side(Vector3 & point){
     //       B
     //      /
@@ -103,4 +104,13 @@ Side Grid::Interface::_compute_side(Vector3 & point){
 
 Side Grid::Interface::_compute_side(Cell & cell){
     return this->_compute_side(cell.get_pos());
+}
+
+std::string Grid::Interface::to_string() const {
+    std::string str = "Interface(v0 = ";
+    str.append(std::to_string(this->_vertices[0]->id()));
+    str.append(", v1 =");
+    str.append(std::to_string(this->_vertices[1]->id()));
+    str.append(")");
+    return str;
 }

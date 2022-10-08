@@ -1,16 +1,17 @@
 #include "cell.h"
 
 Cell::Cell(Interface & face, bool valid) 
+    : _valid_cell(valid)
 {
-    _valid_cell = valid;
     this->_interfaces = std::vector<CellFace> (1);
     this->_interfaces.push_back(CellFace(face, false)); 
 }
 
 Cell::Cell(Grid::Cell & grid_cell, std::vector<Vertex> & vertices, std::vector<Interface> & interfaces)
-    : _shape(grid_cell.get_shape()),
-      _volume(grid_cell.volume()),
-      _pos(grid_cell.get_pos())
+    : _pos(grid_cell.get_pos()), 
+      _shape(grid_cell.get_shape()),
+      _valid_cell(true),
+      _volume(grid_cell.volume())
 {
     std::vector<Grid::CellFace> grid_interfaces = grid_cell.interfaces();
     std::vector<Grid::Vertex *> grid_vertices = grid_cell.vertices();

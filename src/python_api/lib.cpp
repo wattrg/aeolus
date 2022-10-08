@@ -64,7 +64,8 @@ PYBIND11_MODULE(aeolus, m) {
         .def("write_fluid_blocks", &Simulation::write_fluid_blocks, "Write the fluid blocks to file");
 
     pybind11::class_<Grid::Grid>(m, "Grid")
-        .def(pybind11::init<const char *>());
+        .def(pybind11::init<const char *>())
+        .def("__repr__", &Grid::Grid::to_string);
 
     pybind11::class_<FluidBlock>(m, "FluidBlock")
         .def(pybind11::init<Grid::Grid &, unsigned int, std::map<std::string, BoundaryCondition> &>())

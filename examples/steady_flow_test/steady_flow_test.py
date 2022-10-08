@@ -30,6 +30,9 @@ bcs = {
     "outflow": SupersonicOutflow(),
     "inflow": SupersonicInflow(inflow)
 }
+fb = FluidBlock(grid, 0, bcs)
+print(fb)
+fluid_block = FluidBlock(grid, 0, bcs)
 
 sim.gas_model = gm
 sim.add_fluid_block(grid, fill_func, bcs)

@@ -38,6 +38,7 @@ public:
     void apply_time_derivative();
     double compute_block_dt(double cfl);
     void reconstruct();
+    void set_flux_calculator(FluxCalculators flux_calc);
 
     // getter methods
     std::vector<Cell> & cells();

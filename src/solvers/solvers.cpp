@@ -4,6 +4,12 @@ Solver::Solver(Simulation & config) : _config(config) {}
 
 void Solver::solve(){
     double dt;
+    // set the flux calculator
+    for (FluidBlock * fluid_block : this->_config.fluid_blocks()){
+        fluid_block->set_flux_calculator(this->_config.flux_calculator());
+    }
+
+    // begin the time stepping
     this->_config.log.info("Beginning stepping with " + this->_name() + " solver.");
     for (unsigned int step=0; step < this->_max_step; step++){
         // try to take a step

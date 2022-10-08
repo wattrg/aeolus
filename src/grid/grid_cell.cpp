@@ -35,6 +35,13 @@ std::string Grid::Cell::to_string() const {
     str.append("vertices = [");
     for (Vertex * vertex : this->_vertices){
         str.append(vertex->to_string());
+        str.append(", ");
+    }
+    str.append("], ");
+    str.append("interfaces = [");
+    for (CellFace interface : this->_interfaces){
+        str.append(interface.interface->to_string()); 
+        str.append(", ");
     }
     str.append("])");
     return str;
