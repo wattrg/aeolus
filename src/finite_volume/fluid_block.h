@@ -39,6 +39,7 @@ public:
     double compute_block_dt(double cfl);
     void reconstruct();
     void set_flux_calculator(FluxCalculators flux_calc);
+    void set_gas_model(GasModel & gas_model) {_gas_model = &gas_model;}
 
     // getter methods
     std::vector<Cell> & cells();
@@ -78,6 +79,9 @@ private:
 
     // id of the fluid block
     unsigned int _id;
+
+    // a local copy of the gas model
+    GasModel * _gas_model = nullptr;
 };
 
 

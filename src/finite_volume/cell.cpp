@@ -3,7 +3,6 @@
 Cell::Cell(Interface & face, bool valid) 
     : _valid_cell(valid)
 {
-    this->_interfaces = std::vector<CellFace> (1);
     this->_interfaces.push_back(CellFace(face, false)); 
 }
 
@@ -66,7 +65,7 @@ void Cell::compute_time_derivative(){
     }
 }
 
-void Cell::encode_conserved(){
+void Cell::encode_conserved(GasModel & gas_model){
     double vx = this->fs.velocity.x;
     double vy = this->fs.velocity.y;
     double vz = this->fs.velocity.z;
@@ -81,7 +80,7 @@ void Cell::encode_conserved(){
     cq[cq.energy()] = u + ke + p/rho;
 }
 
-void Cell::decode_conserved(){
+void Cell::decode_conserved(GasModel & gas_model){
     double vx = this->fs.velocity.x;
     double vy = this->fs.velocity.y;
     double vz = this->fs.velocity.z;
@@ -92,7 +91,7 @@ void Cell::decode_conserved(){
     this->fs.velocity.y = cq[cq.momentum()+1] / cq[cq.rho()];
     double e = cq[cq.energy()]/fs.gas_state.rho;
     this->fs.gas_state.u = e - ke;
-    this->_gas_model->update_from_rhou(fs.gas_state);
+    gas_model.update_from_rhou(fs.gas_state);
 }
 
 Vector3 & Cell::get_pos(){

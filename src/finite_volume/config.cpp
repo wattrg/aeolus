@@ -56,6 +56,13 @@ void Simulation::set_dimensions(unsigned short number_dim) {
     this->_dimensions = number_dim;
 }
 
+void Simulation::set_gas_model(GasModel & gas_model){
+    this->_g_model = gas_model;
+    for (FluidBlock * fluid_block : this->_fluid_blocks){
+        fluid_block->set_gas_model(this->_g_model);
+    }
+}
+
 const Solver & Simulation::solver() const {
     if (this->_solvers.size() == 0)
         throw std::runtime_error("No solvers initialised");

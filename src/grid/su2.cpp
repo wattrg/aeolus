@@ -37,6 +37,7 @@ void Su2GridInput::read_grid(std::string file_name){
     // Read the vertices
     get_next_line(su2_file, line);
     int n_points = read_integer(line);
+    this->_vertices.reserve(n_points);
     for ( int vertex_id=0; vertex_id < n_points; vertex_id++ ){
         double x, y;
         get_next_line(su2_file, line);
@@ -52,6 +53,7 @@ void Su2GridInput::read_grid(std::string file_name){
         throw std::runtime_error("Could not find number of cells");
     }
     int n_elems = read_integer(line);
+    this->_cells.reserve(n_elems);
     for ( int index=0; index < n_elems; index++ ) {
         get_next_line(su2_file, line);
         Grid::Element element = read_element(line);
@@ -89,7 +91,6 @@ void Su2GridInput::read_grid(std::string file_name){
         throw std::runtime_error("Could not find number of boundaries");
     }
     int n_boundaries = read_integer(line);
-    //this->_bcs.reserve(n_boundaries);
     for (int i_boundary = 0; i_boundary < n_boundaries; i_boundary++){
         get_next_line(su2_file, line);
         // first comes the tag

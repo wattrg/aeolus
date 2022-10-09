@@ -45,9 +45,9 @@ int main(int argc, char *argv[]) {
     config.write_fluid_blocks();
 
     ExplicitSolver solver = ExplicitSolver(config);
-    solver.set_max_step(1000);
-    solver.set_print_step(100);
-    solver.set_plot_step(100);
+    solver.set_max_step(1);
+    solver.set_print_step(1);
+    solver.set_plot_step(1);
     solver.set_cfl(0.5);
     config.add_solver(solver);
     config.run();

@@ -40,8 +40,8 @@ public:
     void run();
     const Solver & solver () const;
     void add_solver(Solver & solver);
-    GasModel & g_model() {return _g_model;}
-    void set_gas_model(GasModel gas_model) {_g_model = gas_model;}
+    GasModel & gas_model() {return _g_model;}
+    void set_gas_model(GasModel & gas_model);
     void add_time_increment(double dt) {_time += dt;}
     double time() const {return _time;}
     Logger log;

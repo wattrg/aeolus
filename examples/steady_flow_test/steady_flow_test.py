@@ -17,6 +17,7 @@ def fill_func(x, y, _):
 sim = Simulation()
 sim.dimensions = 2
 sim.flux_calculator = FluxCalculators.hanel
+sim.gas_model = gm
 
 inflow_gs = GasState()
 inflow_gs.T = 2*300
@@ -30,19 +31,15 @@ bcs = {
     "outflow": SupersonicOutflow(),
     "inflow": SupersonicInflow(inflow)
 }
-fb = FluidBlock(grid, 0, bcs)
-print(fb)
-fluid_block = FluidBlock(grid, 0, bcs)
 
-sim.gas_model = gm
 sim.add_fluid_block(grid, fill_func, bcs)
 sim.write_fluid_blocks()
 
 solver = ExplicitSolver(sim)
 solver.cfl = 0.5
-solver.max_step = 1000
-solver.print_step = 50
-solver.plot_step = 100
+solver.max_step = 1
+solver.print_step = 1
+solver.plot_step = 1
 
 sim.add_solver(solver)
 sim.run()

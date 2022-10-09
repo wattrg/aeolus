@@ -4,9 +4,10 @@ Solver::Solver(Simulation & config) : _config(config) {}
 
 void Solver::solve(){
     double dt;
-    // set the flux calculator
+    // Give each fluid block a local copy of some data
     for (FluidBlock * fluid_block : this->_config.fluid_blocks()){
         fluid_block->set_flux_calculator(this->_config.flux_calculator());
+        fluid_block->set_gas_model(this->_config.gas_model());
     }
 
     // begin the time stepping
@@ -20,7 +21,7 @@ void Solver::solve(){
             // if there's an error, write a solution
             // and bail out
             this->_config.write_fluid_blocks();
-            this->_config.log.error("Some went wrong");
+            this->_config.log.error("Some went wrong :(");
             throw e;
         }
         this->_config.add_time_increment(dt);

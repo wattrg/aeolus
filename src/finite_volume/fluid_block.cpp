@@ -155,7 +155,7 @@ void FluidBlock::apply_time_derivative(){
         for (unsigned int i=0; i < cq.n_conserved(); i++){
             cq[i] += cell.residual[i] * this->_dt; 
         }
-        cell.decode_conserved();
+        cell.decode_conserved(*this->_gas_model);
     }
 }
 
@@ -175,14 +175,14 @@ void FluidBlock::fill(std::function<FlowState(double, double, double)> &func){
         Vector3 pos = cell.get_pos();
         FlowState fs = func(pos.x, pos.y, pos.z);
         cell.fs.copy(fs);
-        cell.encode_conserved();
+        cell.encode_conserved(*this->_gas_model);
     }
 }
 
 void FluidBlock::fill(const FlowState & fs){
     for (Cell & cell : this->_cells) {
         cell.fs.copy(fs);
-        cell.encode_conserved();
+        cell.encode_conserved(*this->_gas_model);
     }
 }
 

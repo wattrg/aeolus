@@ -68,7 +68,7 @@ public:
     Vector3 & t1() { return this->_tan1; }
     Vector3 & t2() {return this->_tan2; }
 
-    int id() const;
+    int id() const {return _id;}
 
 private:
     //  Vertices on the end of the interface

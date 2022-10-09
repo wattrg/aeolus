@@ -52,7 +52,7 @@ PYBIND11_MODULE(aeolus, m) {
         .def_property("dimensions", &Simulation::dimensions, &Simulation::set_dimensions, "The number of spatial dimensions")
         .def_property("fluid_blocks", &Simulation::fluid_blocks, nullptr, "The fluid blocks")
         .def_property("flux_calculator", &Simulation::flux_calculator, &Simulation::set_flux_calculator, "The flux calculator")
-        .def_property("gas_model", &Simulation::g_model, &Simulation::set_gas_model, "The gas model")
+        .def_property("gas_model", &Simulation::gas_model, &Simulation::set_gas_model, "The gas model")
         .def("add_fluid_block", 
              static_cast<void (Simulation::*)(Grid::Grid &, FlowState &, std::map<std::string, BoundaryCondition>&)>(&Simulation::add_fluid_block), 
              "Add a fluid block")

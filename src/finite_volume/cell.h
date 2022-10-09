@@ -34,9 +34,6 @@ public:
     // the flow state in the cell centre
     FlowState fs;
 
-    // set the gas model
-    void set_gas_model(GasModel * gas_model) {_gas_model = gas_model;}
-
     // the conserved quantities
     ConservedQuantity conserved_quantities;
 
@@ -44,10 +41,10 @@ public:
     ConservedQuantity residual;
 
     // encode conserved quantities
-    void encode_conserved();
+    void encode_conserved(GasModel & gas_model);
 
     // decode consered quantities
-    void decode_conserved();
+    void decode_conserved(GasModel & gas_model);
 
     // compute the residual for a cell, assuming the fluxes have been calculated
     void compute_time_derivative();
@@ -92,9 +89,6 @@ private:
 
     // keep track of if the cell is a valid cell
     bool _valid_cell;
-
-    // gas model
-    GasModel * _gas_model = nullptr;
 
     // cell volume
     double _volume = std::nan("");
