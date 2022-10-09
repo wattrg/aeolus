@@ -77,7 +77,7 @@ void Cell::encode_conserved(GasModel & gas_model){
     cq[cq.rho()] = rho;
     cq[cq.momentum()] = rho*vx;
     cq[cq.momentum()+1] = rho*vy;
-    cq[cq.energy()] = u + ke + p/rho;
+    cq[cq.energy()] = (u + ke)*rho + p;
 }
 
 void Cell::decode_conserved(GasModel & gas_model){
