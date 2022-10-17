@@ -3,18 +3,23 @@
 
 // VTK writer
 VTKWriter::~VTKWriter() {
-    // on the way out, write a pvd file to so paraview can open 
+    // on the way out, try to write a pvd file to so paraview can open 
     // all the time values at once
-    std::ofstream pvd_file("flow/flow.pvd");
-    pvd_file << "<?xml version='1.0'?>\n";
-    pvd_file << "<VTKFile type='Collection' version='0.1' byte_order='LittleEndian'>\n";
-    pvd_file << "<Collection>\n";
-    for (unsigned int i = 0; i < this->_times.size(); i++){
-        pvd_file << "<DataSet timestep='" << this->_times[i] << "' group='' part='0' ";
-        pvd_file << "file='" << this->_block_names[i] << "'/>\n";
+    try {
+        std::ofstream pvd_file("flow/flow.pvd");
+        pvd_file << "<?xml version='1.0'?>\n";
+        pvd_file << "<VTKFile type='Collection' version='0.1' byte_order='LittleEndian'>\n";
+        pvd_file << "<Collection>\n";
+        for (unsigned int i = 0; i < this->_times.size(); i++){
+            pvd_file << "<DataSet timestep='" << this->_times[i] << "' group='' part='0' ";
+            pvd_file << "file='" << this->_block_names[i] << "'/>\n";
+        }
+        pvd_file << "</Collection>\n";
+        pvd_file << "</VTKFile>\n";
     }
-    pvd_file << "</Collection>\n";
-    pvd_file << "</VTKFile>\n";
+    catch (...) {
+        std::cout << "Failed to write .pvd file\n";
+    }
 }
 
 VTKWriter::VTKWriter():
