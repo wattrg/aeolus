@@ -30,7 +30,7 @@ solver = ExplicitSolver(sim)
 solver.max_step = 7000
 solver.cfl = 0.5
 solver.print_step = 1000
-solver.plot_step = 50
+solver.plot_step = int(solver.max_step/10)
 
 sim.write_fluid_blocks()
 

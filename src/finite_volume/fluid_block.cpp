@@ -28,25 +28,31 @@ FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id,
     std::vector<Grid::Vertex *> vertices = grid.vertices();
     std::vector<Grid::Interface *> interfaces = grid.interfaces();
     std::vector<Grid::Cell *> cells = grid.cells();
-    this->_vertices.reserve(vertices.size());
-    this->_interfaces.reserve(interfaces.size());
-    this->_cells.reserve(cells.size());
+    this->_vertices = std::vector<Vertex> (vertices.size());
+    this->_interfaces = std::vector<Interface> (interfaces.size());
+    this->_cells = std::vector<Cell> (cells.size());
 
     // read the vertices
+    #pragma omp parallel for
     for (Grid::Vertex * grid_vertex : vertices){
-        this->_vertices.push_back(Vertex(*grid_vertex));
+        int id = grid_vertex->id();
+        this->_vertices[id] = Vertex(*grid_vertex);
     }
 
     // read the interfaces
     int n_boundaries = 0;
+    # pragma omp parallel for
     for (Grid::Interface * grid_interface : interfaces){
-        this->_interfaces.push_back(Interface(*grid_interface, this->_vertices));
+        int id = grid_interface->id();
+        this->_interfaces[id] = Interface(*grid_interface, this->_vertices);
         if (grid_interface->is_on_boundary()) n_boundaries += 1;
     }
 
     // read the cells
+    // #pragma omp parallel for
     for (Grid::Cell * grid_cell : cells){
-        this->_cells.push_back(Cell(*grid_cell, this->_vertices, this->_interfaces));
+        int id = grid_cell->id();
+        this->_cells[id] = Cell(*grid_cell, this->_vertices, this->_interfaces);
     }
 
     // circle back and attach cells to interfaces
@@ -55,6 +61,7 @@ FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id,
     // we have to attach valid cells first, because attaching ghost
     // cells relies on the valid cells already being attached to know
     // which side they should attach to
+    # pragma omp parallel for
     for (unsigned int i = 0; i < interfaces.size(); i++){
         int left_cell_id = interfaces[i]->get_left_cell_id();
         int right_cell_id = interfaces[i]->get_right_cell_id();
@@ -107,6 +114,10 @@ FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id,
 }
 
 void FluidBlock::set_flux_calculator(FluxCalculators flux_calc){
+    //#ifdef GPU
+    //    #pragma omp target
+    //#endif
+    #pragma omp parallel for
     for (Interface & interface : this->_interfaces){
         interface.set_flux_calculator(flux_calc);
     }
@@ -123,9 +134,9 @@ void FluidBlock::compute_fluxes(){
 }
 
 void FluidBlock::compute_time_derivatives(){
-    #ifdef GPU
-        #pragma omp target
-    #endif
+    //#ifdef GPU
+    //    #pragma omp target
+    //#endif
     #pragma omp parallel for
     for (Cell & cell : this->_cells){
         cell.compute_time_derivative();
@@ -137,7 +148,7 @@ double FluidBlock::compute_block_dt(double cfl){
     //#ifdef GPU
     //    #pragma omp target
     //#endif
-    //#pragma omp parallel for reduction(min:dt)
+    #pragma omp parallel for reduction(min:dt)
     for (Cell & cell : this->_cells){
         dt = std::min(cell.compute_local_timestep(cfl), dt); 
     }
@@ -146,9 +157,9 @@ double FluidBlock::compute_block_dt(double cfl){
 }
 
 void FluidBlock::apply_time_derivative(){
-    #ifdef GPU
-        #pragma omp target
-    #endif
+    //#ifdef GPU
+    //    #pragma omp target
+    //#endif
     #pragma omp parallel for
     for (Cell & cell : this->_cells){
         ConservedQuantity & cq = cell.conserved_quantities;
@@ -160,9 +171,9 @@ void FluidBlock::apply_time_derivative(){
 }
 
 void FluidBlock::reconstruct(){
-    #ifdef GPU
-        #pragma omp target
-    #endif
+    //#ifdef GPU
+    //    #pragma omp target
+    //#endif
     #pragma omp parallel for
     for (Interface & face : this->_interfaces){
         face.copy_left_flow_state(face.get_left_cell()->fs);
@@ -171,6 +182,10 @@ void FluidBlock::reconstruct(){
 }
 
 void FluidBlock::fill(std::function<FlowState(double, double, double)> &func){
+    //#ifdef GPU
+    //    #pragma omp target
+    //#endif
+    #pragma omp parallel for
     for (Cell & cell : this->_cells) {
         Vector3 pos = cell.get_pos();
         FlowState fs = func(pos.x, pos.y, pos.z);
@@ -180,6 +195,10 @@ void FluidBlock::fill(std::function<FlowState(double, double, double)> &func){
 }
 
 void FluidBlock::fill(const FlowState & fs){
+    //#ifdef GPU
+    //    #pragma omp target
+    //#endif
+    #pragma omp parallel for
     for (Cell & cell : this->_cells) {
         cell.fs.copy(fs);
         cell.encode_conserved(*this->_gas_model);

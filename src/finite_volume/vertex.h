@@ -7,6 +7,8 @@
 
 class Vertex {
 public:
+    Vertex () {}
+
     //Vertex(Vector3 x, int id);
     Vertex(Grid::Vertex &);
 

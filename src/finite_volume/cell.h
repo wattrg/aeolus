@@ -28,6 +28,7 @@ struct CellFace {
 
 class Cell {
 public:
+    Cell () {};
     Cell(Interface & face, bool valid=true);
     Cell(Grid::Cell & grid_cell, std::vector<Vertex>&, std::vector<Interface>&);
 

@@ -16,10 +16,7 @@ class Simulation;
 
 class Interface {
 public:
-    //Interface(std::vector<Vertex *> vertices, 
-    //          Simulation & config, 
-    //          unsigned int id,
-    //          FluxCalculators flux_calc);
+    Interface() {};
     Interface(Grid::Interface & grid_face, std::vector<Vertex> & vertices);
     ~Interface();
 
