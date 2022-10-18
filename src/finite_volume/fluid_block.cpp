@@ -33,7 +33,7 @@ FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id,
     this->_cells = std::vector<Cell> (cells.size());
 
     // read the vertices
-    #pragma omp parallel for
+    // #pragma omp parallel for
     for (Grid::Vertex * grid_vertex : vertices){
         int id = grid_vertex->id();
         this->_vertices[id] = Vertex(*grid_vertex);
@@ -41,7 +41,7 @@ FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id,
 
     // read the interfaces
     int n_boundaries = 0;
-    # pragma omp parallel for
+    // # pragma omp parallel for
     for (Grid::Interface * grid_interface : interfaces){
         int id = grid_interface->id();
         this->_interfaces[id] = Interface(*grid_interface, this->_vertices);
@@ -61,7 +61,7 @@ FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id,
     // we have to attach valid cells first, because attaching ghost
     // cells relies on the valid cells already being attached to know
     // which side they should attach to
-    # pragma omp parallel for
+    // # pragma omp parallel for
     for (unsigned int i = 0; i < interfaces.size(); i++){
         int left_cell_id = interfaces[i]->get_left_cell_id();
         int right_cell_id = interfaces[i]->get_right_cell_id();
@@ -124,22 +124,28 @@ void FluidBlock::set_flux_calculator(FluxCalculators flux_calc){
 }
 
 void FluidBlock::compute_fluxes(){
+    int number_interfaces = this->_interfaces.size();
+    Interface * interfaces_ptr = this->_interfaces.data();
+
     #ifdef GPU
         #pragma omp target
     #endif
     #pragma omp parallel for
-    for (Interface & interface : this->_interfaces){
-        interface.compute_flux(); 
+    for (int i = 0; i < number_interfaces; i++){
+        interfaces_ptr[i].compute_flux();
     }
 }
 
 void FluidBlock::compute_time_derivatives(){
+    int number_cells = this->_cells.size();
+    Cell * cell_ptrs = this->_cells.data();
+
     //#ifdef GPU
     //    #pragma omp target
     //#endif
     #pragma omp parallel for
-    for (Cell & cell : this->_cells){
-        cell.compute_time_derivative();
+    for (int i = 0; i < number_cells; i++){
+        cell_ptrs[i].compute_time_derivative();
     }
 }
 

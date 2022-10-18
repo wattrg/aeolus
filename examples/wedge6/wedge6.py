@@ -42,6 +42,4 @@ sim.write_fluid_blocks()
 
 sim.add_solver(solver)
 
-del inflow
-del initial
 sim.run()

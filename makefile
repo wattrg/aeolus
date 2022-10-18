@@ -45,7 +45,7 @@ endif
 
 # GPU
 ifeq ($(GPU), 1)
-	CFLAGS := $(CFLAGS) -fcf-protection=none -DGPU -no-pie -fno-stack-protector
+	CFLAGS := $(CFLAGS) -fcf-protection=none -no-pie -DGPU -fno-stack-protector -foffload=nvptx-none
 endif
 
 # clang needs some extra flags to make openmp work
@@ -88,7 +88,7 @@ install: build $(TARGET)
 	@echo Finished installation
 
 # Compile only
-build: directories $(OBJECTS)
+build: directories $(TARGET)
 	@echo Finished build
 
 #Remake

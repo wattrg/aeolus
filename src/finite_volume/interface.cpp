@@ -58,12 +58,21 @@ ConservedQuantity & Interface::flux() {
 
 Interface::~Interface(){}
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 void Interface::compute_flux(){
     this->_transform_flowstate_to_local_frame();
     this->_compute_flux(this->_left, this->_right, this->_flux);
     this->_transform_flux_to_global_frame();
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 void Interface::_transform_flux_to_global_frame(){
     unsigned int momentum = this->_flux.momentum();
     double p_x = 0.0, p_y = 0.0, p_z = 0.0;
@@ -80,16 +89,31 @@ void Interface::_transform_flux_to_global_frame(){
         this->_flux[momentum+2] = p_z;
     }
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 void Interface::_transform_flowstate_to_local_frame(){
     this->_left.velocity.transform_to_local_frame(this->_norm, this->_tan1, this->_tan2);
     this->_right.velocity.transform_to_local_frame(this->_norm, this->_tan1, this->_tan2);
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 void Interface::_transform_flowstate_to_global_frame(){
     this->_left.velocity.transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
     this->_right.velocity.transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
 Cell & Interface::get_valid_cell(){
     bool left = this->get_left_cell()->is_valid();
@@ -114,14 +138,27 @@ std::ostream& operator << (std::ostream& os, const Interface interface){
     return os;
 }
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 Cell * Interface::get_left_cell() {
     // return reference to the left cell
     return this->_left_cell;
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
+
+#ifdef GPU
+#pragma omp declare target
+#endif
 Cell * Interface::get_right_cell() {
     // return reference to the right cell
     return this->_right_cell;
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
 
 

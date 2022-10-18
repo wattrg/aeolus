@@ -27,6 +27,11 @@ export PYTHONPATH=${PYTHONPATH}:/dir/to/rep/inst/lib
 To only compile (i.e. not copy the completed files to the install directory), you can type `make` or `make build` from the root of the repository.
 
 To install (i.e. copy the completes files to the install directory), you can type `make install` from the root of the respository. This re-build any components which have changed as well.
+
+#### Dependancies
+```
+sudo apt install gcc-offload-nvptx
+```
    
 ## Using the Python library
 Once you have successfully installed `Aeolus`, you should be able to use it through `Python` scripts.
