@@ -48,6 +48,18 @@ public:
     std::vector<BoundaryCondition> & bcs() {return _bcs;}
     unsigned int id() const {return this->_id;}
 
+    // get pointers to the data
+    Cell * cells_ptr() {return this->_cells.data();}
+    Cell * ghost_cells_ptr() {return this->_ghost_cells.data();}
+    Interface * interfaces_ptr() {return this->_interfaces.data();}
+    Vertex * vertices_ptr() {return this->_vertices.data();}
+
+    // number of cells/interfaces
+    unsigned int number_cells() {return this->_cells.size();}
+    unsigned int number_ghost_cells() {return this->_ghost_cells.size();}
+    unsigned int number_interfaces() {return this->_interfaces.size();}
+    unsigned int number_vertices() {return this->_vertices.size();}
+
 private:
     // Collection of cells
     std::vector<Cell> _cells;

@@ -20,7 +20,7 @@ private:
     unsigned int _rho_idx = 0;
     unsigned int _momentum_idx = 1;
     unsigned int _energy_idx;
-    unsigned int _n_conserved_quantities;
+    unsigned int _n_conserved_quantities = 4;
     unsigned int _number_dimensions;
 };
 

@@ -45,7 +45,7 @@ endif
 
 # GPU
 ifeq ($(GPU), 1)
-	CFLAGS := $(CFLAGS) -fcf-protection=none -no-pie -DGPU -fno-stack-protector -foffload=nvptx-none
+	CFLAGS := $(CFLAGS) -fcf-protection=none -foffload=-lm -fno-fast-math -fno-associative-math -no-pie -DGPU -fno-stack-protector -foffload=nvptx-none
 endif
 
 # clang needs some extra flags to make openmp work

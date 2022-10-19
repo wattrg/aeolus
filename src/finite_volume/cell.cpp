@@ -40,6 +40,7 @@ Cell::Cell(Grid::Cell & grid_cell, std::vector<Vertex> & vertices, std::vector<I
 
 
 double Cell::compute_local_timestep(double cfl){
+
     double spectral_radii = 0.0;
     for (CellFace face : this->_interfaces){
         double sig_vel = fabs(this->fs.velocity.dot(face.interface->n())) + this->fs.gas_state.a;
@@ -80,6 +81,9 @@ void Cell::encode_conserved(GasModel & gas_model){
     cq[cq.energy()] = (u + ke)*rho + p;
 }
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 void Cell::decode_conserved(GasModel & gas_model){
     double vx = this->fs.velocity.x;
     double vy = this->fs.velocity.y;
@@ -93,6 +97,9 @@ void Cell::decode_conserved(GasModel & gas_model){
     this->fs.gas_state.u = e - ke;
     gas_model.update_from_rhou(fs.gas_state);
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
 Vector3 & Cell::get_pos(){
     return this->_pos;

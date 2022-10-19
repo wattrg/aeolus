@@ -10,6 +10,17 @@ void Solver::solve(){
         fluid_block->set_gas_model(this->_config.gas_model());
     }
 
+// maybe move fluid block to the gpu
+#ifdef GPU
+    Vertex * vertices = this->_config.fluid_blocks()[0]->vertices_ptr();
+    unsigned int num_verts = this->_config.fluid_blocks()[0]->number_vertices();
+    Interface * interfaces = this->_config.fluid_blocks()[0]->interfaces_ptr();
+    unsigned int num_interfaces = this->_config.fluid_blocks()[0]->number_interfaces();
+    Cell * cells = this->_config.fluid_blocks()[0]->cells_ptr();
+    unsigned int num_cells = this->_config.fluid_blocks()[0]->number_cells();
+#pragma omp target enter data map(to: vertices[:num_verts]) map(to: interfaces[:num_interfaces]), map(to: cells[:num_cells])
+#endif
+
     // begin the time stepping
     this->_config.log.info("Beginning stepping with " + this->_name() + " solver.");
     for (unsigned int step=0; step < this->_max_step; step++){

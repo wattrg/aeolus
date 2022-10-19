@@ -2,23 +2,7 @@
 #include "io/fluid_block_io.h"
 #include "config.h"
 
-FluidBlock::~FluidBlock(){
-    //for (Cell * cell : this->_cells){
-    //    delete cell;
-    //}
-    //for (Cell * cell : this->_ghost_cells){
-    //    delete cell;
-    //}
-    //for (Interface * interface : this->_interfaces){
-    //    delete interface;
-    //}
-    //for (Vertex * vertex : this->_vertices){
-    //    delete vertex;
-    //}
-    //for (BoundaryCondition * bc : this->_bcs){
-    //    delete bc;
-    //}
-}
+FluidBlock::~FluidBlock () {}
 
 FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id, 
                        std::map<std::string, BoundaryCondition> & bc_map) :
@@ -114,9 +98,6 @@ FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id,
 }
 
 void FluidBlock::set_flux_calculator(FluxCalculators flux_calc){
-    //#ifdef GPU
-    //    #pragma omp target
-    //#endif
     #pragma omp parallel for
     for (Interface & interface : this->_interfaces){
         interface.set_flux_calculator(flux_calc);
@@ -151,28 +132,34 @@ void FluidBlock::compute_time_derivatives(){
 
 double FluidBlock::compute_block_dt(double cfl){
     double dt = 10000;
+    unsigned int N = this->_cells.size();
+    Cell * cell_ptr = this->_cells.data();
+
     //#ifdef GPU
     //    #pragma omp target
     //#endif
     #pragma omp parallel for reduction(min:dt)
-    for (Cell & cell : this->_cells){
-        dt = std::min(cell.compute_local_timestep(cfl), dt); 
+    for (unsigned int i = 0; i < N; i++){
+        dt = std::min(cell_ptr[i].compute_local_timestep(cfl), dt); 
     }
     this->_dt = dt;
     return dt;
 }
 
 void FluidBlock::apply_time_derivative(){
+    unsigned int n_cells = this->_cells.size();
+    Cell * cell = this->_cells.data();
+
     //#ifdef GPU
     //    #pragma omp target
     //#endif
     #pragma omp parallel for
-    for (Cell & cell : this->_cells){
-        ConservedQuantity & cq = cell.conserved_quantities;
+    for (unsigned int i = 0; i < n_cells; i++){
+        ConservedQuantity & cq = cell[i].conserved_quantities;
         for (unsigned int i=0; i < cq.n_conserved(); i++){
-            cq[i] += cell.residual[i] * this->_dt; 
+            cq[i] += cell[i].residual[i] * this->_dt; 
         }
-        cell.decode_conserved(*this->_gas_model);
+        cell[i].decode_conserved(*this->_gas_model);
     }
 }
 

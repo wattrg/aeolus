@@ -2,6 +2,8 @@
 #include "cell.h"
 #include "config.h"
 
+#include <stdio.h>
+
 Interface::Interface(Grid::Interface & grid_face, std::vector<Vertex> & vertices)
     : _norm(grid_face.norm()), 
       _tan1(grid_face.tan1()), 
@@ -97,6 +99,7 @@ void Interface::_transform_flux_to_global_frame(){
 #pragma omp declare target
 #endif
 void Interface::_transform_flowstate_to_local_frame(){
+
     this->_left.velocity.transform_to_local_frame(this->_norm, this->_tan1, this->_tan2);
     this->_right.velocity.transform_to_local_frame(this->_norm, this->_tan1, this->_tan2);
 }
