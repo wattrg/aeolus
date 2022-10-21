@@ -189,7 +189,7 @@ void Interface::attach_cell_right(Cell & cell){
     
 }
 
-void Interface::mark_on_boundary(std::string tag) {
+void Interface::mark_on_boundary() {
     this->_is_on_boundary = true;
     // this->_boundary_tag = tag;
 }

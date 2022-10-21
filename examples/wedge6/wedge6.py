@@ -33,10 +33,10 @@ sim.gas_model = gm
 sim.add_fluid_block(grid, initial, bcs)
 
 solver = ExplicitSolver(sim)
-solver.max_step = 1700
+solver.max_step = 10
 solver.cfl = 0.5
-solver.print_step = 100
-solver.plot_step = 100
+solver.print_step = 1
+solver.plot_step = 1
 
 sim.write_fluid_blocks()
 

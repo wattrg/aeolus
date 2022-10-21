@@ -46,7 +46,7 @@ public:
     void copy_right_flow_state(FlowState & fs);
 
     // Mark the interface as being on the boundary
-    void mark_on_boundary(std::string tag);
+    void mark_on_boundary();
     bool is_on_boundary() const;
 
     friend std::ostream& operator << (std::ostream& os, const Interface interface);
@@ -110,7 +110,6 @@ private:
 
     // store if the interface is on a boundary
     bool _is_on_boundary = false;
-    // std::string _boundary_tag = "";
 
     // rotate left and right flow states to interface reference frame
     void _transform_flowstate_to_local_frame();

@@ -8,7 +8,7 @@ Cell::Cell(Interface & face, int id, bool valid)
     this->_interfaces[0] = CellFace(face, false); 
 }
 
-Cell::Cell(Grid::Cell & grid_cell, std::vector<Vertex> & vertices, std::vector<Interface> & interfaces)
+Cell::Cell(Grid::Cell & grid_cell, std::vector<Interface> & interfaces)
     : _pos(grid_cell.get_pos()), 
       _shape(grid_cell.get_shape()),
       _valid_cell(true),
@@ -22,12 +22,12 @@ Cell::Cell(Grid::Cell & grid_cell, std::vector<Vertex> & vertices, std::vector<I
     this->_number_vertices = grid_vertices.size();
 
     // assign pointers to interfaces and vertices
-    for (size_t i = 0; i < this->_number_vertices; i++){
+    for (int i = 0; i < this->_number_vertices; i++){
         size_t id = grid_vertices[i]->id();
         this->_vertices[i] = id;
     }
 
-    for (size_t i = 0; i < this->_number_interfaces; i++){
+    for (int i = 0; i < this->_number_interfaces; i++){
         Grid::CellFace grid_interface = grid_interfaces[i];
         size_t id = grid_interface.interface->id();
         this->_interfaces[i] = CellFace(interfaces[id], grid_interface.outwards);

@@ -31,7 +31,7 @@ class Cell {
 public:
     Cell () {};
     Cell(Interface & face, int id, bool valid=true);
-    Cell(Grid::Cell & grid_cell, std::vector<Vertex>&, std::vector<Interface>&);
+    Cell(Grid::Cell & grid_cell, std::vector<Interface>&);
 
     // the flow state in the cell centre
     FlowState fs;

@@ -6,7 +6,7 @@
 
 BoundaryCondition::BoundaryCondition(){};
 
-BoundaryCondition::BoundaryCondition(std::vector<std::shared_ptr<GhostCellEffect>> pre_recon, std::string tag)
+BoundaryCondition::BoundaryCondition(std::vector<std::shared_ptr<GhostCellEffect>> pre_recon)
     : _pre_recon_actions(pre_recon)
 {}
 

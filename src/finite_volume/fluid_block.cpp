@@ -39,7 +39,7 @@ FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id,
     // #pragma omp parallel for
     for (Grid::Cell * grid_cell : cells){
         int id = grid_cell->id();
-        this->_cells[id] = Cell(*grid_cell, this->_vertices, this->_interfaces);
+        this->_cells[id] = Cell(*grid_cell, this->_interfaces);
     }
 
     // read the boundary conditions
@@ -53,7 +53,7 @@ FluidBlock::FluidBlock(Grid::Grid & grid, unsigned int id,
         BoundaryCondition & bc = this->_bcs.back();
         for (Grid::Interface * bc_face : bc_interfaces){
             Interface & fv_interface = this->_interfaces[bc_face->id()];
-            fv_interface.mark_on_boundary(bc_key);
+            fv_interface.mark_on_boundary();
             bc.add_interface(fv_interface);
             this->_cells[ghost_cell_indx] = Cell(
                 this->_interfaces[bc_face->id()], ghost_cell_indx, false
