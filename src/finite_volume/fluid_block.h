@@ -50,7 +50,6 @@ public:
 
     // get pointers to the data
     Cell * cells_ptr() {return this->_cells.data();}
-    //Cell * ghost_cells_ptr() {return this->_ghost_cells.data();}
     Interface * interfaces_ptr() {return this->_interfaces.data();}
     Vertex * vertices_ptr() {return this->_vertices.data();}
 

@@ -52,11 +52,9 @@ public:
     friend std::ostream& operator << (std::ostream& os, const Interface interface);
 
     // compute the flux across this interface
-    // does not perform reconstruction. Assumes `_left` and `_right` are
-    // correctly set
+    // Assumes `_left` and `_right` are correctly set
     void compute_flux(flux_calculator) ;
     ConservedQuantity & flux();
-    // void set_flux_calculator(FluxCalculators flux_calculator);
 
     // Return the ID of the valid cell. Will throw an error if the cells
     // on both sides of the interface are valid
@@ -91,12 +89,10 @@ private:
     void _compute_area();
 
     // cell to the left
-    // Cell * _left_cell = nullptr;
     int _left_cell_id = -1;
     bool _left_cell_valid = false;
 
     // cell to the right
-    // Cell * _right_cell = nullptr;
     int _right_cell_id = -1;
     bool _right_cell_valid = false;
 

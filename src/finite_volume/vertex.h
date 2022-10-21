@@ -7,9 +7,8 @@
 
 class Vertex {
 public:
-    Vertex () {}
+    Vertex () : _pos(Vector3()) {}
 
-    //Vertex(Vector3 x, int id);
     Vertex(Grid::Vertex &);
 
     // get the position
@@ -28,7 +27,7 @@ public:
 
 private:
     Vector3 _pos;
-    int _id;
+    int _id = -1;
 };
 
 

@@ -66,7 +66,6 @@ public:
     // give out some read only info about the vertices
     unsigned int number_vertices() const;
     int * vertices();
-    //const std::vector<Vector3> & vertex_positions() const;
 
     // get info about the shape of the cell
     Grid::CellShape get_shape() const;
@@ -102,10 +101,6 @@ private:
     // the local time step
     bool _lts = false;
     double _dt = -1;
-
-    //friend class InternalCopy;
-    //friend class ReflectNormal;
-    //friend class ReflectTangential;
 };
 
 #endif // __CELL_H_
