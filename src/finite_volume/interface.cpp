@@ -4,41 +4,32 @@
 
 #include <stdio.h>
 
-Interface::Interface(Grid::Interface & grid_face, std::vector<Vertex> & vertices)
+Interface::Interface(Grid::Interface & grid_face)
     : _norm(grid_face.norm()), 
       _tan1(grid_face.tan1()), 
       _tan2(grid_face.tan2()), 
       _area(grid_face.area()),
       _id(grid_face.id())
 {
-    // set up the vertices of the interface
-    size_t number_vertices = grid_face.vertices().size();
-    //this->_vertices = std::vector<Vertex *>(number_vertices);
-    this->_vertices.reserve(number_vertices);
-    for (Grid::Vertex * grid_vertex : grid_face.vertices()){
-        size_t id = grid_vertex->id();
-        this->_vertices.push_back(&vertices[id]);
-    }
-
     // the id's of the cells that will be attached
     this->_left_cell_id = grid_face.get_left_cell_id();
     this->_right_cell_id = grid_face.get_right_cell_id();
 
+    if (this->_left_cell_id >= 0) this->_left_cell_valid = true;
+    if (this->_right_cell_id >= 0) this->_right_cell_valid = true;
+
+    // the id's of the vertices
+    std::vector<Grid::Vertex *> grid_vertices = grid_face.vertices();
+    this->_number_vertices = grid_vertices.size();
+    for (int i = 0; i < this->_number_vertices; i ++){
+        this->_vertices[i] = grid_vertices[i]->id();
+    }
+
     // set up the storage for the flux
-    this->_dim = (this->_vertices.size() == 2) ? 2 : 3;
+    this->_dim = (this->_number_vertices == 2) ? 2 : 3;
     this->_flux = ConservedQuantity(_dim);
 }
 
-void Interface::set_flux_calculator(FluxCalculators flux_calculator){
-    switch (flux_calculator){
-        case FluxCalculators::hanel:
-            this->_compute_flux = &FluxCalculator::hanel;
-            break;
-        case FluxCalculators::ausmdv:
-            this->_compute_flux = &FluxCalculator::ausmdv;
-            break;
-    }
-}
 
 void Interface::copy_left_flow_state(FlowState & fs){
     this->_left.copy(fs);
@@ -63,9 +54,9 @@ Interface::~Interface(){}
 #ifdef GPU
 #pragma omp declare target
 #endif
-void Interface::compute_flux(){
+void Interface::compute_flux(flux_calculator flux_calc){
     this->_transform_flowstate_to_local_frame();
-    this->_compute_flux(this->_left, this->_right, this->_flux);
+    flux_calc(this->_left, this->_right, this->_flux);
     this->_transform_flux_to_global_frame();
 }
 #ifdef GPU
@@ -111,30 +102,42 @@ void Interface::_transform_flowstate_to_local_frame(){
 #pragma omp declare target
 #endif
 void Interface::_transform_flowstate_to_global_frame(){
-    this->_left.velocity.transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
-    this->_right.velocity.transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
+    this->_left.velocity
+               .transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
+    this->_right.velocity
+                .transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
 }
 #ifdef GPU
 #pragma omp end declare target
 #endif
 
-Cell & Interface::get_valid_cell(){
-    bool left = this->get_left_cell()->is_valid();
-    bool right = this->get_right_cell()->is_valid();
+int Interface::get_valid_cell(){
+    bool left = this->_left_cell_valid;
+    bool right = this->_right_cell_valid;
 
     if (left && right) throw std::runtime_error("Both cells are valid");
-    return (left) ? *this->get_left_cell() : *this->get_right_cell();
+    if (!left && !right) throw std::runtime_error("Neither cell is valid");
+    return (left) ? this->_left_cell_id : this->_right_cell_id;
+}
+
+int Interface::get_ghost_cell(){
+    bool left = this->_left_cell_valid;
+    bool right= this->_right_cell_valid;
+
+    if (left && right) throw std::runtime_error("Neight cell is a ghost cell");
+    if (!left && !right) throw std::runtime_error("Both cells are ghost cells");
+    return (left) ? this->_right_cell_id : this->_left_cell_id;
 }
 
 std::ostream& operator << (std::ostream& os, const Interface interface){
     os << "Interface(";
     os << "vertices = [";
-    for (Vertex * vertex : interface._vertices){
-        os << *vertex << ", ";
+    for (int vertex_id : interface._vertices){
+        os << vertex_id << ", ";
     }
     os << "], ";
-    os << "left = " << interface._left_cell << ", ";
-    os << "right = " << interface._right_cell << ", ";
+    os << "left = " << interface._left_cell_id << ", ";
+    os << "right = " << interface._right_cell_id << ", ";
     os << "on boundary = " << interface._is_on_boundary << ", ";
     os << ")";
 
@@ -144,9 +147,8 @@ std::ostream& operator << (std::ostream& os, const Interface interface){
 #ifdef GPU
 #pragma omp declare target
 #endif
-Cell * Interface::get_left_cell() {
-    // return reference to the left cell
-    return this->_left_cell;
+int Interface::get_left_cell() {
+    return this->_left_cell_id;
 }
 #ifdef GPU
 #pragma omp end declare target
@@ -155,9 +157,8 @@ Cell * Interface::get_left_cell() {
 #ifdef GPU
 #pragma omp declare target
 #endif
-Cell * Interface::get_right_cell() {
-    // return reference to the right cell
-    return this->_right_cell;
+int Interface::get_right_cell() {
+    return this->_right_cell_id;
 }
 #ifdef GPU
 #pragma omp end declare target
@@ -166,25 +167,30 @@ Cell * Interface::get_right_cell() {
 
 
 void Interface::attach_cell_left(Cell & cell){
-    if (_left_cell){
-        std::string msg = "There is already a cell here:\n";
-        msg += _left_cell->to_string();
-        throw std::runtime_error(msg);
+    if (this->_left_cell_id < 0){
+        this->_left_cell_id = cell.id();
+        this->_left_cell_valid = cell.is_valid();
+        return;
     }
-    this->_left_cell = &cell;
+    std::string msg = "There is already a cell to the left. The cell's ID is: ";
+    msg += std::to_string(this->_left_cell_id);
+    throw std::runtime_error(msg);
 }
 
 void Interface::attach_cell_right(Cell & cell){
-    if (_right_cell){
-        std::string msg = "There is already a cell here:\n";
-        msg += _right_cell->to_string();
-        throw std::runtime_error(msg);
+    if (this->_right_cell_id < 0){
+        this->_right_cell_id = cell.id();
+        this->_right_cell_valid = cell.is_valid();
+        return;
     }
-    this->_right_cell = &cell;
+    std::string msg = "There is already a cell to the right. The cell's ID is: ";
+    msg += std::to_string(this->_right_cell_id);
+    throw std::runtime_error(msg);
+    
 }
 
 void Interface::mark_on_boundary(std::string tag) {
     this->_is_on_boundary = true;
-    this->_boundary_tag = tag;
+    // this->_boundary_tag = tag;
 }
 

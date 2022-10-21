@@ -16,12 +16,12 @@ public:
     double &operator [] (unsigned int index) {return _conserved_quantities[index];}
 
 private:
-    std::vector<double> _conserved_quantities;
+    double _conserved_quantities [4];
     unsigned int _rho_idx = 0;
     unsigned int _momentum_idx = 1;
-    unsigned int _energy_idx;
+    unsigned int _energy_idx = 3;
     unsigned int _n_conserved_quantities = 4;
-    unsigned int _number_dimensions;
+    unsigned int _number_dimensions = 2;
 };
 
 #endif // __CONSERVED_QUANTITIES_H_

@@ -74,8 +74,8 @@ void VTKWriter::_clear_data(){
 }
 
 void VTKWriter::_read_data(FluidBlock & fb){
-    this->_cells = fb.cells();
-    this->_number_cells = this->_cells.size();
+    this->_number_cells = fb.number_cells();
+    this->_cells = fb.valid_cells();
 
     // loop over all the vertices in the fluid block, storing the required data in
     // the VTKWriter
@@ -99,13 +99,14 @@ void VTKWriter::_read_data(FluidBlock & fb){
 
     // gather data from each cell
     int offset = 0;
-    for (Cell & cell : this->_cells){
+    for (int i=0; i < this->_number_cells; i++){
+        Cell &cell = fb.cells()[i];
         // get data about the geometry
         offset += cell.number_vertices();
         this->_offsets.data.push_back(offset);
         this->_types.data.push_back(cell_shape_to_vtk_type(cell.get_shape())); 
-        for (Vertex * vertex : cell.vertices()){
-            this->_connectivity.data.push_back(vertex->id()); 
+        for (unsigned int vertex_i = 0; vertex_i < cell.number_vertices(); vertex_i++){
+            this->_connectivity.data.push_back(vertices[cell.vertices()[vertex_i]].id()); 
         }
 
         // read the flow variables via the data accessors

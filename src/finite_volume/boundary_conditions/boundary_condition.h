@@ -7,7 +7,6 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "../../util/array.h"
 #include "../../gas/flow_state.h"
 
 class GhostCellEffect;
@@ -31,23 +30,21 @@ public:
     ~BoundaryCondition();
     BoundaryCondition();
     BoundaryCondition(const BoundaryCondition &);
-    BoundaryCondition(std::vector<std::shared_ptr<GhostCellEffect>> pre_recon, std::string tag);
+    BoundaryCondition(std::vector<std::shared_ptr<GhostCellEffect>> pre_recon, 
+                      std::string tag);
 
     // apply the pre-reconstruction actions
-    void apply_pre_reconstruction();
+    void apply_pre_reconstruction(std::vector<Cell> & cells, std::vector<Interface> &interfaces);
 
     void add_interface(Interface & face);
-    void add_ghost_cell(Cell & cell);
+    //void add_ghost_cell(Cell & cell);
 
-    const std::string tag() const {return _tag;};
+    // const std::string tag() const {return _tag;};
 
 
 protected:
-    std::string _tag;
-    // keep track of the ghost cells and interfaces
-    // for this particular boundary condition
-    std::vector<Cell *> _ghost_cells;
-    std::vector<Interface*> _interfaces;
+    // the interfaces along the boundary
+    std::vector<int> _interfaces;
 
     // actions to perform
     std::vector<std::shared_ptr<GhostCellEffect>> _pre_recon_actions;

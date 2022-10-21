@@ -18,9 +18,10 @@ class Interface;
 // or not
 struct CellFace {
     CellFace() {}
-    CellFace(Interface & interface, bool outwards) : interface(&interface), outwards(outwards){}
+    CellFace(Interface & interface, bool outwards) : interface(interface.id()), outwards(outwards){}
+
     // the interface
-    Interface * interface;
+    int interface;
 
     // if this interface points inwards from the cell or not
     bool outwards;
@@ -29,7 +30,7 @@ struct CellFace {
 class Cell {
 public:
     Cell () {};
-    Cell(Interface & face, bool valid=true);
+    Cell(Interface & face, int id, bool valid=true);
     Cell(Grid::Cell & grid_cell, std::vector<Vertex>&, std::vector<Interface>&);
 
     // the flow state in the cell centre
@@ -48,7 +49,7 @@ public:
     void decode_conserved(GasModel & gas_model);
 
     // compute the residual for a cell, assuming the fluxes have been calculated
-    void compute_time_derivative();
+    void compute_time_derivative(std::vector<Interface> &);
 
     // volume of the cell
     double volume() const;
@@ -64,23 +65,25 @@ public:
 
     // give out some read only info about the vertices
     unsigned int number_vertices() const;
-    const std::vector<Vertex *> & vertices() const;
-    const std::vector<Vector3> & vertex_positions() const;
+    int * vertices();
+    //const std::vector<Vector3> & vertex_positions() const;
 
     // get info about the shape of the cell
     Grid::CellShape get_shape() const;
 
-    unsigned int id() const;
+    unsigned int id() const {return _id;}
 
     // used for computing maximum allowable time step
-    double compute_local_timestep(double cfl);
+    double compute_local_timestep(double cfl, std::vector<Interface> &);
 
 private:
     // the interfaces surrounding the cell
-    std::vector<CellFace> _interfaces;
+    int _number_interfaces = 0;
+    CellFace _interfaces[4];
 
     // the vertices of the cell
-    std::vector<Vertex *> _vertices;
+    int _number_vertices = 0;
+    int _vertices[4];
 
     // position of the cell centre
     Vector3 _pos;
@@ -89,20 +92,20 @@ private:
     Grid::CellShape _shape;
 
     // keep track of if the cell is a valid cell
-    bool _valid_cell;
+    bool _valid_cell = false;
 
     // cell volume
     double _volume = std::nan("");
 
-    unsigned int _id;
+    int _id = -1;
 
     // the local time step
     bool _lts = false;
-    double _dt;
+    double _dt = -1;
 
-    friend class InternalCopy;
-    friend class ReflectNormal;
-    friend class ReflectTangential;
+    //friend class InternalCopy;
+    //friend class ReflectNormal;
+    //friend class ReflectTangential;
 };
 
 #endif // __CELL_H_

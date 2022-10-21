@@ -1,50 +1,52 @@
 #include "cell.h"
+#include "../util/unused.h"
 
-Cell::Cell(Interface & face, bool valid) 
-    : _valid_cell(valid)
+Cell::Cell(Interface & face, int id, bool valid) 
+    : _valid_cell(valid),
+      _id(id)
 {
-    this->_interfaces.push_back(CellFace(face, false)); 
+    this->_interfaces[0] = CellFace(face, false); 
 }
 
 Cell::Cell(Grid::Cell & grid_cell, std::vector<Vertex> & vertices, std::vector<Interface> & interfaces)
     : _pos(grid_cell.get_pos()), 
       _shape(grid_cell.get_shape()),
       _valid_cell(true),
-      _volume(grid_cell.volume())
+      _volume(grid_cell.volume()),
+      _id(grid_cell.id())
 {
     std::vector<Grid::CellFace> grid_interfaces = grid_cell.interfaces();
     std::vector<Grid::Vertex *> grid_vertices = grid_cell.vertices();
 
-    size_t num_interfaces = grid_interfaces.size();
-    size_t num_vertices = grid_vertices.size();
+    this->_number_interfaces = grid_interfaces.size();
+    this->_number_vertices = grid_vertices.size();
 
     // assign pointers to interfaces and vertices
-    this->_vertices.reserve(num_vertices);
-    for (size_t i = 0; i < num_vertices; i++){
+    for (size_t i = 0; i < this->_number_vertices; i++){
         size_t id = grid_vertices[i]->id();
-        this->_vertices.push_back(&vertices[id]);
+        this->_vertices[i] = id;
     }
 
-    this->_interfaces.reserve(num_interfaces);
-    for (size_t i = 0; i < num_interfaces; i++){
+    for (size_t i = 0; i < this->_number_interfaces; i++){
         Grid::CellFace grid_interface = grid_interfaces[i];
         size_t id = grid_interface.interface->id();
-        this->_interfaces.push_back(CellFace(interfaces[id], grid_interface.outwards));
+        this->_interfaces[i] = CellFace(interfaces[id], grid_interface.outwards);
     }
 
     // initialise conserved quantities and residuals
     this->conserved_quantities = ConservedQuantity(2);
     this->residual = ConservedQuantity(2);
-
 }
 
 
-double Cell::compute_local_timestep(double cfl){
+double Cell::compute_local_timestep(double cfl, std::vector<Interface> & faces){
 
     double spectral_radii = 0.0;
-    for (CellFace face : this->_interfaces){
-        double sig_vel = fabs(this->fs.velocity.dot(face.interface->n())) + this->fs.gas_state.a;
-        spectral_radii += sig_vel * face.interface->area();
+    for (int i = 0; i < this->_number_interfaces; i++){
+        CellFace &face = this->_interfaces[i];
+        Interface & f = faces[face.interface];
+        double sig_vel = fabs(this->fs.velocity.dot(f.n())) + this->fs.gas_state.a;
+        spectral_radii += sig_vel * f.area();
     }
     double dt = cfl * this->_volume / spectral_radii;
     if (_lts) this->_dt = dt;
@@ -53,20 +55,22 @@ double Cell::compute_local_timestep(double cfl){
 
 double Cell::volume() const {return this->_volume;}
 
-void Cell::compute_time_derivative(){
+void Cell::compute_time_derivative(std::vector<Interface> & faces){
     int n_conserved = this->conserved_quantities.n_conserved();
-    for (int i = 0; i < n_conserved; i++){
+    for (int i_cq = 0; i_cq < n_conserved; i_cq++){
         double surface_integral = 0.0;
-        for (CellFace face : this->_interfaces){
-            Interface * fvface = face.interface;
-            double area = (face.outwards ? -1 : 1) * fvface->area(); 
-            surface_integral += area * fvface->flux()[i];
+        for (int i_face=0; i_face < this->_number_interfaces; i_face++){
+            CellFace &face = this->_interfaces[i_face];
+            Interface & f = faces[face.interface];
+            double area = (face.outwards ? -1 : 1) * f.area(); 
+            surface_integral += area * f.flux()[i_cq];
         }
-        this->residual[i] = surface_integral / this->_volume;
+        this->residual[i_cq] = surface_integral / this->_volume;
     }
 }
 
 void Cell::encode_conserved(GasModel & gas_model){
+    UNUSED(gas_model);
     double vx = this->fs.velocity.x;
     double vy = this->fs.velocity.y;
     double vz = this->fs.velocity.z;
@@ -106,10 +110,10 @@ Vector3 & Cell::get_pos(){
 }
 
 unsigned int Cell::number_vertices() const {
-    return this->_vertices.size();
+    return this->_number_vertices;
 }
 
-const std::vector<Vertex *> & Cell::vertices() const {
+int * Cell::vertices() {
     return this->_vertices;
 }
 
@@ -123,8 +127,8 @@ std::string Cell::to_string() const {
     str.append(this->fs.to_string());
     str.append(", ");
     str.append("vertices = [");
-    for (Vertex * vertex : this->_vertices){
-        str.append(vertex->to_string());
+    for (int i = 0; i < this->_number_vertices; i++){
+        str.append(std::to_string(i));
     }
     str.append("])");
     return str;

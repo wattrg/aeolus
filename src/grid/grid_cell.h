@@ -31,7 +31,7 @@ public:
     std::vector<Vector3> & vertex_positions() const; 
     std::vector<CellFace> & interfaces() {return _interfaces;}
     CellShape get_shape() const {return _shape;}
-    unsigned int id() const {return _id;}
+    int id() const {return _id;}
     double volume() const {return this->_volume;}
     unsigned int number_vertices() const { return this->_vertices.size(); }
 
@@ -43,7 +43,7 @@ private:
 
     Vector3 _pos;
     CellShape _shape;
-    unsigned int _id;
+    int _id = -1;
     double _volume;
 
     void _compute_volume();

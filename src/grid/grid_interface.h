@@ -39,7 +39,7 @@ public:
 
 private:
     std::vector<Vertex *> _vertices;
-    unsigned int _id;
+    unsigned int _id = -1;
     Cell * _left_cell = nullptr;
     Cell * _right_cell = nullptr;
     Vector3 _n, _t1, _t2;

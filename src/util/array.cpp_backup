@@ -1,0 +1,10 @@
+#include "array.h"
+
+template <typename T>
+Array::Array<T>(std::initializer_list<T> list) {
+    this->_size = list.size();
+    this->_data = new T[this->_size];
+    for (size_t i = 0; i < this->_size; i++){
+        this->_data[i] = list[i];
+    }
+}

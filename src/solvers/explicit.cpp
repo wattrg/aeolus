@@ -4,7 +4,7 @@ double ExplicitSolver::_step(){
     // apply pre-reconstruction boundary conditions
     for (FluidBlock * fb : this->_config.fluid_blocks()){
         for (BoundaryCondition & bc : fb->bcs()){
-            bc.apply_pre_reconstruction();
+            bc.apply_pre_reconstruction(fb->cells(), fb->interfaces());
         }
     }
     double dt; 

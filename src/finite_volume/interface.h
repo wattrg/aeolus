@@ -1,7 +1,6 @@
 #ifndef __INTERFACE_H_
 #define __INTERFACE_H_
 
-#include "../util/array.h"
 #include "conserved_quantities.h"
 #include "flux_calc.h"
 #include "../gas/flow_state.h"
@@ -14,10 +13,12 @@
 class Cell;
 class Simulation;
 
+typedef void (*flux_calculator)(FlowState&, FlowState&, ConservedQuantity&);
+
 class Interface {
 public:
     Interface() {};
-    Interface(Grid::Interface & grid_face, std::vector<Vertex> & vertices);
+    Interface(Grid::Interface & grid_face);
     ~Interface();
 
     // area of the interface
@@ -25,7 +26,7 @@ public:
 
 
     // return vertices
-    std::vector<Vertex *> & vertices();
+    // std::vector<Vertex *> & vertices();
 
     // attach a cell to the interface. This deals with left vs right cells
     // Returns true if the interface is facing the cell
@@ -38,8 +39,8 @@ public:
     void attach_cell_right(Cell & cell);
 
     // Return pointers to cells attached to the interface
-    Cell * get_left_cell();
-    Cell * get_right_cell();
+    int get_left_cell();
+    int get_right_cell();
     
     void copy_left_flow_state(FlowState & fs);
     void copy_right_flow_state(FlowState & fs);
@@ -53,13 +54,17 @@ public:
     // compute the flux across this interface
     // does not perform reconstruction. Assumes `_left` and `_right` are
     // correctly set
-    void compute_flux();
+    void compute_flux(flux_calculator) ;
     ConservedQuantity & flux();
-    void set_flux_calculator(FluxCalculators flux_calculator);
+    // void set_flux_calculator(FluxCalculators flux_calculator);
 
-    // Return a reference to the valid cell. Will throw an error if the cells
+    // Return the ID of the valid cell. Will throw an error if the cells
     // on both sides of the interface are valid
-    Cell & get_valid_cell();
+    int get_valid_cell();
+
+    // Return the ID of the ghost cell. Will throw an error if
+    // neither cell is a ghost cell
+    int get_ghost_cell();
 
     Vector3 & n() { return this->_norm; }
     Vector3 & t1() { return this->_tan1; }
@@ -68,9 +73,6 @@ public:
     int id() const {return _id;}
 
 private:
-    //  Vertices on the end of the interface
-    std::vector<Vertex *> _vertices;
-
     //    position of the centre of the interface
     Vector3 _pos;
 
@@ -81,17 +83,22 @@ private:
     // the two directions tangent to the interface
     Vector3 _tan1, _tan2;
 
+    short _number_vertices = 0;
+    int _vertices[2];
+
     // area
     double _area = std::nan("");
     void _compute_area();
 
     // cell to the left
-    Cell * _left_cell = nullptr;
+    // Cell * _left_cell = nullptr;
     int _left_cell_id = -1;
+    bool _left_cell_valid = false;
 
     // cell to the right
-    Cell * _right_cell = nullptr;
+    // Cell * _right_cell = nullptr;
     int _right_cell_id = -1;
+    bool _right_cell_valid = false;
 
     // The left and right flow states to use to compute the 
     // fluxes. These states are possibly the result of reconstruction
@@ -103,12 +110,7 @@ private:
 
     // store if the interface is on a boundary
     bool _is_on_boundary = false;
-    std::string _boundary_tag = "";
-
-    // pointer to flux calculator function. The actual function
-    // takes the left and right `FlowState`, and fills in the 
-    // ConservedQuantity flux value.
-    void (*_compute_flux)(FlowState&, FlowState&, ConservedQuantity&) = nullptr;
+    // std::string _boundary_tag = "";
 
     // rotate left and right flow states to interface reference frame
     void _transform_flowstate_to_local_frame();
@@ -119,7 +121,7 @@ private:
     // rotate flux to global frame
     void _transform_flux_to_global_frame();
 
-    unsigned int _id;
+    unsigned int _id = -1;
 
     unsigned short _dim;
 };

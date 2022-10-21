@@ -6,7 +6,6 @@
 #include <vector>
 #include <functional>
 #include <map>
-#include "../util/array.h"
 #include "boundary_conditions/boundary_condition.h"
 #include "cell.h"
 #include "interface.h"
@@ -43,29 +42,31 @@ public:
 
     // getter methods
     std::vector<Cell> & cells();
+    std::vector<Cell> valid_cells();
     std::vector<Vertex> & vertices();
-    std::vector<Interface> & interfaces();
+    std::vector<Interface> & interfaces() {return this->_interfaces;}
     std::vector<BoundaryCondition> & bcs() {return _bcs;}
     unsigned int id() const {return this->_id;}
 
     // get pointers to the data
     Cell * cells_ptr() {return this->_cells.data();}
-    Cell * ghost_cells_ptr() {return this->_ghost_cells.data();}
+    //Cell * ghost_cells_ptr() {return this->_ghost_cells.data();}
     Interface * interfaces_ptr() {return this->_interfaces.data();}
     Vertex * vertices_ptr() {return this->_vertices.data();}
 
     // number of cells/interfaces
-    unsigned int number_cells() {return this->_cells.size();}
-    unsigned int number_ghost_cells() {return this->_ghost_cells.size();}
+    unsigned int number_cells() {return this->_number_valid_cells;}
+    unsigned int number_ghost_cells() {return this->_number_ghost_cells;}
+    // unsigned int number_ghost_cells() {return this->_ghost_cells.size();}
     unsigned int number_interfaces() {return this->_interfaces.size();}
     unsigned int number_vertices() {return this->_vertices.size();}
 
 private:
-    // Collection of cells
+    // Collection of cells ghost cells come at the end 
+    // of the array
+    int _number_valid_cells;
+    int _number_ghost_cells;
     std::vector<Cell> _cells;
-
-    // ghost cells
-    std::vector<Cell> _ghost_cells;
 
     // Collection of interfaces
     std::vector<Interface> _interfaces;
@@ -94,6 +95,9 @@ private:
 
     // a local copy of the gas model
     GasModel * _gas_model = nullptr;
+
+    // the flux calculator to use
+    flux_calculator _flux_calculator = nullptr; 
 };
 
 

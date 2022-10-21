@@ -19,7 +19,7 @@ private:
     GridData<int> _types;
     std::vector<Cell> _cells;
     unsigned int _number_points;
-    unsigned int _number_cells;
+    int _number_cells;
 
     // read all the data
     void _read_data(FluidBlock & fb);

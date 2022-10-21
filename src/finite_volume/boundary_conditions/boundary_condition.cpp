@@ -2,26 +2,27 @@
 #include "../cell.h"
 #include "../interface.h"
 #include "ghost_cell_effect.h"
+#include "../../util/unused.h"
 
 BoundaryCondition::BoundaryCondition(){};
 
 BoundaryCondition::BoundaryCondition(std::vector<std::shared_ptr<GhostCellEffect>> pre_recon, std::string tag)
-    : _tag(tag), _pre_recon_actions(pre_recon)
+    : _pre_recon_actions(pre_recon)
 {}
 
 BoundaryCondition::BoundaryCondition(const BoundaryCondition & other)
-    : _tag(other._tag), _pre_recon_actions(other._pre_recon_actions)
+    : _pre_recon_actions(other._pre_recon_actions)
 {
 }
 
 
 void BoundaryCondition::add_interface(Interface & face){
-    this->_interfaces.push_back(&face);
+    this->_interfaces.push_back(face.id());
 }
 
-void BoundaryCondition::add_ghost_cell(Cell & cell){
-    this->_ghost_cells.push_back(&cell);
-}
+//void BoundaryCondition::add_ghost_cell(Cell & cell){
+//    this->_ghost_cells.push_back(&cell);
+//}
 
 BoundaryCondition::~BoundaryCondition(){
     //for (GhostCellEffect * gce : this->_pre_recon_actions){
@@ -30,10 +31,14 @@ BoundaryCondition::~BoundaryCondition(){
     //}
 }
 
-void BoundaryCondition::apply_pre_reconstruction(){
-    for (Cell * ghost_cell : this->_ghost_cells){
+void BoundaryCondition::apply_pre_reconstruction(std::vector<Cell> & cells, std::vector<Interface> &interfaces){
+    int number_interfaces = this->_interfaces.size();
+    for (int iface = 0; iface < number_interfaces; iface++){
+        Interface &face = interfaces[this->_interfaces[iface]];        
+        Cell &valid = cells[face.get_valid_cell()];
+        Cell &ghost = cells[face.get_ghost_cell()];
         for (std::shared_ptr<GhostCellEffect> action : this->_pre_recon_actions){
-            action->apply(*ghost_cell);
+            action->apply(face, valid, ghost); 
         }
     }
 }

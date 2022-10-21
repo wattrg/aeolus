@@ -29,15 +29,8 @@ public:
     // copy the values from some other gas state
     void copy(const GasState & other);
 
-    void set_gmodel(GasModel & gmodel);
-    GasModel & get_gas_model() const;
-
     // compute the internal energy
     double internal_energy();
-
-
-private:
-    GasModel * _gm;
 };
 
 
