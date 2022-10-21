@@ -145,12 +145,12 @@ void FluidBlock::apply_time_derivative(){
     //    #pragma omp target
     //#endif
     #pragma omp parallel for
-    for (unsigned int i = 0; i < n_cells; i++){
-        ConservedQuantity & cq = cell[i].conserved_quantities;
-        for (unsigned int i=0; i < cq.n_conserved(); i++){
-            cq[i] += cell[i].residual[i] * this->_dt; 
+    for (unsigned int i_cell = 0; i_cell < n_cells; i_cell++){
+        ConservedQuantity & cq = cell[i_cell].conserved_quantities;
+        for (unsigned int i_cq=0; i_cq < cq.n_conserved(); i_cq++){
+            cq[i_cq] += cell[i_cell].residual[i_cq] * this->_dt; 
         }
-        cell[i].decode_conserved(*this->_gas_model);
+        cell[i_cell].decode_conserved(*this->_gas_model);
     }
 }
 

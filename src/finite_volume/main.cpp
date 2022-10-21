@@ -10,10 +10,10 @@ FlowState initial_conditions(double x, double y, double z){
     (void) x; (void) y; (void) z;
     GasModel gm = GasModel(287.0);
     GasState gs = GasState(&gm);
-    gs.p = 101325.0;
+    gs.p = 101325.0/2;
     gs.T = 300.0;
     gm.update_from_pT(gs);
-    FlowState fs = FlowState(gs, Vector3(1000.0));
+    FlowState fs = FlowState(gs, Vector3(500.0));
     return fs;
 }
 
@@ -41,11 +41,11 @@ int main(int argc, char *argv[]) {
     config.set_gas_model(g_model);
     std::function<FlowState(double, double, double)> ic = initial_conditions;
     Grid::Grid grid = Grid::Grid(argv[1]);
-    config.add_fluid_block(grid, inflow, bc_map);
+    config.add_fluid_block(grid, ic, bc_map);
     config.write_fluid_blocks();
 
     ExplicitSolver solver = ExplicitSolver(config);
-    solver.set_max_step(10);
+    solver.set_max_step(100);
     solver.set_print_step(1);
     solver.set_plot_step(1);
     solver.set_cfl(0.5);
