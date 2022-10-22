@@ -2,6 +2,9 @@
 
 namespace FluxCalculator{
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 void ausmdv(FlowState & left, FlowState & right, ConservedQuantity & flux){
     double rL = left.gas_state.rho;
     double pL = left.gas_state.p;
@@ -168,5 +171,7 @@ void hanel(FlowState &left, FlowState &right, ConservedQuantity &flux){
     }
     flux[flux.energy()] = uLplus * rL * HL + uRminus * rR * HR; 
 }
-
+#ifdef GPU
+#pragma omp end declare target
+#endif
 }

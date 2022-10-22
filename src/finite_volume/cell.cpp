@@ -39,6 +39,9 @@ Cell::Cell(Grid::Cell & grid_cell, std::vector<Interface> & interfaces)
 }
 
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 double Cell::compute_local_timestep(double cfl, std::vector<Interface> & faces){
 
     double spectral_radii = 0.0;
@@ -52,9 +55,15 @@ double Cell::compute_local_timestep(double cfl, std::vector<Interface> & faces){
     if (_lts) this->_dt = dt;
     return dt;
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
 double Cell::volume() const {return this->_volume;}
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 void Cell::compute_time_derivative(std::vector<Interface> & faces){
     int n_conserved = this->conserved_quantities.n_conserved();
     for (int i_cq = 0; i_cq < n_conserved; i_cq++){
@@ -68,6 +77,9 @@ void Cell::compute_time_derivative(std::vector<Interface> & faces){
         this->residual[i_cq] = surface_integral / this->_volume;
     }
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
 void Cell::encode_conserved(GasModel & gas_model){
     UNUSED(gas_model);

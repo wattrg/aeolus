@@ -98,22 +98,25 @@ void FluidBlock::set_flux_calculator(FluxCalculators flux_calc){
 void FluidBlock::compute_fluxes(){
     int number_interfaces = this->_interfaces.size();
     Interface * interfaces_ptr = this->_interfaces.data();
+    flux_calculator fc = this->_flux_calculator;
 
     #ifdef GPU
-        #pragma omp target
+        #pragma omp target map(tofrom: interfaces_ptr[:number_interfaces])
     #endif
-    #pragma omp parallel for
+    #pragma omp parallel for 
     for (int i = 0; i < number_interfaces; i++){
-        interfaces_ptr[i].compute_flux(this->_flux_calculator);
+        interfaces_ptr[i].compute_flux(fc);
     }
 }
 
 void FluidBlock::compute_time_derivatives(){
     int number_cells = this->_number_valid_cells;
+    int number_interfaces = this->_interfaces.size();
     Cell * cell_ptrs = this->_cells.data();
+    Interface * face_ptrs = this->_interfaces.data();
 
     //#ifdef GPU
-    //    #pragma omp target
+    //    #pragma omp target map(tofrom: face_ptrs[:number_interfaces]) map(tofrom: cell_ptrs[:number_cells])
     //#endif
     #pragma omp parallel for
     for (int i = 0; i < number_cells; i++){
@@ -127,7 +130,7 @@ double FluidBlock::compute_block_dt(double cfl){
     Cell * cell_ptr = this->_cells.data();
 
     //#ifdef GPU
-    //    #pragma omp target
+    //    #pragma omp target map(tofrom: face_ptrs[0:number_interfaces]) map(tofrom: cell_ptrs[0:number_cells])
     //#endif
     #pragma omp parallel for reduction(min:dt)
     for (unsigned int i = 0; i < N; i++){
@@ -138,19 +141,21 @@ double FluidBlock::compute_block_dt(double cfl){
 }
 
 void FluidBlock::apply_time_derivative(){
-    unsigned int n_cells = this->_number_valid_cells;
+    int n_cells = this->_number_valid_cells;
     Cell * cell = this->_cells.data();
+    double dt = this->_dt;
+    GasModel gm = *this->_gas_model;
 
-    //#ifdef GPU
-    //    #pragma omp target
-    //#endif
+    #ifdef GPU
+        #pragma omp target map(tofrom: cell[0:n_cells])
+    #endif
     #pragma omp parallel for
     for (unsigned int i_cell = 0; i_cell < n_cells; i_cell++){
         ConservedQuantity & cq = cell[i_cell].conserved_quantities;
         for (unsigned int i_cq=0; i_cq < cq.n_conserved(); i_cq++){
-            cq[i_cq] += cell[i_cell].residual[i_cq] * this->_dt; 
+            cq[i_cq] += cell[i_cell].residual[i_cq] * dt; 
         }
-        cell[i_cell].decode_conserved(*this->_gas_model);
+        cell[i_cell].decode_conserved(gm);
     }
 }
 

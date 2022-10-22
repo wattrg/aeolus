@@ -41,13 +41,25 @@ void Interface::copy_right_flow_state(FlowState & fs){
 
 bool Interface::is_on_boundary() const { return this->_is_on_boundary; }
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 double Interface::area() const {
     return _area;
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 ConservedQuantity & Interface::flux() {
     return _flux;
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
 Interface::~Interface(){}
 
@@ -56,7 +68,7 @@ Interface::~Interface(){}
 #endif
 void Interface::compute_flux(flux_calculator flux_calc){
     this->_transform_flowstate_to_local_frame();
-    flux_calc(this->_left, this->_right, this->_flux);
+    FluxCalculator::hanel(this->_left, this->_right, this->_flux);
     this->_transform_flux_to_global_frame();
 }
 #ifdef GPU

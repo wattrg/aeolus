@@ -7,6 +7,10 @@
 class ConservedQuantity{
 public:
     ConservedQuantity();
+
+#ifdef GPU
+#pragma omp declare target
+#endif
     ConservedQuantity(unsigned int number_dimensions);
     unsigned int rho() {return _rho_idx;}
     unsigned int momentum() {return _momentum_idx;}
@@ -14,6 +18,9 @@ public:
     unsigned int n_conserved() {return _n_conserved_quantities;}
     unsigned int dimensions() const;
     double &operator [] (unsigned int index) {return _conserved_quantities[index];}
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
 private:
     double _conserved_quantities [4];

@@ -22,11 +22,8 @@ void Simulation::add_fluid_block(
 {
     unsigned int id = this->_fluid_blocks.size();
     FluidBlock * fb = new FluidBlock(grid, id, bc_map);
-    std::cout << "Constructed fluid block\n";
     fb->fill(fill_func);
-    std::cout << "Filled fluid block\n";
     this->_fluid_blocks.push_back(fb);
-    std::cout << "Pushed fluid block\n";
 }
 
 void Simulation::add_fluid_block(
