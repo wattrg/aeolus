@@ -101,9 +101,10 @@ void FluidBlock::compute_fluxes(){
     flux_calculator fc = this->_flux_calculator;
 
     #ifdef GPU
-        #pragma omp target map(tofrom: interfaces_ptr[:number_interfaces])
+        #pragma omp target teams distribute parallel for map(tofrom: interfaces_ptr[:number_interfaces])
+    #else
+        #pragma omp parallel for 
     #endif
-    #pragma omp parallel for 
     for (int i = 0; i < number_interfaces; i++){
         interfaces_ptr[i].compute_flux(fc);
     }
@@ -115,26 +116,30 @@ void FluidBlock::compute_time_derivatives(){
     Cell * cell_ptrs = this->_cells.data();
     Interface * face_ptrs = this->_interfaces.data();
 
-    //#ifdef GPU
-    //    #pragma omp target map(tofrom: face_ptrs[:number_interfaces]) map(tofrom: cell_ptrs[:number_cells])
-    //#endif
-    #pragma omp parallel for
+    #ifdef GPU
+        #pragma omp target teams distribute parallel for map(tofrom: face_ptrs[:number_interfaces]) map(tofrom: cell_ptrs[:number_cells])
+    #else
+        #pragma omp parallel for
+    #endif
     for (int i = 0; i < number_cells; i++){
-        cell_ptrs[i].compute_time_derivative(this->_interfaces);
+        cell_ptrs[i].compute_time_derivative(face_ptrs);
     }
 }
 
 double FluidBlock::compute_block_dt(double cfl){
     double dt = 10000;
     unsigned int N = this->_number_valid_cells;
-    Cell * cell_ptr = this->_cells.data();
+    Cell * cells = this->_cells.data();
+    Interface * interfaces = this->_interfaces.data();
+    int number_interfaces = this->_interfaces.size();
 
-    //#ifdef GPU
-    //    #pragma omp target map(tofrom: face_ptrs[0:number_interfaces]) map(tofrom: cell_ptrs[0:number_cells])
-    //#endif
-    #pragma omp parallel for reduction(min:dt)
+    #ifdef GPU
+        #pragma omp target teams distribute parallel for reduction(min:dt) map(to: interfaces[0:number_interfaces]) map(to: cells[0:N]) map(tofrom: dt)
+    #else
+        #pragma omp parallel for reduction(min:dt)
+    #endif
     for (unsigned int i = 0; i < N; i++){
-        dt = std::min(cell_ptr[i].compute_local_timestep(cfl, this->_interfaces), dt); 
+        dt = std::min(cells[i].compute_local_timestep(cfl, interfaces), dt); 
     }
     this->_dt = dt;
     return dt;
@@ -147,9 +152,10 @@ void FluidBlock::apply_time_derivative(){
     GasModel gm = *this->_gas_model;
 
     #ifdef GPU
-        #pragma omp target map(tofrom: cell[0:n_cells])
+        #pragma omp target teams distribute parallel for map(tofrom: cell[0:n_cells])
+    #else
+        #pragma omp parallel for
     #endif
-    #pragma omp parallel for
     for (unsigned int i_cell = 0; i_cell < n_cells; i_cell++){
         ConservedQuantity & cq = cell[i_cell].conserved_quantities;
         for (unsigned int i_cq=0; i_cq < cq.n_conserved(); i_cq++){
@@ -160,13 +166,20 @@ void FluidBlock::apply_time_derivative(){
 }
 
 void FluidBlock::reconstruct(){
-    //#ifdef GPU
-    //    #pragma omp target
-    //#endif
-    #pragma omp parallel for
-    for (Interface & face : this->_interfaces){
-        face.copy_left_flow_state(this->_cells[face.get_left_cell()].fs);
-        face.copy_right_flow_state(this->_cells[face.get_right_cell()].fs);
+    Interface * interfaces = this->_interfaces.data();
+    int num_interfaces = this->_interfaces.size();
+    Cell * cells = this->_cells.data();
+    int num_cells = this->_cells.size();
+
+    #ifdef GPU
+        #pragma omp target parallel for map(tofrom: interfaces[:num_interfaces]) map(tofrom: cells[:num_cells])
+    #else
+        #pragma omp parallel for
+    #endif
+    for (int i_face = 0; i_face < num_interfaces; i_face++){
+        Interface & face = interfaces[i_face];
+        face.copy_left_flow_state(cells[face.get_left_cell()].fs);
+        face.copy_right_flow_state(cells[face.get_right_cell()].fs);
     }
 }
 

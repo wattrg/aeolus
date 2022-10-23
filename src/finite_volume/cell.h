@@ -49,7 +49,7 @@ public:
     void decode_conserved(GasModel & gas_model);
 
     // compute the residual for a cell, assuming the fluxes have been calculated
-    void compute_time_derivative(std::vector<Interface> &);
+    void compute_time_derivative(Interface *);
 
     // volume of the cell
     double volume() const;
@@ -73,7 +73,7 @@ public:
     unsigned int id() const {return _id;}
 
     // used for computing maximum allowable time step
-    double compute_local_timestep(double cfl, std::vector<Interface> &);
+    double compute_local_timestep(double cfl, Interface *);
 
 private:
     // the interfaces surrounding the cell

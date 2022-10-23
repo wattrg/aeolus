@@ -42,7 +42,7 @@ Cell::Cell(Grid::Cell & grid_cell, std::vector<Interface> & interfaces)
 #ifdef GPU
 #pragma omp declare target
 #endif
-double Cell::compute_local_timestep(double cfl, std::vector<Interface> & faces){
+double Cell::compute_local_timestep(double cfl, Interface * faces){
 
     double spectral_radii = 0.0;
     for (int i = 0; i < this->_number_interfaces; i++){
@@ -64,7 +64,7 @@ double Cell::volume() const {return this->_volume;}
 #ifdef GPU
 #pragma omp declare target
 #endif
-void Cell::compute_time_derivative(std::vector<Interface> & faces){
+void Cell::compute_time_derivative(Interface * faces){
     int n_conserved = this->conserved_quantities.n_conserved();
     for (int i_cq = 0; i_cq < n_conserved; i_cq++){
         double surface_integral = 0.0;

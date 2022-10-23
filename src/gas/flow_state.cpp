@@ -5,10 +5,16 @@ FlowState::FlowState() : gas_state(GasState()), velocity(Vector3()){}
 FlowState::FlowState(GasState gs, Vector3 vel) : gas_state(gs), velocity(vel) {}
 FlowState::~FlowState(){}
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 void FlowState::copy(const FlowState & other){
     this->gas_state.copy(other.gas_state);
     this->velocity.copy(other.velocity);
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
 std::string FlowState::to_string() const {
     std::string str = "FlowState(";

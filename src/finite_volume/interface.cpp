@@ -31,13 +31,25 @@ Interface::Interface(Grid::Interface & grid_face)
 }
 
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 void Interface::copy_left_flow_state(FlowState & fs){
     this->_left.copy(fs);
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 void Interface::copy_right_flow_state(FlowState & fs){
     this->_right.copy(fs);
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
 bool Interface::is_on_boundary() const { return this->_is_on_boundary; }
 

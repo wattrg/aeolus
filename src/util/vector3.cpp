@@ -5,11 +5,17 @@ Vector3::Vector3(double x) : x(x), y(0.0), z(0.0) {}
 Vector3::Vector3(double x, double y) : x(x), y(y), z(0.0) {}
 Vector3::Vector3(double x, double y, double z) : x(x), y(y), z(z) {}
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 void Vector3::copy(const Vector3 & other){
     this->x = other.x;
     this->y = other.y;
     this->z = other.z;
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
 Vector3 Vector3::operator + (const Vector3& other) const {
     return Vector3(this->x + other.x, this->y + other.y, this->z + other.z);    
@@ -43,6 +49,7 @@ Vector3 Vector3::cross(const Vector3& other){
     double z = this->x*other.y - this->y*other.x;
     return Vector3(x, y, z);
 }
+
 #ifdef GPU
 #pragma omp declare target
 #endif
