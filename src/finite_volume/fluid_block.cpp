@@ -101,7 +101,7 @@ void FluidBlock::compute_fluxes(){
     flux_calculator fc = this->_flux_calculator;
 
     #ifdef GPU
-        #pragma omp target teams distribute parallel for map(tofrom: interfaces_ptr[:number_interfaces])
+        #pragma omp target teams distribute parallel for simd map(to: interfaces_ptr[:number_interfaces])
     #else
         #pragma omp parallel for 
     #endif
@@ -117,7 +117,7 @@ void FluidBlock::compute_time_derivatives(){
     Interface * face_ptrs = this->_interfaces.data();
 
     #ifdef GPU
-        #pragma omp target teams distribute parallel for map(tofrom: face_ptrs[:number_interfaces]) map(tofrom: cell_ptrs[:number_cells])
+        #pragma omp target teams distribute parallel for simd //map(to: face_ptrs[:number_interfaces]) map(to: cell_ptrs[:number_cells])
     #else
         #pragma omp parallel for
     #endif
@@ -134,7 +134,7 @@ double FluidBlock::compute_block_dt(double cfl){
     int number_interfaces = this->_interfaces.size();
 
     #ifdef GPU
-        #pragma omp target teams distribute parallel for reduction(min:dt) map(to: interfaces[0:number_interfaces]) map(to: cells[0:N]) map(tofrom: dt)
+        #pragma omp target teams distribute parallel for simd reduction(min:dt) map(tofrom: dt)//map(to: interfaces[0:number_interfaces]) map(to: cells[0:N]) map(tofrom: dt)
     #else
         #pragma omp parallel for reduction(min:dt)
     #endif
@@ -152,7 +152,7 @@ void FluidBlock::apply_time_derivative(){
     GasModel gm = *this->_gas_model;
 
     #ifdef GPU
-        #pragma omp target teams distribute parallel for map(tofrom: cell[0:n_cells])
+        #pragma omp target teams distribute parallel for simd //map(tofrom: cell[0:n_cells])
     #else
         #pragma omp parallel for
     #endif
@@ -163,6 +163,9 @@ void FluidBlock::apply_time_derivative(){
         }
         cell[i_cell].decode_conserved(gm);
     }
+#ifdef GPU
+#pragma omp target exit data map(from: cell[0:n_cells])
+#endif
 }
 
 void FluidBlock::reconstruct(){
@@ -172,7 +175,8 @@ void FluidBlock::reconstruct(){
     int num_cells = this->_cells.size();
 
     #ifdef GPU
-        #pragma omp target parallel for map(tofrom: interfaces[:num_interfaces]) map(tofrom: cells[:num_cells])
+        #pragma omp target enter data map(to: interfaces[:num_interfaces]) map(to:cells[:num_cells])
+        #pragma omp target teams distribute parallel for simd //map(to: interfaces[:num_interfaces]) map(to: cells[:num_cells])
     #else
         #pragma omp parallel for
     #endif

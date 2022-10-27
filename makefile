@@ -40,7 +40,7 @@ ifeq ($(profile), 1)
 	ifneq ($(flavour), debug)
 		CFLAGS := $(CFLAGS) -g
 	endif
-	CFLAGS := $(CFLAGS) -pg
+	CFLAGS := $(CFLAGS) -pg -lineinfo
 endif
 
 # GPU
