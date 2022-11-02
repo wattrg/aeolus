@@ -95,6 +95,25 @@ void FluidBlock::set_flux_calculator(FluxCalculators flux_calc){
     }
 }
 
+void FluidBlock::reconstruct(){
+    Interface * interfaces = this->_interfaces.data();
+    int num_interfaces = this->_interfaces.size();
+    Cell * cells = this->_cells.data();
+
+    #ifdef GPU
+        int num_cells = this->_cells.size();
+        #pragma omp target enter data map(to: interfaces[:num_interfaces]) map(to:cells[:num_cells])
+        #pragma omp target teams distribute parallel for simd
+    #else
+        #pragma omp parallel for
+    #endif
+    for (int i_face = 0; i_face < num_interfaces; i_face++){
+        Interface & face = interfaces[i_face];
+        face.copy_left_flow_state(cells[face.get_left_cell()].fs);
+        face.copy_right_flow_state(cells[face.get_right_cell()].fs);
+    }
+}
+
 void FluidBlock::compute_fluxes(){
     int number_interfaces = this->_interfaces.size();
     Interface * interfaces_ptr = this->_interfaces.data();
@@ -112,12 +131,11 @@ void FluidBlock::compute_fluxes(){
 
 void FluidBlock::compute_time_derivatives(){
     int number_cells = this->_number_valid_cells;
-    int number_interfaces = this->_interfaces.size();
     Cell * cell_ptrs = this->_cells.data();
     Interface * face_ptrs = this->_interfaces.data();
 
     #ifdef GPU
-        #pragma omp target teams distribute parallel for simd //map(to: face_ptrs[:number_interfaces]) map(to: cell_ptrs[:number_cells])
+        #pragma omp target teams distribute parallel for simd
     #else
         #pragma omp parallel for
     #endif
@@ -131,10 +149,9 @@ double FluidBlock::compute_block_dt(double cfl){
     unsigned int N = this->_number_valid_cells;
     Cell * cells = this->_cells.data();
     Interface * interfaces = this->_interfaces.data();
-    int number_interfaces = this->_interfaces.size();
 
     #ifdef GPU
-        #pragma omp target teams distribute parallel for simd reduction(min:dt) map(tofrom: dt)//map(to: interfaces[0:number_interfaces]) map(to: cells[0:N]) map(tofrom: dt)
+        #pragma omp target teams distribute parallel for simd reduction(min:dt) map(tofrom: dt)
     #else
         #pragma omp parallel for reduction(min:dt)
     #endif
@@ -152,38 +169,26 @@ void FluidBlock::apply_time_derivative(){
     GasModel gm = *this->_gas_model;
 
     #ifdef GPU
-        #pragma omp target teams distribute parallel for simd //map(tofrom: cell[0:n_cells])
+        #pragma omp target teams distribute parallel for simd
     #else
         #pragma omp parallel for
     #endif
-    for (unsigned int i_cell = 0; i_cell < n_cells; i_cell++){
+    for (int i_cell = 0; i_cell < n_cells; i_cell++){
         ConservedQuantity & cq = cell[i_cell].conserved_quantities;
         for (unsigned int i_cq=0; i_cq < cq.n_conserved(); i_cq++){
             cq[i_cq] += cell[i_cell].residual[i_cq] * dt; 
         }
-        cell[i_cell].decode_conserved(gm);
+        cell[i_cell].fs.decode_conserved(gm, cq);
     }
 #ifdef GPU
 #pragma omp target exit data map(from: cell[0:n_cells])
 #endif
 }
 
-void FluidBlock::reconstruct(){
-    Interface * interfaces = this->_interfaces.data();
-    int num_interfaces = this->_interfaces.size();
-    Cell * cells = this->_cells.data();
-    int num_cells = this->_cells.size();
 
-    #ifdef GPU
-        #pragma omp target enter data map(to: interfaces[:num_interfaces]) map(to:cells[:num_cells])
-        #pragma omp target teams distribute parallel for simd //map(to: interfaces[:num_interfaces]) map(to: cells[:num_cells])
-    #else
-        #pragma omp parallel for
-    #endif
-    for (int i_face = 0; i_face < num_interfaces; i_face++){
-        Interface & face = interfaces[i_face];
-        face.copy_left_flow_state(cells[face.get_left_cell()].fs);
-        face.copy_right_flow_state(cells[face.get_right_cell()].fs);
+void FluidBlock::apply_bcs(){
+    for (BoundaryCondition & bc : this->bcs()){
+        bc.apply_pre_reconstruction(this->cells(), this->interfaces());
     }
 }
 
@@ -194,7 +199,7 @@ void FluidBlock::fill(std::function<FlowState(double, double, double)> &func){
         Vector3 pos = cell.get_pos();
         FlowState fs = func(pos.x, pos.y, pos.z);
         cell.fs.copy(fs);
-        cell.encode_conserved(*this->_gas_model);
+        cell.fs.encode_conserved(*this->_gas_model, cell.conserved_quantities);
     }
 }
 
@@ -206,7 +211,7 @@ void FluidBlock::fill(const FlowState & fs){
     for (int i=0; i < this->_number_valid_cells; i++) {
         Cell &cell = this->_cells[i];
         cell.fs.copy(fs);
-        cell.encode_conserved(*this->_gas_model);
+        cell.fs.encode_conserved(*this->_gas_model, cell.conserved_quantities);
     }
 }
 

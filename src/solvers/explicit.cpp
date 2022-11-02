@@ -3,11 +3,9 @@
 double ExplicitSolver::_step(){
     // apply pre-reconstruction boundary conditions
     for (FluidBlock * fb : this->_config.fluid_blocks()){
-        for (BoundaryCondition & bc : fb->bcs()){
-            bc.apply_pre_reconstruction(fb->cells(), fb->interfaces());
-        }
+        fb->apply_bcs();
     }
-    double dt; 
+    double dt = -1; 
     for (FluidBlock * fb : this->_config.fluid_blocks()){
         fb->reconstruct();
         fb->compute_fluxes();

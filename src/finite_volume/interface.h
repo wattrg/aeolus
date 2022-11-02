@@ -71,9 +71,16 @@ public:
     int id() const {return _id;}
 
 private:
+    // The left and right flow states to use to compute the 
+    // fluxes. These states are possibly the result of reconstruction
+    FlowState _left;
+    FlowState _right;
+
+    // the flux on the cell
+    ConservedQuantity _flux;
+
     //    position of the centre of the interface
     Vector3 _pos;
-
 
     // direction normal to the interface
     Vector3 _norm;
@@ -96,13 +103,6 @@ private:
     int _right_cell_id = -1;
     bool _right_cell_valid = false;
 
-    // The left and right flow states to use to compute the 
-    // fluxes. These states are possibly the result of reconstruction
-    FlowState _left;
-    FlowState _right;
-
-    // the flux on the cell
-    ConservedQuantity _flux;
 
     // store if the interface is on a boundary
     bool _is_on_boundary = false;

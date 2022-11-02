@@ -32,11 +32,15 @@ public:
     void fill(std::function<FlowState(double, double, double)> &func);
     void fill(const FlowState &);
 
+    // fluid dynamic methods
     void compute_fluxes();
     void compute_time_derivatives();
     void apply_time_derivative();
     double compute_block_dt(double cfl);
     void reconstruct();
+    void apply_bcs();
+
+    // configuration settings
     void set_flux_calculator(FluxCalculators flux_calc);
     void set_gas_model(GasModel & gas_model) {_gas_model = &gas_model;}
 

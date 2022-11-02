@@ -81,41 +81,6 @@ void Cell::compute_time_derivative(Interface * faces){
 #pragma omp end declare target
 #endif
 
-void Cell::encode_conserved(GasModel & gas_model){
-    UNUSED(gas_model);
-    double vx = this->fs.velocity.x;
-    double vy = this->fs.velocity.y;
-    double vz = this->fs.velocity.z;
-    double p = this->fs.gas_state.p;
-    double rho = this->fs.gas_state.rho;
-    double u = this->fs.gas_state.u;
-    double ke = 0.5 * (vx*vx + vy*vy + vz*vz);
-    ConservedQuantity & cq = this->conserved_quantities;
-    cq[cq.rho()] = rho;
-    cq[cq.momentum()] = rho*vx;
-    cq[cq.momentum()+1] = rho*vy;
-    cq[cq.energy()] = (u + ke)*rho + p;
-}
-
-#ifdef GPU
-#pragma omp declare target
-#endif
-void Cell::decode_conserved(GasModel & gas_model){
-    double vx = this->fs.velocity.x;
-    double vy = this->fs.velocity.y;
-    double vz = this->fs.velocity.z;
-    double ke = 0.5 * (vx*vx + vy*vy + vz*vz);
-    ConservedQuantity & cq = this->conserved_quantities;
-    this->fs.gas_state.rho = cq[cq.rho()];
-    this->fs.velocity.x = cq[cq.momentum()] / cq[cq.rho()];
-    this->fs.velocity.y = cq[cq.momentum()+1] / cq[cq.rho()];
-    double e = cq[cq.energy()]/fs.gas_state.rho;
-    this->fs.gas_state.u = e - ke;
-    gas_model.update_from_rhou(fs.gas_state);
-}
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
 Vector3 & Cell::get_pos(){
     return this->_pos;

@@ -42,11 +42,6 @@ public:
     // the residual
     ConservedQuantity residual;
 
-    // encode conserved quantities
-    void encode_conserved(GasModel & gas_model);
-
-    // decode consered quantities
-    void decode_conserved(GasModel & gas_model);
 
     // compute the residual for a cell, assuming the fluxes have been calculated
     void compute_time_derivative(Interface *);

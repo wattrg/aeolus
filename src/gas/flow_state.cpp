@@ -8,6 +8,46 @@ FlowState::~FlowState(){}
 #ifdef GPU
 #pragma omp declare target
 #endif
+void FlowState::encode_conserved(GasModel & gas_model, ConservedQuantity &cq){
+    UNUSED(gas_model);
+    double vx = this->velocity.x;
+    double vy = this->velocity.y;
+    double vz = this->velocity.z;
+    double p = this->gas_state.p;
+    double rho = this->gas_state.rho;
+    double u = this->gas_state.u;
+    double ke = 0.5 * (vx*vx + vy*vy + vz*vz);
+    cq[cq.rho()] = rho;
+    cq[cq.momentum()] = rho*vx;
+    cq[cq.momentum()+1] = rho*vy;
+    cq[cq.energy()] = (u + ke)*rho + p;
+}
+#ifdef GPU
+#pragma omp end declare target
+#endif
+
+#ifdef GPU
+#pragma omp declare target
+#endif
+void FlowState::decode_conserved(GasModel & gas_model, ConservedQuantity &cq){
+    double vx = this->velocity.x;
+    double vy = this->velocity.y;
+    double vz = this->velocity.z;
+    double ke = 0.5 * (vx*vx + vy*vy + vz*vz);
+    this->gas_state.rho = cq[cq.rho()];
+    this->velocity.x = cq[cq.momentum()] / cq[cq.rho()];
+    this->velocity.y = cq[cq.momentum()+1] / cq[cq.rho()];
+    double e = cq[cq.energy()]/this->gas_state.rho;
+    this->gas_state.u = e - ke;
+    gas_model.update_from_rhou(this->gas_state);
+}
+#ifdef GPU
+#pragma omp end declare target
+#endif
+
+#ifdef GPU
+#pragma omp declare target
+#endif
 void FlowState::copy(const FlowState & other){
     this->gas_state.copy(other.gas_state);
     this->velocity.copy(other.velocity);
