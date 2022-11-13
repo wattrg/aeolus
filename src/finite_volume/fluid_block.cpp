@@ -202,11 +202,11 @@ void FluidBlock::compute_residuals(){
             Interface & f = face_ptrs[face.interface];
             double area = (face.outwards ? -1 : 1) * f.area(); 
 
-            mass_si += area * f.flux()[0];
-            px_si += area * f.flux()[1];
-            py_si += area * f.flux()[2];
-            pz_si += area * f.flux()[3];
-            e_si += area * f.flux()[4];
+            mass_si += area * f.flux().mass;
+            px_si += area * f.flux().momentum.x;
+            py_si += area * f.flux().momentum.y;
+            pz_si += area * f.flux().momentum.z;
+            e_si += area * f.flux().energy;
         }
         this->_dmass_dt[i] = mass_si / cell.volume();
         this->_dpx_dt[i] = px_si / cell.volume();

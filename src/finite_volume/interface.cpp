@@ -27,7 +27,7 @@ Interface::Interface(Grid::Interface & grid_face)
 
     // set up the storage for the flux
     this->_dim = (this->_number_vertices == 2) ? 2 : 3;
-    this->_flux = ConservedQuantity(_dim);
+    this->_flux = ConservedQuantity();
 }
 
 
@@ -91,20 +91,7 @@ void Interface::compute_flux(flux_calculator flux_calc){
 #pragma omp declare target
 #endif
 void Interface::_transform_flux_to_global_frame(){
-    unsigned int momentum = this->_flux.momentum();
-    double p_x = 0.0, p_y = 0.0, p_z = 0.0;
-    p_x = this->_norm.x*this->_flux[momentum] + this->_tan1.x*this->_flux[momentum+1];
-    p_y = this->_norm.y*this->_flux[momentum] + this->_tan1.y*this->_flux[momentum+1];
-    if (this->_dim == 3){
-        p_x += this->_tan2.x*this->_flux[momentum+2];
-        p_y += this->_tan2.y*this->_flux[momentum+2];
-        p_z = this->_norm.z*this->_flux[momentum] + this->_tan1.z*this->_flux[momentum+1] + this->_tan2.z*this->_flux[momentum+2];
-    }
-    this->_flux[momentum] = p_x;
-    this->_flux[momentum+1] = p_y;
-    if (this->_dim == 3){
-        this->_flux[momentum+2] = p_z;
-    }
+    this->_flux.momentum.transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
 }
 #ifdef GPU
 #pragma omp end declare target

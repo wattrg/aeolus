@@ -17,10 +17,11 @@ void FlowState::encode_conserved(GasModel & gas_model, ConservedQuantity &cq){
     double rho = this->gas_state.rho;
     double u = this->gas_state.u;
     double ke = 0.5 * (vx*vx + vy*vy + vz*vz);
-    cq[cq.rho()] = rho;
-    cq[cq.momentum()] = rho*vx;
-    cq[cq.momentum()+1] = rho*vy;
-    cq[cq.energy()] = (u + ke)*rho + p;
+    cq.mass = rho;
+    cq.momentum.x = rho*vx;
+    cq.momentum.y = rho*vy;
+    cq.momentum.z = rho*vz;
+    cq.energy = (u + ke)*rho + p;
 }
 #ifdef GPU
 #pragma omp end declare target
@@ -34,10 +35,10 @@ void FlowState::decode_conserved(GasModel & gas_model, ConservedQuantity &cq){
     double vy = this->velocity.y;
     double vz = this->velocity.z;
     double ke = 0.5 * (vx*vx + vy*vy + vz*vz);
-    this->gas_state.rho = cq[cq.rho()];
-    this->velocity.x = cq[cq.momentum()] / cq[cq.rho()];
-    this->velocity.y = cq[cq.momentum()+1] / cq[cq.rho()];
-    double e = cq[cq.energy()]/this->gas_state.rho;
+    this->gas_state.rho = cq.mass;
+    this->velocity.x = cq.momentum.x / cq.mass;
+    this->velocity.y = cq.momentum.y / cq.mass;
+    double e = cq.energy/this->gas_state.rho;
     this->gas_state.u = e - ke;
     gas_model.update_from_rhou(this->gas_state);
 }
