@@ -34,20 +34,23 @@ public:
     Cell(Grid::Cell & grid_cell, std::vector<Interface>&);
 
     // the flow state in the cell centre
-    FlowState fs;
+    // FlowState fs;
 
     // the conserved quantities
-    ConservedQuantity conserved_quantities;
+    // ConservedQuantity conserved_quantities;
 
     // the residual
-    ConservedQuantity residual;
+    // ConservedQuantity residual;
 
 
     // compute the residual for a cell, assuming the fluxes have been calculated
-    void compute_time_derivative(Interface *);
+    // void compute_time_derivative(Interface *);
 
     // volume of the cell
     double volume() const;
+
+    const CellFace *interfaces() const {return _interfaces;}
+    int number_interfaces() const {return _number_interfaces;}
 
     // return the position of the cell
     Vector3 & get_pos();
@@ -60,7 +63,7 @@ public:
 
     // give out some read only info about the vertices
     unsigned int number_vertices() const;
-    int * vertices();
+    int *vertices();
 
     // get info about the shape of the cell
     Grid::CellShape get_shape() const;
@@ -68,7 +71,7 @@ public:
     unsigned int id() const {return _id;}
 
     // used for computing maximum allowable time step
-    double compute_local_timestep(double cfl, Interface *);
+    // double compute_local_timestep(double cfl, Interface *);
 
 private:
     // the interfaces surrounding the cell
@@ -92,10 +95,6 @@ private:
     double _volume = std::nan("");
 
     int _id = -1;
-
-    // the local time step
-    bool _lts = false;
-    double _dt = -1;
 };
 
 #endif // __CELL_H_

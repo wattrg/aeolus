@@ -101,6 +101,7 @@ void VTKWriter::_read_data(FluidBlock & fb){
     int offset = 0;
     for (int i=0; i < this->_number_cells; i++){
         Cell &cell = fb.cells()[i];
+        FlowState fs = fb.get_flow(i);
         // get data about the geometry
         offset += cell.number_vertices();
         this->_offsets.data.push_back(offset);
@@ -112,7 +113,7 @@ void VTKWriter::_read_data(FluidBlock & fb){
         // read the flow variables via the data accessors
         for (unsigned int var_i = 0; var_i < _variable_accessors.size(); var_i++){
             Accessor & var_access = _variable_accessors[var_i];
-            std::vector<double> data = var_access.read_variable(cell);
+            std::vector<double> data = var_access.read_variable(cell, fs);
             if (data.size() != var_access.number_of_components()){
                 throw std::runtime_error("Incorrect number of components for flow variable");
             }

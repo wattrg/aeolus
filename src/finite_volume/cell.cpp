@@ -32,54 +32,10 @@ Cell::Cell(Grid::Cell & grid_cell, std::vector<Interface> & interfaces)
         size_t id = grid_interface.interface->id();
         this->_interfaces[i] = CellFace(interfaces[id], grid_interface.outwards);
     }
-
-    // initialise conserved quantities and residuals
-    this->conserved_quantities = ConservedQuantity(2);
-    this->residual = ConservedQuantity(2);
 }
 
-
-#ifdef GPU
-#pragma omp declare target
-#endif
-double Cell::compute_local_timestep(double cfl, Interface * faces){
-
-    double spectral_radii = 0.0;
-    for (int i = 0; i < this->_number_interfaces; i++){
-        CellFace &face = this->_interfaces[i];
-        Interface & f = faces[face.interface];
-        double sig_vel = fabs(this->fs.velocity.dot(f.n())) + this->fs.gas_state.a;
-        spectral_radii += sig_vel * f.area();
-    }
-    double dt = cfl * this->_volume / spectral_radii;
-    if (_lts) this->_dt = dt;
-    return dt;
-}
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
 double Cell::volume() const {return this->_volume;}
-
-#ifdef GPU
-#pragma omp declare target
-#endif
-void Cell::compute_time_derivative(Interface * faces){
-    int n_conserved = this->conserved_quantities.n_conserved();
-    for (int i_cq = 0; i_cq < n_conserved; i_cq++){
-        double surface_integral = 0.0;
-        for (int i_face=0; i_face < this->_number_interfaces; i_face++){
-            CellFace &face = this->_interfaces[i_face];
-            Interface & f = faces[face.interface];
-            double area = (face.outwards ? -1 : 1) * f.area(); 
-            surface_integral += area * f.flux()[i_cq];
-        }
-        this->residual[i_cq] = surface_integral / this->_volume;
-    }
-}
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
 
 Vector3 & Cell::get_pos(){
@@ -101,7 +57,7 @@ Grid::CellShape Cell::get_shape() const {
 std::string Cell::to_string() const {
     std::string str = "Cell(";
     str.append(this->_pos.to_string());
-    str.append(this->fs.to_string());
+    // str.append(this->fs.to_string());
     str.append(", ");
     str.append("vertices = [");
     for (int i = 0; i < this->_number_vertices; i++){
