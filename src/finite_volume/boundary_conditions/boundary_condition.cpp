@@ -35,13 +35,14 @@ void BoundaryCondition::apply_pre_reconstruction(FluidBlock &fb, std::vector<Int
     int number_interfaces = this->_interfaces.size();
     for (int iface = 0; iface < number_interfaces; iface++){
         Interface &face = interfaces[this->_interfaces[iface]];        
-        int valid_id = fb.cells()[face.get_valid_cell()].id();
-        int ghost_id = fb.cells()[face.get_ghost_cell()].id();
+        int valid_id = face.get_valid_cell();
+        int ghost_id = face.get_ghost_cell();
         FlowState valid = fb.get_flow(valid_id);
         FlowState ghost = fb.get_flow(ghost_id);
         for (std::shared_ptr<GhostCellEffect> action : this->_pre_recon_actions){
             action->apply(face, valid, ghost); 
         }
+        fb.set_flow(ghost_id, ghost);
     }
 }
 

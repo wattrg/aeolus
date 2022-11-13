@@ -127,6 +127,7 @@ void FluidBlock::set_flow(int i, FlowState flow){
     this->_T[i] = flow.gas_state.T;
     this->_rho[i] = flow.gas_state.rho;
     this->_u[i] = flow.gas_state.u;
+    this->_a[i] = flow.gas_state.a;
     this->_vx[i] = flow.velocity.x;
     this->_vy[i] = flow.velocity.y;
     this->_vz[i] = flow.velocity.z;
@@ -152,7 +153,7 @@ void FluidBlock::reconstruct(){
         #pragma omp target enter data map(to: interfaces[:num_interfaces]) map(to:cells[:num_cells])
         #pragma omp target teams distribute parallel for simd
     #else
-        #pragma omp parallel for
+        //#pragma omp parallel for
     #endif
     for (int i_face = 0; i_face < num_interfaces; i_face++){
         Interface & face = interfaces[i_face];
@@ -212,6 +213,7 @@ void FluidBlock::compute_residuals(){
         this->_dpx_dt[i] = px_si / cell.volume();
         this->_dpy_dt[i] = py_si / cell.volume();
         this->_dpz_dt[i] = pz_si / cell.volume();
+        this->_de_dt[i] = e_si / cell.volume();
     }
 }
 

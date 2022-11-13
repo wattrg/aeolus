@@ -12,8 +12,7 @@ void InternalCopy::apply(Interface &, FlowState &valid, FlowState &ghost) {
 }
 
 // Reflect the component of the velocity normal to the interface
-void ReflectNormal::apply(Interface &interface, FlowState &, FlowState &ghost) {
-    Interface &f = interface;
+void ReflectNormal::apply(Interface &f, FlowState &, FlowState &ghost) {
     ghost.velocity.transform_to_local_frame(f.n(), f.t1(), f.t2());
     ghost.velocity.x = -ghost.velocity.x;
     ghost.velocity.transform_to_global_frame(f.n(), f.t1(), f.t2());

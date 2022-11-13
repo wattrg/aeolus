@@ -170,4 +170,5 @@ void hanel(FlowState &left, FlowState &right, ConservedQuantity &flux){
 #ifdef GPU
 #pragma omp end declare target
 #endif
-}
+
+} // namespac FluxCalc
