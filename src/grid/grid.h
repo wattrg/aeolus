@@ -20,8 +20,7 @@ GridFormats extension_to_grid_format(std::string);
 class Grid {
 public: 
     Grid(std::string file_name);
-    // ~Grid() {}
-    //virtual void read_grid(const char * file_name) {}
+    ~Grid();
 
     std::vector<Vertex *> &vertices() {return this->_vertices;}
     std::vector<Interface *> &interfaces () {return this->_interfaces;}
