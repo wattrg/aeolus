@@ -265,9 +265,9 @@ void FluidBlock::apply_residuals(double dt){
     }
     this->decode_conserved();
 
-#ifdef GPU
-#pragma omp target exit data map(from: cell[0:n_cells])
-#endif
+    #ifdef GPU
+        #pragma omp target exit data map(from: cell[0:n_cells])
+    #endif
 }
 
 void FluidBlock::encode_conserved(){
@@ -304,14 +304,15 @@ void FluidBlock::decode_conserved(){
         double vz = this->_vz[i];
         double ke = 0.5*(vx*vx + vy*vy + vz*vz);
         double rho = this->_mass[i];
+        double p = this->_p[i];
         this->_vx[i] = this->_px[i] / rho;
         this->_vy[i] = this->_py[i] / rho;
         this->_vz[i] = this->_pz[i] / rho;
         this->_rho[i] = this->_mass[i];
-        this->_u[i] = this->_e[i] / rho;
+        this->_u[i] = (this->_e[i] - p)/rho - ke;
         GasState gs;
         gs.rho = this->_rho[i];
-        gs.u = this->_u[i] - ke;
+        gs.u = this->_u[i];
         this->_gas_model->update_from_rhou(gs);
         this->_p[i] = gs.p;
         this->_T[i] = gs.T;
