@@ -3,3 +3,4 @@ inst/
 flow/
 *.vtu
 gmon.out
+*.nsys-rep
