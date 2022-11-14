@@ -270,9 +270,12 @@ void FluidBlock::compute_residuals(){
     GET_RESIDUAL_PTRS
     GET_INTERFACE_PTRS
     GET_CELL_PTRS
+    UNUSED(num_faces)
+    UNUSED(num_cells)
+
 
     #ifdef GPU
-        #pragma omp target teams distribute parallel for
+        #pragma omp target teams distribute parallel for simd
     #else
         #pragma omp parallel for
     #endif
@@ -307,13 +310,19 @@ double FluidBlock::compute_block_dt(double cfl){
     GET_CELL_PTRS
     GET_FLOW_PTRS
     GET_INTERFACE_PTRS
+    UNUSED(num_cells)
+    UNUSED(num_faces)
+    UNUSED(p)
+    UNUSED(T)
+    UNUSED(rho)
+    UNUSED(u)
 
     #ifdef GPU
-        #pragma omp target teams distribute parallel for reduction(min:dt) map(tofrom: dt)
+        #pragma omp target teams distribute parallel for simd reduction(min:dt) map(tofrom: dt)
     #else
         #pragma omp parallel for reduction(min:dt)
     #endif
-    for (unsigned int i_cell = 0; i_cell < num_valid_cells; i_cell++){
+    for (int i_cell = 0; i_cell < num_valid_cells; i_cell++){
         // compute local dt for a particular cell
         double spectral_radii = 0.0;
         Cell &cell = cells[i_cell]; 
@@ -369,10 +378,13 @@ void FluidBlock::encode_conserved(bool gpu){
     int number_valid_cells = this->_number_valid_cells;
     GET_CONSERVED_PTRS
     GET_FLOW_PTRS
+    UNUSED(a)
+    UNUSED(T)
 
     #ifdef GPU
-        #pragma omp target teams distribute parallel for if (gpu)
+        #pragma omp target teams distribute parallel for simd if (gpu)
     #else
+        UNUSED(gpu)
         #pragma omp parallel for
     #endif
     for (int i=0; i < number_valid_cells; ++i){
@@ -397,8 +409,9 @@ void FluidBlock::decode_conserved(bool gpu){
     GasModel gm = *this->_gas_model;
     int number_cells = this->_number_valid_cells;
     #ifdef GPU
-        #pragma omp target teams distribute parallel for map(to: gm) if(gpu)
+        #pragma omp target teams distribute parallel for simd map(to: gm) if(gpu)
     #else
+        UNUSED(gpu)
         #pragma omp parallel for
     #endif
     for (int i=0; i < number_cells; ++i){
