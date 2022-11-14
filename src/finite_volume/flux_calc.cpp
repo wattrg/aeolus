@@ -78,19 +78,19 @@ void ausmdv(FlowState & left, FlowState & right, ConservedQuantity & flux){
     double ru2_half = (0.5 + s) * ru2_AUSMV + (0.5 - s) * ru2_AUSMD;
     //
     // Assemble components of the flux vector.
-    flux[flux.rho()] += ru_half;
+    flux.mass += ru_half;
     if (ru_half >= 0.0) {
         // Wind is blowing from the left.
-        flux[flux.momentum()] += (ru2_half+p_half);
-        flux[flux.momentum()+1] += (ru_half*vL);
-        if (flux.dimensions() == 3) { flux[flux.momentum()+2] += (ru_half*wL); }
-        flux[flux.energy()] += ru_half*HL;
+        flux.momentum.x += (ru2_half+p_half);
+        flux.momentum.y += (ru_half*vL);
+        flux.momentum.z += (ru_half*wL);
+        flux.energy += ru_half*HL;
     } else {
         // Wind is blowing from the right.
-        flux[flux.momentum()] += (ru2_half+p_half);
-        flux[flux.momentum()+1] += (ru_half*vR);
-        if (flux.dimensions() == 3) { flux[flux.momentum()+2] += (ru_half*wR); }
-        flux[flux.energy()] += ru_half*HR;
+        flux.momentum.x += (ru2_half+p_half);
+        flux.momentum.y += (ru_half*vR);
+        flux.momentum.z += (ru_half*wR);
+        flux.energy += ru_half*HR;
     }
 
     // Apply entropy fix (section 3.5 in Wada and Liou's paper)
@@ -102,12 +102,11 @@ void ausmdv(FlowState & left, FlowState & right, ConservedQuantity & flux){
     if (caseA && !caseB) { d_ua = C_EFIX * ((uR - aR) - (uL - aL)); }
     if (caseB && !caseA) { d_ua = C_EFIX * ((uR + aR) - (uL + aL)); }
     if (d_ua != 0.0) {
-        flux[flux.rho()] -= d_ua*(rR - rL);
-        flux[flux.momentum()] -= d_ua*(rR*uR - rL*uL);
-        flux[flux.momentum()+1] -= d_ua*(rR*vR - rL*vL);
-        if (flux.dimensions() > 2) { 
-            flux[flux.momentum()+2] -= d_ua*(rR*wR - rL*wL); }
-        flux[flux.energy()] -= d_ua*(rR*HR - rL*HL);
+        flux.mass -= d_ua*(rR - rL);
+        flux.momentum.x -= d_ua*(rR*uR - rL*uL);
+        flux.momentum.y -= d_ua*(rR*vR - rL*vL);
+        flux.momentum.z -= d_ua*(rR*wR - rL*wL);
+        flux.energy -= d_ua*(rR*HR - rL*HL);
     }
 }
 
@@ -162,16 +161,14 @@ void hanel(FlowState &left, FlowState &right, ConservedQuantity &flux){
     double p_half = pLplus + pRminus;
 
     // assemble components into the flux vector
-    flux[flux.rho()] = uLplus * rL + uRminus * rR;
-    unsigned int momentum = flux.momentum();
-    flux[momentum]   = uLplus * rL * uL + uRminus * rR * uR + p_half;
-    flux[momentum+1] = uLplus * rL * vL + uRminus * rR * vR;
-    if (flux.dimensions() > 2){
-        flux[momentum+2] = uLplus * rL * wL + uRminus * rR * wR;
-    }
-    flux[flux.energy()] = uLplus * rL * HL + uRminus * rR * HR; 
+    flux.mass = uLplus * rL + uRminus * rR;
+    flux.momentum.x = uLplus * rL * uL + uRminus * rR * uR + p_half;
+    flux.momentum.y = uLplus * rL * vL + uRminus * rR * vR;
+    flux.momentum.z = uLplus * rL * wL + uRminus * rR * wR;
+    flux.energy = uLplus * rL * HL + uRminus * rR * HR; 
 }
 #ifdef GPU
 #pragma omp end declare target
 #endif
-}
+
+} // namespac FluxCalc

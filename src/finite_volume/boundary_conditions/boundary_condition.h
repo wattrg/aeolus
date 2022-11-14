@@ -12,6 +12,7 @@
 class GhostCellEffect;
 class Interface;
 class Cell;
+class FluidBlock;
 
 // we'll keep track of the available boundary conditions here
 namespace BoundaryConditions {
@@ -33,7 +34,7 @@ public:
     BoundaryCondition(std::vector<std::shared_ptr<GhostCellEffect>> pre_recon);
 
     // apply the pre-reconstruction actions
-    void apply_pre_reconstruction(std::vector<Cell> & cells, std::vector<Interface> &interfaces);
+    void apply_pre_reconstruction(FluidBlock &fb, std::vector<Interface> &interfaces);
 
     void add_interface(Interface & face);
     //void add_ghost_cell(Cell & cell);

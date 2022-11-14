@@ -49,7 +49,7 @@ FluidBlockIO::FluidBlockIO(FluidBlockFormats::FluidBlockFormat input_fmt,
 }
 
 void FluidBlockWriter::add_variable(std::string name, 
-                                    std::vector<double> (*access_from_cell)(const Cell &),
+                                    std::vector<double> (*access_from_cell)(const Cell &, const FlowState &),
                                     int number_of_components){
     this->_variable_accessors.push_back(Accessor(name, access_from_cell, number_of_components));
 }

@@ -12,6 +12,7 @@ public:
     Vector3(double x);
     Vector3(double x, double y);
     Vector3(double x, double y, double z);
+
     double x, y, z;
 
     double distance_to(Vector3 & other);

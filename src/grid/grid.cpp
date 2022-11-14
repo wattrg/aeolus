@@ -1,5 +1,17 @@
 #include "grid.h"
 
+Grid::Grid::~Grid() {
+    for (Vertex *v : this->_vertices){
+        delete v;
+    }
+    for (Interface *f : this->_interfaces){
+        delete f;
+    }
+    for (Cell *cell : this->_cells){
+        delete cell;
+    }
+}
+
 Grid::GridFormats Grid::extension_to_grid_format(std::string extension){
     if (extension == "su2") return GridFormats::su2;
     throw std::runtime_error("Unknown grid format");

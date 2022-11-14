@@ -8,7 +8,7 @@ class Cell;
 class GhostCellEffect {
 public:
     virtual ~GhostCellEffect() {};
-    virtual void apply(Interface &interface, Cell &valid, Cell &ghost)=0;
+    virtual void apply(Interface &interface, FlowState &valid, FlowState &ghost)=0;
 };
 
 class FlowStateCopy : public GhostCellEffect{
@@ -16,7 +16,7 @@ public:
     ~FlowStateCopy() {};
     FlowStateCopy(const FlowState fs) : _fs(fs) {};
     FlowStateCopy(const FlowStateCopy & other);
-    void apply(Interface &interface, Cell &valid, Cell &ghost);
+    void apply(Interface &interface, FlowState &valid, FlowState &ghost);
 
 private:
     const FlowState _fs;
@@ -27,7 +27,7 @@ public:
     ~InternalCopy() {};
     InternalCopy() {};
     InternalCopy(const InternalCopy & other);
-    void apply(Interface &interface, Cell &valid, Cell &ghost);
+    void apply(Interface &interface, FlowState &valid, FlowState &ghost);
 };
 
 class ReflectNormal : public GhostCellEffect {
@@ -35,15 +35,7 @@ public:
     ~ReflectNormal() {};
     ReflectNormal() {};
     ReflectNormal(const ReflectNormal & other);
-    void apply(Interface &interface, Cell &valid, Cell &ghost);
+    void apply(Interface &interface, FlowState &valid, FlowState &ghost);
 };
-
-//class ReflectTangential : public GhostCellEffect {
-//public:
-//    ~ReflectTangential(){};
-//    ReflectTangential() {};
-//    ReflectTangential(const ReflectTangential & other);
-//    void apply(Cell & ghost_cell) {}
-//};
 
 #endif

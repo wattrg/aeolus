@@ -9,9 +9,9 @@ double ExplicitSolver::_step(){
     for (FluidBlock * fb : this->_config.fluid_blocks()){
         fb->reconstruct();
         fb->compute_fluxes();
-        fb->compute_time_derivatives();
+        fb->compute_residuals();
         dt = fb->compute_block_dt(this->_cfl);
-        fb->apply_time_derivative();
+        fb->apply_residuals(dt);
     }
     return dt;
 }

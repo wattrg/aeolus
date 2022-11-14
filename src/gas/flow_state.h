@@ -6,9 +6,9 @@
 #include "../util/unused.h"
 #include "../finite_volume/conserved_quantities.h"
 
-class FlowState {
+struct FlowState {
 public:
-    FlowState();
+    FlowState() {};
     FlowState(GasState gs, Vector3 vel);
     ~FlowState();
 
