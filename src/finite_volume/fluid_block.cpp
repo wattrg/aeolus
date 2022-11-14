@@ -217,7 +217,7 @@ void FluidBlock::reconstruct(){
 
         #pragma omp target teams distribute parallel for simd
     #else
-        #pragma omp parallel for
+        #pragma omp parallel for simd
     #endif
     for (int i_face = 0; i_face < num_faces; i_face++){
         Interface &face = faces[i_face];
@@ -259,7 +259,7 @@ void FluidBlock::compute_fluxes(){
     #ifdef GPU
         #pragma omp target teams distribute parallel for simd
     #else
-        #pragma omp parallel for 
+        #pragma omp parallel for simd
     #endif
     for (int i = 0; i < num_faces; i++){
         faces[i].compute_flux(fc);
@@ -277,7 +277,7 @@ void FluidBlock::compute_residuals(){
     #ifdef GPU
         #pragma omp target teams distribute parallel for simd
     #else
-        #pragma omp parallel for
+        #pragma omp parallel for simd
     #endif
     for (int i = 0; i < num_valid_cells; i++){
         Cell &cell = cells[i];
@@ -349,7 +349,7 @@ void FluidBlock::apply_residuals(double dt){
     #ifdef GPU
         #pragma omp target teams distribute parallel for simd
     #else
-        #pragma omp parallel for
+        #pragma omp parallel for simd
     #endif
     for (int i_cell = 0; i_cell < num_valid_cells; i_cell++){
         mass[i_cell] += dmass_dt[i_cell] * dt;
@@ -385,7 +385,7 @@ void FluidBlock::encode_conserved(bool gpu){
         #pragma omp target teams distribute parallel for simd if (gpu)
     #else
         UNUSED(gpu)
-        #pragma omp parallel for
+        #pragma omp parallel for simd
     #endif
     for (int i=0; i < number_valid_cells; ++i){
         double rhoi = rho[i];
@@ -412,7 +412,7 @@ void FluidBlock::decode_conserved(bool gpu){
         #pragma omp target teams distribute parallel for simd map(to: gm) if(gpu)
     #else
         UNUSED(gpu)
-        #pragma omp parallel for
+        #pragma omp parallel for simd
     #endif
     for (int i=0; i < number_cells; ++i){
         double vxi = vx[i];
