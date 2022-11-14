@@ -37,15 +37,37 @@ Interface::Interface(Grid::Interface & grid_face)
 void Interface::copy_left_flow_state(FlowState & fs){
     this->_left.copy(fs);
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 void Interface::copy_right_flow_state(FlowState & fs){
     this->_right.copy(fs);
+}
+
+void Interface::copy_left_flow_state(double p, double T, double rho, 
+                                     double u, double a, 
+                                     double vx, double vy, double vz)
+{
+    this->_left.gas_state.p = p;
+    this->_left.gas_state.T = T;
+    this->_left.gas_state.rho = rho;
+    this->_left.gas_state.u = u;
+    this->_left.gas_state.a = a;
+    this->_left.velocity.x = vx;
+    this->_left.velocity.y = vy;
+    this->_left.velocity.z = vz;
+}
+
+void Interface::copy_right_flow_state(double p, double T, double rho, 
+                                      double u, double a, 
+                                      double vx, double vy, double vz)
+{
+    this->_right.gas_state.p = p;
+    this->_right.gas_state.T = T;
+    this->_right.gas_state.rho = rho;
+    this->_right.gas_state.u = u;
+    this->_right.gas_state.a = a;
+    this->_right.velocity.x = vx;
+    this->_right.velocity.y = vy;
+    this->_right.velocity.z = vz;
 }
 #ifdef GPU
 #pragma omp end declare target
@@ -161,13 +183,7 @@ std::ostream& operator << (std::ostream& os, const Interface interface){
 int Interface::get_left_cell() {
     return this->_left_cell_id;
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 int Interface::get_right_cell() {
     return this->_right_cell_id;
 }

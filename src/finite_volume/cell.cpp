@@ -35,7 +35,13 @@ Cell::Cell(Grid::Cell & grid_cell, std::vector<Interface> & interfaces)
 }
 
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 double Cell::volume() const {return this->_volume;}
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
 
 Vector3 & Cell::get_pos(){

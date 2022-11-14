@@ -44,6 +44,10 @@ public:
     
     void copy_left_flow_state(FlowState & fs);
     void copy_right_flow_state(FlowState & fs);
+    void copy_left_flow_state(double p, double T, double rho, double u, double a, 
+                              double vx, double vy, double vz);
+    void copy_right_flow_state(double p, double T, double rho, double u, double a, 
+                              double vx, double vy, double vz);
 
     // Mark the interface as being on the boundary
     void mark_on_boundary();

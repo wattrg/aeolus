@@ -39,8 +39,8 @@ public:
     double compute_block_dt(double cfl);
     void reconstruct();
     void apply_bcs();
-    void encode_conserved();
-    void decode_conserved();
+    void encode_conserved(bool gpu=false);
+    void decode_conserved(bool gpu=false);
 
     // configuration settings
     void set_flux_calculator(FluxCalculators flux_calc);

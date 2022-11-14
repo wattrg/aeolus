@@ -119,9 +119,15 @@ FlowState FluidBlock::get_flow(int i){
     gs.a = a;
     gs.u = u;
     Vector3 vel = Vector3(this->_vx[i], this->_vy[i], this->_vz[i]);
-    return FlowState(gs, vel);
+    FlowState fs;
+    fs.gas_state = gs;
+    fs.velocity = vel;
+    return fs;
 }
 
+#ifdef GPU
+#pragma omp declare target
+#endif
 void FluidBlock::set_flow(int i, FlowState flow){
     this->_p[i] = flow.gas_state.p;
     this->_T[i] = flow.gas_state.T;
@@ -132,6 +138,9 @@ void FluidBlock::set_flow(int i, FlowState flow){
     this->_vy[i] = flow.velocity.y;
     this->_vz[i] = flow.velocity.z;
 }
+#ifdef GPU
+#pragma omp end declare target
+#endif
 
 void FluidBlock::set_flux_calculator(FluxCalculators flux_calc){
     switch (flux_calc) {
@@ -144,55 +153,131 @@ void FluidBlock::set_flux_calculator(FluxCalculators flux_calc){
     }
 }
 
-void FluidBlock::reconstruct(){
-    Interface * interfaces = this->_interfaces.data();
-    int num_interfaces = this->_interfaces.size();
+#define GET_CELL_PTRS \
+    int num_cells = this->_cells.size();\
+    int num_valid_cells = this->_number_valid_cells;\
+    Cell *cells = this->_cells.data();
 
+#define GET_INTERFACE_PTRS\
+    int num_faces = this->_interfaces.size();\
+    Interface *faces = this->_interfaces.data();
+
+#define GET_FLOW_PTRS \
+    double *p = this->_p.data(); \
+    double *T = this->_T.data(); \
+    double *rho = this->_rho.data(); \
+    double *u = this->_u.data(); \
+    double *a = this->_a.data(); \
+    double *vx = this->_vx.data(); \
+    double *vy = this->_vy.data(); \
+    double *vz = this->_vz.data();
+
+#define GET_CONSERVED_PTRS \
+    double *mass = this->_mass.data();\
+    double *px = this->_px.data();\
+    double *py = this->_py.data();\
+    double *pz = this->_pz.data();\
+    double *e = this->_e.data();
+
+#define GET_RESIDUAL_PTRS \
+    double *dmass_dt = this->_dmass_dt.data();\
+    double *dpx_dt = this->_dpx_dt.data();\
+    double *dpy_dt = this->_dpy_dt.data();\
+    double *dpz_dt = this->_dpz_dt.data();\
+    double *de_dt = this->_de_dt.data();
+
+void FluidBlock::reconstruct(){
+    GET_INTERFACE_PTRS
+    GET_FLOW_PTRS
     #ifdef GPU
-        int num_cells = this->_cells.size();
-        #pragma omp target enter data map(to: interfaces[:num_interfaces]) map(to:cells[:num_cells])
+        GET_CELL_PTRS
+        GET_CONSERVED_PTRS
+        GET_RESIDUAL_PTRS
+        #pragma omp target enter data\
+            map(to: p[:num_cells])\
+            map(to: T[:num_cells])\
+            map(to: rho[:num_cells])\
+            map(to: u[:num_cells])\
+            map(to: a[:num_cells])\
+            map(to: vx[:num_cells])\
+            map(to: vy[:num_cells])\
+            map(to: vz[:num_cells])\
+            map(to: mass[:num_cells])\
+            map(to: px[:num_cells])\
+            map(to: py[:num_cells])\
+            map(to: pz[:num_cells])\
+            map(to: e[:num_cells])\
+            map(to: dmass_dt[:num_cells])\
+            map(to: dpx_dt[:num_cells])\
+            map(to: dpy_dt[:num_cells])\
+            map(to: dpz_dt[:num_cells])\
+            map(to: de_dt[:num_cells])\
+            map(to: faces[:num_faces])\
+            map(to: cells[:num_cells])\
+
         #pragma omp target teams distribute parallel for simd
     #else
-        //#pragma omp parallel for
+        #pragma omp parallel for
     #endif
-    for (int i_face = 0; i_face < num_interfaces; i_face++){
-        Interface & face = interfaces[i_face];
+    for (int i_face = 0; i_face < num_faces; i_face++){
+        Interface &face = faces[i_face];
         int id_left = face.get_left_cell();
         int id_right = face.get_right_cell();
-        FlowState left(this->get_flow(id_left));
-        FlowState right(this->get_flow(id_right));
-        face.copy_left_flow_state(left);
-        face.copy_right_flow_state(right);
+
+        // left flow state
+        double p_left = p[id_left];
+        double T_left = T[id_left];
+        double rho_left = rho[id_left];
+        double a_left = a[id_left];
+        double u_left = u[id_left];
+        double vx_left = vx[id_left];
+        double vy_left = vy[id_left];
+        double vz_left = vz[id_left];
+
+        // right flow state
+        double p_right = p[id_right];
+        double T_right = T[id_right];
+        double rho_right = rho[id_right];
+        double a_right = a[id_right];
+        double u_right = u[id_right];
+        double vx_right = vx[id_right];
+        double vy_right = vy[id_right];
+        double vz_right = vz[id_right];
+        
+        // copy data
+        face.copy_left_flow_state(p_left, T_left, rho_left, u_left, a_left,
+                                  vx_left, vy_left, vz_left);
+        face.copy_right_flow_state(p_right, T_right, rho_right, u_right, a_right,
+                                  vx_right, vy_right, vz_right);
     }
 }
 
 void FluidBlock::compute_fluxes(){
-    int number_interfaces = this->_interfaces.size();
-    Interface * interfaces_ptr = this->_interfaces.data();
+    GET_INTERFACE_PTRS
     flux_calculator fc = this->_flux_calculator;
 
     #ifdef GPU
-        #pragma omp target teams distribute parallel for simd map(to: interfaces_ptr[:number_interfaces])
+        #pragma omp target teams distribute parallel for simd
     #else
         #pragma omp parallel for 
     #endif
-    for (int i = 0; i < number_interfaces; i++){
-        interfaces_ptr[i].compute_flux(fc);
+    for (int i = 0; i < num_faces; i++){
+        faces[i].compute_flux(fc);
     }
 }
 
 void FluidBlock::compute_residuals(){
-    int number_cells = this->_number_valid_cells;
-    Cell * cell_ptrs = this->_cells.data();
-    Interface * face_ptrs = this->_interfaces.data();
+    GET_RESIDUAL_PTRS
+    GET_INTERFACE_PTRS
+    GET_CELL_PTRS
 
     #ifdef GPU
         #pragma omp target teams distribute parallel for
     #else
         #pragma omp parallel for
     #endif
-    for (int i = 0; i < number_cells; i++){
-        Cell &cell = cell_ptrs[i];
+    for (int i = 0; i < num_valid_cells; i++){
+        Cell &cell = cells[i];
         double mass_si = 0.0;
         double px_si = 0.0;
         double py_si = 0.0;
@@ -200,7 +285,7 @@ void FluidBlock::compute_residuals(){
         double e_si = 0.0;
         for (int i_face=0; i_face < cell.number_interfaces(); ++i_face){
             const CellFace &face = cell.interfaces()[i_face];
-            Interface & f = face_ptrs[face.interface];
+            Interface & f = faces[face.interface];
             double area = (face.outwards ? -1 : 1) * f.area(); 
 
             mass_si += area * f.flux().mass;
@@ -209,34 +294,34 @@ void FluidBlock::compute_residuals(){
             pz_si += area * f.flux().momentum.z;
             e_si += area * f.flux().energy;
         }
-        this->_dmass_dt[i] = mass_si / cell.volume();
-        this->_dpx_dt[i] = px_si / cell.volume();
-        this->_dpy_dt[i] = py_si / cell.volume();
-        this->_dpz_dt[i] = pz_si / cell.volume();
-        this->_de_dt[i] = e_si / cell.volume();
+        dmass_dt[i] = mass_si / cell.volume();
+        dpx_dt[i] = px_si / cell.volume();
+        dpy_dt[i] = py_si / cell.volume();
+        dpz_dt[i] = pz_si / cell.volume();
+        de_dt[i] = e_si / cell.volume();
     }
 }
 
 double FluidBlock::compute_block_dt(double cfl){
     double dt = 10000;
-    unsigned int N = this->_number_valid_cells;
-    Cell * cells = this->_cells.data();
-    Interface * interfaces = this->_interfaces.data();
+    GET_CELL_PTRS
+    GET_FLOW_PTRS
+    GET_INTERFACE_PTRS
 
     #ifdef GPU
         #pragma omp target teams distribute parallel for reduction(min:dt) map(tofrom: dt)
     #else
         #pragma omp parallel for reduction(min:dt)
     #endif
-    for (unsigned int i_cell = 0; i_cell < N; i_cell++){
+    for (unsigned int i_cell = 0; i_cell < num_valid_cells; i_cell++){
         // compute local dt for a particular cell
         double spectral_radii = 0.0;
         Cell &cell = cells[i_cell]; 
         for (int i_face = 0; i_face < cell.number_interfaces(); i_face++){
             const CellFace &face = cell.interfaces()[i_face];
-            Interface & f = interfaces[face.interface];
-            Vector3 vel = Vector3(_vx[i_cell], _vy[i_cell], _vz[i_cell]);
-            double sig_vel = fabs(vel.dot(f.n())) + this->_a[i_cell];
+            Interface & f = faces[face.interface];
+            double dot = vx[i_cell]*f.n().x + vy[i_cell]*f.n().y + vz[i_cell]*f.n().z;
+            double sig_vel = fabs(dot) + a[i_cell];
             spectral_radii += sig_vel * f.area();
         }
         double local_dt = cfl * cell.volume() / spectral_radii;
@@ -249,74 +334,91 @@ double FluidBlock::compute_block_dt(double cfl){
 }
 
 void FluidBlock::apply_residuals(double dt){
-    int n_cells = this->_number_valid_cells;
-
+    int num_valid_cells = this->_number_valid_cells;
+    GET_RESIDUAL_PTRS
+    GET_CONSERVED_PTRS
     #ifdef GPU
         #pragma omp target teams distribute parallel for simd
     #else
         #pragma omp parallel for
     #endif
-    for (int i_cell = 0; i_cell < n_cells; i_cell++){
-        this->_mass[i_cell] += this->_dmass_dt[i_cell] * dt;
-        this->_px[i_cell] += this->_dpx_dt[i_cell] * dt;
-        this->_py[i_cell] += this->_dpy_dt[i_cell] * dt;
-        this->_pz[i_cell] += this->_dpz_dt[i_cell] * dt;
-        this->_e[i_cell] += this->_de_dt[i_cell] * dt;
+    for (int i_cell = 0; i_cell < num_valid_cells; i_cell++){
+        mass[i_cell] += dmass_dt[i_cell] * dt;
+        px[i_cell] += dpx_dt[i_cell] * dt;
+        py[i_cell] += dpy_dt[i_cell] * dt;
+        pz[i_cell] += dpz_dt[i_cell] * dt;
+        e[i_cell] += de_dt[i_cell] * dt;
     }
-    this->decode_conserved();
+    this->decode_conserved(true);
 
     #ifdef GPU
-        #pragma omp target exit data map(from: cell[0:n_cells])
+        GET_FLOW_PTRS
+        #pragma omp target exit data\
+            map(from: p[:num_valid_cells])\
+            map(from: T[:num_valid_cells])\
+            map(from: rho[:num_valid_cells])\
+            map(from: u[:num_valid_cells])\
+            map(from: a[:num_valid_cells])\
+            map(from: vx[:num_valid_cells])\
+            map(from: vy[:num_valid_cells])\
+            map(from: vz[:num_valid_cells])
     #endif
 }
 
-void FluidBlock::encode_conserved(){
+void FluidBlock::encode_conserved(bool gpu){
+    int number_valid_cells = this->_number_valid_cells;
+    GET_CONSERVED_PTRS
+    GET_FLOW_PTRS
+
     #ifdef GPU
-        #pragma omp target teams distribute parallel for simd
+        #pragma omp target teams distribute parallel for if (gpu)
     #else
         #pragma omp parallel for
     #endif
-    for (int i=0; i < this->_number_valid_cells; ++i){
-        double rho = this->_rho[i];
-        double p = this->_p[i];
-        double u = this->_u[i];
-        double vx = this->_vx[i];
-        double vy = this->_vy[i];
-        double vz = this->_vz[i];
-        double ke = 0.5*(vx*vx + vy*vy + vz*vz);
-        this->_mass[i] = rho;
-        this->_px[i] = rho * vx;
-        this->_py[i] = rho * vy;
-        this->_pz[i] = rho * vz;
-        this->_e[i] = (u + ke)*rho + p;
+    for (int i=0; i < number_valid_cells; ++i){
+        double rhoi = rho[i];
+        double pi = p[i];
+        double ui = u[i];
+        double vxi = vx[i];
+        double vyi = vy[i];
+        double vzi = vz[i];
+        double kei = 0.5*(vxi*vxi + vyi*vyi + vzi*vzi);
+        mass[i] = rhoi;
+        px[i] = rhoi * vxi;
+        py[i] = rhoi * vyi;
+        pz[i] = rhoi * vzi;
+        e[i] = (ui + kei)*rhoi + pi;
     }
 }
 
-void FluidBlock::decode_conserved(){
+void FluidBlock::decode_conserved(bool gpu){
+    GET_FLOW_PTRS
+    GET_CONSERVED_PTRS
+    GasModel gm = *this->_gas_model;
+    int number_cells = this->_number_valid_cells;
     #ifdef GPU
-        #pragma omp target teams distribute parallel for simd
+        #pragma omp target teams distribute parallel for map(to: gm) if(gpu)
     #else
         #pragma omp parallel for
     #endif
-    for (int i=0; i < this->_number_valid_cells; ++i){
-        double vx = this->_vx[i];
-        double vy = this->_vy[i];
-        double vz = this->_vz[i];
-        double ke = 0.5*(vx*vx + vy*vy + vz*vz);
-        double rho = this->_mass[i];
-        double p = this->_p[i];
-        this->_vx[i] = this->_px[i] / rho;
-        this->_vy[i] = this->_py[i] / rho;
-        this->_vz[i] = this->_pz[i] / rho;
-        this->_rho[i] = this->_mass[i];
-        this->_u[i] = (this->_e[i] - p)/rho - ke;
-        GasState gs;
-        gs.rho = this->_rho[i];
-        gs.u = this->_u[i];
-        this->_gas_model->update_from_rhou(gs);
-        this->_p[i] = gs.p;
-        this->_T[i] = gs.T;
-        this->_a[i] = gs.a;
+    for (int i=0; i < number_cells; ++i){
+        double vxi = vx[i];
+        double vyi = vy[i];
+        double vzi = vz[i];
+        double kei = 0.5*(vxi*vxi + vyi*vyi + vzi*vzi);
+        double rhoi = mass[i];
+        double pi = p[i];
+        vx[i] = px[i] / rhoi;
+        vy[i] = py[i] / rhoi;
+        vz[i] = pz[i] / rhoi;
+        rho[i] = mass[i];
+        u[i] = (e[i] - pi)/rhoi - kei;
+        double Cv = gm.Cv();
+        double R = gm.R();
+        double gamma = gm.gamma();
+        T[i] = u[i] / Cv;
+        p[i] = rho[i] * R * T[i];
+        a[i] = sqrt(gamma * R * T[i]);
     }
 }
 

@@ -1,15 +1,12 @@
 #include "flow_state.h"
 
-FlowState::FlowState() : gas_state(GasState()), velocity(Vector3()){}
-
 FlowState::FlowState(GasState gs, Vector3 vel) : gas_state(gs), velocity(vel) {}
 FlowState::~FlowState(){}
 
 #ifdef GPU
 #pragma omp declare target
 #endif
-void FlowState::encode_conserved(GasModel & gas_model, ConservedQuantity &cq){
-    UNUSED(gas_model);
+void FlowState::encode_conserved(GasModel &, ConservedQuantity &cq){
     double vx = this->velocity.x;
     double vy = this->velocity.y;
     double vz = this->velocity.z;

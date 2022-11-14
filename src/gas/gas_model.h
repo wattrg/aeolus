@@ -16,7 +16,16 @@ public:
     void update_from_rhou(GasState & gas_state);
 
     double internal_energy(GasState & gas_state);
+
+    #ifdef GPU
+    #pragma omp declare target
+    #endif
     double gamma() const {return _gamma;}
+    double Cv() const {return _Cv;}
+    double R() const {return _R;}
+    #ifdef GPU
+    #pragma omp end declare target
+    #endif
 
 private:
     double _R;
