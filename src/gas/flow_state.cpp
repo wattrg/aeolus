@@ -3,9 +3,6 @@
 FlowState::FlowState(GasState gs, Vector3 vel) : gas_state(gs), velocity(vel) {}
 FlowState::~FlowState(){}
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 void FlowState::encode_conserved(GasModel &, ConservedQuantity &cq){
     double vx = this->velocity.x;
     double vy = this->velocity.y;
@@ -20,13 +17,7 @@ void FlowState::encode_conserved(GasModel &, ConservedQuantity &cq){
     cq.momentum.z = rho*vz;
     cq.energy = (u + ke)*rho + p;
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 void FlowState::decode_conserved(GasModel & gas_model, ConservedQuantity &cq){
     double vx = this->velocity.x;
     double vy = this->velocity.y;
@@ -39,20 +30,10 @@ void FlowState::decode_conserved(GasModel & gas_model, ConservedQuantity &cq){
     this->gas_state.u = e - ke;
     gas_model.update_from_rhou(this->gas_state);
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
-
-#ifdef GPU
-#pragma omp declare target
-#endif
 void FlowState::copy(const FlowState & other){
     this->gas_state.copy(other.gas_state);
     this->velocity.copy(other.velocity);
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
 std::string FlowState::to_string() const {
     std::string str = "FlowState(";

@@ -5,17 +5,11 @@ Vector3::Vector3(double x) : x(x), y(0.0), z(0.0) {}
 Vector3::Vector3(double x, double y) : x(x), y(y), z(0.0) {}
 Vector3::Vector3(double x, double y, double z) : x(x), y(y), z(z) {}
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 void Vector3::copy(const Vector3 & other){
     this->x = other.x;
     this->y = other.y;
     this->z = other.z;
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
 Vector3 Vector3::operator + (const Vector3& other) const {
     return Vector3(this->x + other.x, this->y + other.y, this->z + other.z);    
@@ -50,19 +44,10 @@ Vector3 Vector3::cross(const Vector3& other){
     return Vector3(x, y, z);
 }
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 double Vector3::dot(const Vector3 & other){
     return this->x*other.x + this->y*other.y + this->z*other.z;
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 void Vector3::transform_to_local_frame(const Vector3 & n, const Vector3 & t1, const Vector3 & t2){
     double x = this->dot(n);
     double y = this->dot(t1);
@@ -71,13 +56,6 @@ void Vector3::transform_to_local_frame(const Vector3 & n, const Vector3 & t1, co
     this->y = y;
     this->z = z;
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
-
-#ifdef GPU
-#pragma omp declare target
-#endif
 void Vector3::transform_to_global_frame(const Vector3 & n, const Vector3 & t1, const Vector3 & t2){
     double x = this->x*n.x + this->y*t1.x + this->z*t2.x;
     double y = this->x*n.y + this->y*t1.y + this->z*t2.y;
@@ -86,9 +64,6 @@ void Vector3::transform_to_global_frame(const Vector3 & n, const Vector3 & t1, c
     this->y = y;
     this->z = z;
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
 std::string Vector3::to_string() const {
     std::string str = "Vector3(";

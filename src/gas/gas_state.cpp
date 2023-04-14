@@ -9,9 +9,6 @@ GasState::GasState(GasModel * gm) : p(0.0), T(0.0), rho(0.0), u(0.0) {
 }
 
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 void GasState::copy(const GasState & other){
     this->p = other.p;
     this->T = other.T;
@@ -19,9 +16,6 @@ void GasState::copy(const GasState & other){
     this->u = other.u;
     this->a = other.a;
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
 std::string GasState::to_string() const{
     std::string str = "GasState(";

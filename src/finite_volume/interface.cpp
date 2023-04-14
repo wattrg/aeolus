@@ -31,9 +31,6 @@ Interface::Interface(Grid::Interface & grid_face)
 }
 
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 void Interface::copy_left_flow_state(FlowState & fs){
     this->_left.copy(fs);
 }
@@ -69,80 +66,39 @@ void Interface::copy_right_flow_state(double p, double T, double rho,
     this->_right.velocity.y = vy;
     this->_right.velocity.z = vz;
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
 bool Interface::is_on_boundary() const { return this->_is_on_boundary; }
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 double Interface::area() const {
     return _area;
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 ConservedQuantity & Interface::flux() {
     return _flux;
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
 Interface::~Interface(){}
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 void Interface::compute_flux(flux_calculator flux_calc){
     this->_transform_flowstate_to_local_frame();
     FluxCalculator::hanel(this->_left, this->_right, this->_flux);
     this->_transform_flux_to_global_frame();
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
-
-#ifdef GPU
-#pragma omp declare target
-#endif
 void Interface::_transform_flux_to_global_frame(){
     this->_flux.momentum.transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 void Interface::_transform_flowstate_to_local_frame(){
 
     this->_left.velocity.transform_to_local_frame(this->_norm, this->_tan1, this->_tan2);
     this->_right.velocity.transform_to_local_frame(this->_norm, this->_tan1, this->_tan2);
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
-
-#ifdef GPU
-#pragma omp declare target
-#endif
 void Interface::_transform_flowstate_to_global_frame(){
     this->_left.velocity
                .transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
     this->_right.velocity
                 .transform_to_global_frame(this->_norm, this->_tan1, this->_tan2);
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
 
 int Interface::get_valid_cell(){
     bool left = this->_left_cell_valid;
@@ -177,9 +133,6 @@ std::ostream& operator << (std::ostream& os, const Interface interface){
     return os;
 }
 
-#ifdef GPU
-#pragma omp declare target
-#endif
 int Interface::get_left_cell() {
     return this->_left_cell_id;
 }
@@ -187,11 +140,6 @@ int Interface::get_left_cell() {
 int Interface::get_right_cell() {
     return this->_right_cell_id;
 }
-#ifdef GPU
-#pragma omp end declare target
-#endif
-
-
 
 void Interface::attach_cell_left(Cell & cell){
     if (this->_left_cell_id < 0){
