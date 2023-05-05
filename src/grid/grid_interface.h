@@ -2,6 +2,7 @@
 #define __GRID_INTERFACE_H_
 
 #include <vector>
+#include <map>
 #include <string>
 #include "grid_vertex.h"
 #include "grid_cell.h"
@@ -52,5 +53,27 @@ private:
 };
 
 }
+
+class InterfaceCollection {
+    // Class to handle the construction of interfaces, without repeating
+    // the same interface from both sides
+public:
+    InterfaceCollection();
+    ~InterfaceCollection();
+    // add an interface if it doesn't exist. Return pointer to the newly created
+    // interface, or pointer to the already existing interface.
+    Grid::Interface * add_or_retrieve(std::vector<Grid::Vertex *> vertices);
+
+    // access interface by its ID
+    Grid::Interface * operator[](int id);
+
+    // return vector of interface poniters
+    std::vector<Grid::Interface *> interfaces();
+
+private:
+    std::map<std::string, Grid::Interface> _interfaces;
+    std::map<int, std::string> _id_to_hash;
+};
+
 
 #endif

@@ -1,4 +1,5 @@
 #include "grid_interface.h"
+#include <algorithm>
 
 Grid::Interface::Interface(std::vector<Vertex *> vertices, unsigned int id)
     : _vertices(vertices), _id(id)
@@ -113,4 +114,30 @@ std::string Grid::Interface::to_string() const {
     str.append(std::to_string(this->_vertices[1]->id()));
     str.append(")");
     return str;
+}
+
+Grid::Interface *
+InterfaceCollection::add_or_retrieve(std::vector<Grid::Vertex *> vertices){
+    // create vector of IDS
+    std::vector<int> ids;
+    for (Grid::Vertex * vertex : vertices){
+        ids.push_back(vertex->id());
+    }
+
+    std::string interface_hash = hash(ids);
+    if this->_interfaces.contains(interface_hash){
+    
+    }
+}
+
+
+std::string hash(std::vector<int> vertex_ids){
+    // sort the ids from highest to lowest, and concatenate as strings
+    std::sort(vertex_ids.begin(), vertex_ids.end(), std::greater<int>());
+    std::string result = "";
+    for (int vertex_id : vertex_ids) {
+        result.append(std::to_string(vertex_id));
+        result.append(",");
+    }
+    return result;
 }
