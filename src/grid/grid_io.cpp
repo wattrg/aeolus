@@ -147,18 +147,5 @@ Grid::Interface * GridInput::_find_interface(std::vector<Grid::Vertex *> vertice
 }
 
 Grid::Interface * GridInput::_add_interface(std::vector<Grid::Vertex *> vertices){
-    // loop through all the interfaces we have so far, checking
-    // if the this new one is already in our collection of them
-    for (Grid::Interface * interface : this->_interfaces){
-        if (interface->is(vertices)){
-            //  the interface already exists, so we'll return
-            // a reference to the interface
-            return interface;
-        }
-    }
-    // the interface doesn't exist, so we'll create a new one,
-    // add it to the list, and return a reference to it
-    Grid::Interface * interface = new Grid::Interface(vertices, this->_interfaces.size());
-    this->_interfaces.push_back(interface);
-    return interface;
+    return this->_interface_collection.add_or_retrieve(vertices);
 }

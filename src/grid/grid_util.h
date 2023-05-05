@@ -1,8 +1,6 @@
 #ifndef __GRID_UTIL_H_
 #define __GRID_UTIL_H_
 
-#include "grid.h"
-
 namespace Grid {
 
 enum class ElementShape { Triangle, Quad, Line, };

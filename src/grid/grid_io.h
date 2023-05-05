@@ -1,6 +1,7 @@
 #ifndef __GRID_IO_H_
 #define __GRID_IO_H_
 
+#include "grid_interface.h"
 #include "grid_util.h"
 #include "grid.h"
 #include <fstream>
@@ -30,6 +31,7 @@ protected:
     // storage for the geometry elements
     std::vector<Grid::Vertex *> _vertices;
     std::vector<Grid::Interface *> _interfaces;
+    InterfaceCollection _interface_collection;
     std::vector<Grid::Cell *> _cells;
     
     // boundary conditions

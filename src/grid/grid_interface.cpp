@@ -20,6 +20,19 @@ Grid::Interface::Interface(std::vector<Vertex *> vertices, unsigned int id)
     }
 }
 
+// Grid::Interface::Interface(Interface &other){
+//     this->_vertices = other.vertices();
+//     this->_id = other.id();
+//     this->_left_cell = other.get_left_cell();
+//     this->_right_cell = other.get_right_cell();
+//     this->_n = other.norm();
+//     this->_t1 = other.tan1();
+//     this->_t2 = other.tan2();
+//     this->_area = other.area();
+//     this->_is_on_boundary = other.is_on_boundary();
+//     this->_boundary_tag = other.boundary_tag();
+// }
+
 int Grid::Interface::get_left_cell_id() {
     Cell * left_cell = this->_left_cell;
     if (left_cell){
@@ -116,21 +129,6 @@ std::string Grid::Interface::to_string() const {
     return str;
 }
 
-Grid::Interface *
-InterfaceCollection::add_or_retrieve(std::vector<Grid::Vertex *> vertices){
-    // create vector of IDS
-    std::vector<int> ids;
-    for (Grid::Vertex * vertex : vertices){
-        ids.push_back(vertex->id());
-    }
-
-    std::string interface_hash = hash(ids);
-    if this->_interfaces.contains(interface_hash){
-    
-    }
-}
-
-
 std::string hash(std::vector<int> vertex_ids){
     // sort the ids from highest to lowest, and concatenate as strings
     std::sort(vertex_ids.begin(), vertex_ids.end(), std::greater<int>());
@@ -140,4 +138,35 @@ std::string hash(std::vector<int> vertex_ids){
         result.append(",");
     }
     return result;
+}
+
+Grid::Interface *
+InterfaceCollection::add_or_retrieve(std::vector<Grid::Vertex *> vertices){
+    // create vector of IDS
+    std::vector<int> ids;
+    for (Grid::Vertex * vertex : vertices){
+        ids.push_back(vertex->id());
+    }
+
+    std::string interface_hash = hash(ids);
+    if (this->_interfaces.find(interface_hash) == this->_interfaces.end()) {
+        // the interface isn't in the hash map already
+        // so we construct a new interface and add it to the collection
+        int id = this->_interfaces.size();
+        Grid::Interface interface = Grid::Interface(vertices, id);
+        this->_interfaces.insert({interface_hash, interface});
+        this->_id_to_hash.insert({id, interface_hash});
+    }
+    
+    // return a pointer to the interface
+    return &this->_interfaces.at(interface_hash);
+}
+
+std::vector<Grid::Interface *> InterfaceCollection::interfaces() {
+    std::vector<Grid::Interface *> interfaces;
+    for (std::map<std::string, Grid::Interface>::iterator it = _interfaces.begin(); it != _interfaces.end(); ++it) {
+        Grid::Interface * interface = new Grid::Interface(it->second); 
+        interfaces.push_back(interface);
+    }
+    return interfaces;
 }

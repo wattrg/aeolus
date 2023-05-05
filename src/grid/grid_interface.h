@@ -17,6 +17,7 @@ class Cell;
 class Interface{
 public:
     Interface(std::vector<Vertex *> vertices, unsigned int id);
+    // Interface(Interface & other);
 
     bool is (std::vector<Vertex *> & vertices);
 
@@ -58,8 +59,8 @@ class InterfaceCollection {
     // Class to handle the construction of interfaces, without repeating
     // the same interface from both sides
 public:
-    InterfaceCollection();
-    ~InterfaceCollection();
+    InterfaceCollection() {};
+    ~InterfaceCollection() {};
     // add an interface if it doesn't exist. Return pointer to the newly created
     // interface, or pointer to the already existing interface.
     Grid::Interface * add_or_retrieve(std::vector<Grid::Vertex *> vertices);
@@ -71,7 +72,10 @@ public:
     std::vector<Grid::Interface *> interfaces();
 
 private:
+    // map hash -> interface
     std::map<std::string, Grid::Interface> _interfaces;
+    
+    // map interface id -> hash
     std::map<int, std::string> _id_to_hash;
 };
 

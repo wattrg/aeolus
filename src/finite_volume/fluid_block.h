@@ -12,6 +12,7 @@
 #include "vertex.h"
 #include "../gas/flow_state.h"
 #include "../gas/gas_model.h"
+#include "../grid/grid.h"
 #include "omp.h"
 
 class FluidBlockIO;

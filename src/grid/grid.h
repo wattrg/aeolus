@@ -6,7 +6,8 @@
 #include <string>
 #include "grid_vertex.h"
 #include "grid_interface.h"
-#include "su2.h"
+#include "grid_cell.h"
+#include "grid_io.h"
 
 namespace Grid {
 
