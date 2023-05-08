@@ -61,9 +61,13 @@ class InterfaceCollection {
 public:
     InterfaceCollection() {};
     ~InterfaceCollection() {};
+
     // add an interface if it doesn't exist. Return pointer to the newly created
     // interface, or pointer to the already existing interface.
     Grid::Interface * add_or_retrieve(std::vector<Grid::Vertex *> vertices);
+
+    // find an interface in the collection. Error if the interface was not present
+    Grid::Interface * retrieve(std::vector<Grid::Vertex *> vertices);
 
     // access interface by its ID
     Grid::Interface * operator[](int id);

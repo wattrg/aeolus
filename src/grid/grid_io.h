@@ -22,7 +22,7 @@ public:
     virtual ~GridInput() {};
     virtual void read_grid(std::string file_name) =0;
     std::vector<Grid::Vertex *> vertices() {return _vertices;}
-    std::vector<Grid::Interface *> interfaces() {return _interfaces;}
+    std::vector<Grid::Interface *> interfaces() {return _interface_collection.interfaces();}
     std::vector<Grid::Cell *> cells() {return _cells;}
     std::map<std::string, std::vector<Grid::Interface *>> bcs() {return _bcs;}
     unsigned int number_boundaries() const {return _number_boundaries;}
@@ -30,7 +30,6 @@ public:
 protected:
     // storage for the geometry elements
     std::vector<Grid::Vertex *> _vertices;
-    std::vector<Grid::Interface *> _interfaces;
     InterfaceCollection _interface_collection;
     std::vector<Grid::Cell *> _cells;
     

@@ -162,6 +162,25 @@ InterfaceCollection::add_or_retrieve(std::vector<Grid::Vertex *> vertices){
     return &this->_interfaces.at(interface_hash);
 }
 
+Grid::Interface *
+InterfaceCollection::retrieve(std::vector<Grid::Vertex *> vertices){
+    // create vector of IDS
+    std::vector<int> ids;
+    for (Grid::Vertex * vertex : vertices){
+        ids.push_back(vertex->id());
+    }
+    
+    // hash the interface
+    std::string interface_hash = hash(ids);
+
+    if (this->_interfaces.find(interface_hash) == this->_interfaces.end()){
+        // the interface wasn't in our collection, so we'll return a null pointer
+        return nullptr;
+    }
+    // return a pointer to the interface
+    return &this->_interfaces.at(interface_hash);
+}
+
 std::vector<Grid::Interface *> InterfaceCollection::interfaces() {
     std::vector<Grid::Interface *> interfaces;
     for (std::map<std::string, Grid::Interface>::iterator it = _interfaces.begin(); it != _interfaces.end(); ++it) {
@@ -169,4 +188,9 @@ std::vector<Grid::Interface *> InterfaceCollection::interfaces() {
         interfaces.push_back(interface);
     }
     return interfaces;
+}
+
+Grid::Interface * InterfaceCollection::operator[] (int id){
+    std::string interface_hash = _id_to_hash.at(id);
+    return &_interfaces.at(interface_hash);
 }

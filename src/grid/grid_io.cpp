@@ -140,10 +140,7 @@ Grid::Element read_element(std::string line) {
 
 Grid::Interface * GridInput::_find_interface(std::vector<Grid::Vertex *> vertices){
     // Return a pointer to the interface with verteices `vertices`
-    for (Grid::Interface * interface : this->_interfaces){
-        if (interface->is(vertices)) return interface;
-    }
-    return nullptr;
+    return this->_interface_collection.retrieve(vertices);
 }
 
 Grid::Interface * GridInput::_add_interface(std::vector<Grid::Vertex *> vertices){
